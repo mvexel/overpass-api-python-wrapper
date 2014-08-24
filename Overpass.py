@@ -8,10 +8,12 @@ class API(object):
     # defaults for the API class
     TIMEOUT = 25  # seconds
     ENDPOINT = "http://overpass-api.de/api/interpreter"
+    DEBUG = False
 
     def __init__(self,
                  endpoint=None,
                  timeout=None,
+                 debug=None
                  ):
         if endpoint is None:
             self.endpoint = self.ENDPOINT
@@ -21,12 +23,27 @@ class API(object):
             self.timeout = self.TIMEOUT
         else:
             self.timeout = timeout
-        self.status = None
+        if debug is None:
+            self.debug = self.DEBUG
+        else:
+            self.debug = debug
+        self._status = None
+
+        if self.debug:
+            import httplib
+            import logging
+            httplib.HTTPConnection.debuglevel = 1
+
+            logging.basicConfig()
+            logging.getLogger().setLevel(logging.DEBUG)
+            requests_log = logging.getLogger("requests.packages.urllib3")
+            requests_log.setLevel(logging.DEBUG)
+            requests_log.propagate = True
 
     def Get(self, query):
         """Pass in an Overpass query in Overpass XML or Overpass QL"""
 
-        payload = {"data": query}
+        payload = {"data": self._ConstructQLQuery(query)}
 
         try:
             r = requests.get(self.endpoint, params=payload, timeout=self.timeout)
@@ -36,12 +53,12 @@ class API(object):
                 'Try passing in a higher value when instantiating this API:'
                 'api = Overpass.API(timeout=60)'.format(timeout=self.timeout))
 
-        self.status = r.status_code
+        self._status = r.status_code
 
-        if self.status != 200:
-            if self.status == 400:
+        if self._status != 200:
+            if self._status == 400:
                 return self._ConstructError('Query syntax error')
-            elif self.status == 500:
+            elif self._status == 500:
                 return self._ConstructError('Overpass internal server error')
 
         response = json.loads(r.text)
@@ -53,6 +70,13 @@ class API(object):
 
     def _ConstructError(self, msg):
         return {
-            "status": self.status,
+            "status": self._status,
             "message": msg
         }
+
+    def _ConstructQLQuery(self, userquery):
+        if self.debug:
+            print "[out:json];" + userquery + "out body;"
+        if not userquery.endswith(";"):
+            userquery += ";"
+        return "[out:json];" + userquery + "out body;"
