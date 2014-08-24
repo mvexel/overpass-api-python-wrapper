@@ -4,6 +4,8 @@ This is a thin wrapper around the OpenStreetMap [Overpass API](http://wiki.opens
 
 ## Use it
 
+You need to have the `requests` module [installed](http://docs.python-requests.org/en/latest/user/install/#install).
+
 ```
 >>> import Overpass
 >>> api = Overpass.API()
