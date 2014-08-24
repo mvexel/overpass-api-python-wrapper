@@ -54,6 +54,7 @@ class API(object):
 
     def Search(self, feature_type, regex=False):
         """Search for something."""
+        pass
 
     def _ConstructError(self, msg):
         return {
