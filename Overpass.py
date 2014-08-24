@@ -41,9 +41,38 @@ class API(object):
             requests_log.propagate = True
 
     def Get(self, query):
-        """Pass in an Overpass query in Overpass XML or Overpass QL"""
+        """Pass in an Overpass query in Overpass QL"""
 
-        payload = {"data": self._ConstructQLQuery(query)}
+        response = json.loads(
+            self._GetFromOverpass(
+                self._ConstructQLQuery(query)))
+
+        if "elements" not in response or len(response["elements"]) == 0:
+            return self._ConstructError('No OSM features satisfied your query')
+
+        return response
+
+    def Search(self, feature_type, regex=False):
+        """Search for something."""
+
+    def _ConstructError(self, msg):
+        return {
+            "status": self._status,
+            "message": msg
+        }
+
+    def _ConstructQLQuery(self, userquery):
+        if self.debug:
+            print "[out:json];" + userquery + "out body;"
+        if not userquery.endswith(";"):
+            userquery += ";"
+        return "[out:json];" + userquery + "out body;"
+
+    def _GetFromOverpass(self, query):
+        """This sends the API request to the Overpass instance and
+        returns the raw result, or an error."""
+
+        payload = {"data": query}
 
         try:
             r = requests.get(self.endpoint, params=payload, timeout=self.timeout)
@@ -60,23 +89,7 @@ class API(object):
                 return self._ConstructError('Query syntax error')
             elif self._status == 500:
                 return self._ConstructError('Overpass internal server error')
+            else:
+                return self._ConstructError('Something unexpected happened')
 
-        response = json.loads(r.text)
-
-        if "elements" not in response or len(response["elements"]) == 0:
-            return self._ConstructError('No OSM features satisfied your query')
-
-        return response
-
-    def _ConstructError(self, msg):
-        return {
-            "status": self._status,
-            "message": msg
-        }
-
-    def _ConstructQLQuery(self, userquery):
-        if self.debug:
-            print "[out:json];" + userquery + "out body;"
-        if not userquery.endswith(";"):
-            userquery += ";"
-        return "[out:json];" + userquery + "out body;"
+        return r.text
