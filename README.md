@@ -39,6 +39,11 @@ The default timeout is 25 seconds, but you can set it to whatever you want.
 
 Setting this to `True` will get you debug output.
 
+## Need help? Want feature?
+
+Create a [new issue](https://github.com/mvexel/overpass-api-python-wrapper/issues).
+
 ## Fork it
 
-[Yes please](https://github.com/mvexel/overpass-api-python-wrapper/fork).
+[Yes please](https://github.com/mvexel/overpass-api-python-wrapper/fork). [Help wanted](https://github.com/mvexel/overpass-api-python-wrapper/labels/help%20wanted).
+
