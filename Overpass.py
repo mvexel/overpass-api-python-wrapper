@@ -8,25 +8,14 @@ class API(object):
     # defaults for the API class
     TIMEOUT = 25  # seconds
     ENDPOINT = "http://overpass-api.de/api/interpreter"
+    RESPONSE_FORMAT = "json"
     DEBUG = False
 
-    def __init__(self,
-                 endpoint=None,
-                 timeout=None,
-                 debug=None
-                 ):
-        if endpoint is None:
-            self.endpoint = self.ENDPOINT
-        else:
-            self.endpoint = endpoint
-        if timeout is None:
-            self.timeout = self.TIMEOUT
-        else:
-            self.timeout = timeout
-        if debug is None:
-            self.debug = self.DEBUG
-        else:
-            self.debug = debug
+    def __init__(self, *args, **kwargs):
+        self.endpoint = kwargs.get("endpoint", self.ENDPOINT)
+        self.timeout = kwargs.get("timeout", self.TIMEOUT)
+        self.debug = kwargs.get("debug", self.DEBUG)
+        self.response_format = kwargs.get("response_format", self.RESPONSE_FORMAT)
         self._status = None
 
         if self.debug:
@@ -64,7 +53,7 @@ class API(object):
 
     def _ConstructQLQuery(self, userquery):
         if self.debug:
-            print "[out:json];" + userquery + "out body;"
+            print "[out:{response_format}];".format(response_format=self.response_format) + userquery + "out body;"
         if not userquery.endswith(";"):
             userquery += ";"
         return "[out:json];" + userquery + "out body;"
