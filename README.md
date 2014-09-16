@@ -9,7 +9,7 @@ You need to have the `requests` module [installed](http://docs.python-requests.o
 ```
 >>> import Overpass
 >>> api = Overpass.API()
->>> response = api.Get('node["name":"Salt Lake City"]')
+>>> response = api.Get('node["name"="Salt Lake City"]')
 ```
 
 Note that you don't have to include any of the output meta statements. The wrapper will, well, wrap those.
