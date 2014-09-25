@@ -2,12 +2,18 @@
 
 This is a thin wrapper around the OpenStreetMap [Overpass API](http://wiki.openstreetmap.org/wiki/Overpass_API).
 
-## Use it
-
-You need to have the `requests` module [installed](http://docs.python-requests.org/en/latest/user/install/#install).
+## Install it
 
 ```
->>> import Overpass
+python setup.py install
+```
+
+The module is not on PyPi yet.
+
+## Use it
+
+```
+>>> from overpass import Overpass
 >>> api = Overpass.API()
 >>> response = api.Get('node["name"="Salt Lake City"]')
 ```
@@ -40,6 +46,10 @@ The default timeout is 25 seconds, but you can set it to whatever you want.
 #### `debug`
 
 Setting this to `True` will get you debug output.
+
+#### `bbox`
+
+This takes a list in the form `[minlon, minlat, maxlon, maxlat]`, the default is the world: `[-180.0, -90.0, 180.0, 90.0]`
 
 ## Need help? Want feature?
 
