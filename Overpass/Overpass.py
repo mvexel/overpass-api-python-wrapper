@@ -6,16 +6,18 @@ class API(object):
     """A simple Python wrapper for the OpenStreetMap Overpass API"""
 
     # defaults for the API class
-    TIMEOUT = 25  # seconds
-    ENDPOINT = "http://overpass-api.de/api/interpreter"
-    RESPONSE_FORMAT = "json"
-    DEBUG = False
+    _timeout = 25  # seconds
+    _endpoint = "http://overpass-api.de/api/interpreter"
+    _responseformat = "json"
+    _debug = False
+    _bbox = [-180.0, -90.0, 180.0, 90.0]
 
     def __init__(self, *args, **kwargs):
-        self.endpoint = kwargs.get("endpoint", self.ENDPOINT)
-        self.timeout = kwargs.get("timeout", self.TIMEOUT)
-        self.debug = kwargs.get("debug", self.DEBUG)
-        self.response_format = kwargs.get("response_format", self.RESPONSE_FORMAT)
+        self.endpoint = kwargs.get("endpoint", self._endpoint)
+        self.timeout = kwargs.get("timeout", self._timeout)
+        self.responseformat = kwargs.get("responseformat", self._responseformat)
+        self.debug = kwargs.get("debug", self._debug)
+        self.bbox = kwargs.get("bbox", self._bbox)
         self._status = None
 
         if self.debug:
@@ -53,7 +55,7 @@ class API(object):
 
     def _ConstructQLQuery(self, userquery):
         if self.debug:
-            print "[out:{response_format}];".format(response_format=self.response_format) + userquery + "out body;"
+            print "[out:{responseformat}];".format(responseformat=self.responseformat) + userquery + "out body;"
         if not userquery.endswith(";"):
             userquery += ";"
         return "[out:json];" + userquery + "out body;"
