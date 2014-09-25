@@ -55,6 +55,14 @@ This takes a list in the form `[minlon, minlat, maxlon, maxlat]`, the default is
 
 Create a [new issue](https://github.com/mvexel/overpass-api-python-wrapper/issues).
 
+## Test it
+
+```
+py.test
+```
+
+_There are almost no tests yet._
+
 ## Fork it
 
 [Yes please](https://github.com/mvexel/overpass-api-python-wrapper/fork). [Help wanted](https://github.com/mvexel/overpass-api-python-wrapper/labels/help%20wanted).
