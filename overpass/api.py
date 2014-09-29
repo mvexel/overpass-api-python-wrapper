@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
+
 import requests
 import json
 
 
-class API(object):
+class Api(object):
     """A simple Python wrapper for the OpenStreetMap Overpass API"""
 
     # defaults for the API class
@@ -56,10 +58,11 @@ class API(object):
     def _ConstructQLQuery(self, userquery):
         if not userquery.endswith(";"):
             userquery += ";"
-        fullquery = "[out:{responseformat}];".format(responseformat=self.responseformat) + userquery + "out body;"
+
+        complete_query = "[out:{responseformat}];{query}out body;".format(responseformat=self.responseformat, query=userquery)
         if self.debug:
-            print fullquery
-        return "[out:{responseformat}];".format(responseformat=self.responseformat) + userquery + "out body;"
+            print complete_query
+        return complete_query
 
     def _GetFromOverpass(self, query):
         """This sends the API request to the Overpass instance and
