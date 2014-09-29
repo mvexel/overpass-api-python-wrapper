@@ -54,11 +54,12 @@ class API(object):
         }
 
     def _ConstructQLQuery(self, userquery):
-        if self.debug:
-            print "[out:{responseformat}];".format(responseformat=self.responseformat) + userquery + "out body;"
         if not userquery.endswith(";"):
             userquery += ";"
-        return "[out:json];" + userquery + "out body;"
+        fullquery = "[out:{responseformat}];".format(responseformat=self.responseformat) + userquery + "out body;"
+        if self.debug:
+            print fullquery
+        return "[out:{responseformat}];".format(responseformat=self.responseformat) + userquery + "out body;"
 
     def _GetFromOverpass(self, query):
         """This sends the API request to the Overpass instance and
