@@ -1,8 +1,10 @@
+# -*- coding: utf-8 -*-
+
 import requests
 import json
 
 
-class API(object):
+class Api(object):
     """A simple Python wrapper for the OpenStreetMap Overpass API"""
 
     # defaults for the API class

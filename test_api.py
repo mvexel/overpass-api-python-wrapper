@@ -1,9 +1,8 @@
-from overpass import Overpass
-
+import overpass
 
 class TestAPI:
 
     def test_initialize_api(self):
-        api = Overpass.API()
-        assert isinstance(api, Overpass.API)
+        api = overpass.Api()
+        assert isinstance(api, overpass.Api)
         assert api.debug == False
