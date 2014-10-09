@@ -1,5 +1,6 @@
 import requests
 import json
+from shapely.geometry import mapping, Point
 
 
 class API(object):
@@ -31,7 +32,7 @@ class API(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
-    def Get(self, query):
+    def Get(self, query, asGeoJSON=False):
         """Pass in an Overpass query in Overpass QL"""
 
         response = json.loads(
@@ -41,7 +42,11 @@ class API(object):
         if "elements" not in response or len(response["elements"]) == 0:
             return self._ConstructError('No OSM features satisfied your query')
 
-        return response
+        if not asGeoJSON:
+            return response
+
+        # construct geojson
+        return self._asGeoJSON(response["elements"])
 
     def Search(self, feature_type, regex=False):
         """Search for something."""
@@ -85,3 +90,17 @@ class API(object):
                 return self._ConstructError('Something unexpected happened')
 
         return r.text
+
+    def _asGeoJSON(self, elements):
+        nodes = [{
+            "id": elem.get("id"),
+            "tags": elem.get("tags"),
+            "geom": Point(elem["lon"], elem["lat"])}
+            for elem in elements if elem["type"] == "node"]
+        ways = [{
+            "id": elem.get("id"),
+            "tags": elem.get("tags"),
+            "nodes": elem.get("nodes")}
+            for elem in elements if elem["type"] == "way"]
+        print nodes
+        print ways
