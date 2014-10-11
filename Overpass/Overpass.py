@@ -13,6 +13,8 @@ class API(object):
     _debug = False
     _bbox = [-180.0, -90.0, 180.0, 90.0]
 
+    _QUERY_TEMPLATE = "[out:{responseformat}];{query}out body;"
+
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
         self.timeout = kwargs.get("timeout", self._timeout)
@@ -59,12 +61,14 @@ class API(object):
         }
 
     def _ConstructQLQuery(self, userquery):
-        if not userquery.endswith(";"):
-            userquery += ";"
-        fullquery = "[out:{responseformat}];".format(responseformat=self.responseformat) + userquery + "out body;"
+        raw_query = str(userquery)
+        if not raw_query.endswith(";"):
+            raw_query += ";"
+
+        complete_query = self._QUERY_TEMPLATE.format(responseformat=self.responseformat, query=raw_query)
         if self.debug:
-            print fullquery
-        return "[out:{responseformat}];".format(responseformat=self.responseformat) + userquery + "out body;"
+            print complete_query
+        return complete_query
 
     def _GetFromOverpass(self, query):
         """This sends the API request to the Overpass instance and
