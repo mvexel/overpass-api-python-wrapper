@@ -13,7 +13,7 @@ The module is not on PyPi yet.
 ## Use it
 
 ```
->>> from overpass import Overpass
+>>> import Overpass
 >>> api = Overpass.API()
 >>> response = api.Get('node["name"="Salt Lake City"]')
 ```

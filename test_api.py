@@ -1,4 +1,4 @@
-from overpass import Overpass
+import Overpass
 
 
 class TestAPI:
