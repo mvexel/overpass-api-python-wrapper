@@ -65,9 +65,8 @@ Up to now, only a query for [complete ways and relations](http://wiki.openstreet
 You just pass the bounding box to the constructor:
 
 ```python
->>> from overpass import queries
->>> map_query = queries.MapQuery((50.746,7.154,50.748,7.157))
->>>  response = api.Get(map_query)
+>>> map_query = overpass.MapQuery((50.746,7.154,50.748,7.157))
+>>> response = api.Get(map_query)
 ```
 
 ## Need help? Want feature?
