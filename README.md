@@ -51,6 +51,21 @@ Setting this to `True` will get you debug output.
 
 This takes a list in the form `[minlon, minlat, maxlon, maxlat]`, the default is the world: `[-180.0, -90.0, 180.0, 90.0]`
 
+### Simple queries
+
+In addition to just send you query and parse it, the wrapper provides shortcuts for often used map queries. To use them, just pass them like to normal query to the API.
+
+#### MapQuery
+
+Up to now, only a query for [complete ways and relations](http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide#Completed_ways_and_relations) in a bounding box is supported.
+You just pass the bounding box to the constructor:
+
+```python
+>>> from overpass import queries
+>>> map_query = queries.MapQuery((50.746,7.154,50.748,7.157))
+>>>  response = api.Get(map_query)
+```
+
 ## Need help? Want feature?
 
 Create a [new issue](https://github.com/mvexel/overpass-api-python-wrapper/issues).
