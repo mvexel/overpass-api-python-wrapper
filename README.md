@@ -13,8 +13,8 @@ The module is not on PyPi yet.
 ## Use it
 
 ```python
->>> from overpass import Overpass
->>> api = Overpass.API()
+>>> import overpass
+>>> api = overpass.API()
 >>> response = api.Get('node["name"="Salt Lake City"]')
 ```
 
@@ -36,7 +36,7 @@ The API takes a few parameters:
 The default endpoint is `http://overpass-api.de/api/interpreter` but you can pass in the rambler instance (`http://overpass.osm.rambler.ru/cgi/interpreter`) or your own:
 
 ```python
-api = Overpass.API(endpoint=http://overpass.myserver/interpreter)
+api = overpass.API(endpoint=http://overpass.myserver/interpreter)
 ```
 
 #### `timeout`
@@ -44,7 +44,7 @@ api = Overpass.API(endpoint=http://overpass.myserver/interpreter)
 The default timeout is 25 seconds, but you can set it to whatever you want.
 
 ```python
-api = Overpass.API(timeout=600)
+api = overpass.API(timeout=600)
 ```
 
 #### `debug`
