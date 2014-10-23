@@ -97,6 +97,7 @@ class API(object):
         return r.text
 
     def _asGeoJSON(self, elements):
+        """construct geoJSON from elements"""
         nodes = [{
             "id": elem.get("id"),
             "tags": elem.get("tags"),
