@@ -2,6 +2,7 @@
 
 
 class MapQuery(object):
+
     """Query to retrieve complete ways and relations in an area."""
 
     _QUERY_TEMPLATE = "(node({bbox[0]},{bbox[1]},{bbox[2]},{bbox[2]});<;);"
@@ -18,9 +19,10 @@ class MapQuery(object):
 
 
 class WayQuery(object):
+
     """Query to retrieve a set of ways and their dependent nodes satisfying the input parameters"""
 
-    _QUERY_TEMPLATE = "way{query_parameters};(_.;>;);"
+    _QUERY_TEMPLATE = "(way{query_parameters};(_.;>;););"
 
     def __init__(self, query_parameters):
         """
