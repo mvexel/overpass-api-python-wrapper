@@ -1,3 +1,4 @@
+import sys
 import requests
 import json
 from shapely.geometry import mapping, Point
@@ -37,12 +38,17 @@ class API(object):
     def Get(self, query, asGeoJSON=False):
         """Pass in an Overpass query in Overpass QL"""
 
-        response = json.loads(
-            self._GetFromOverpass(
+        response = ""
+
+        try:
+            response = json.loads(self._GetFromOverpass(
                 self._ConstructQLQuery(query)))
+        except OverpassException as oe:
+            print oe
+            sys.exit(1)
 
         if "elements" not in response or len(response["elements"]) == 0:
-            return self._ConstructError('No OSM features satisfied your query')
+            raise OverpassException(204, 'No OSM features satisfied your query')
 
         if not asGeoJSON:
             return response
@@ -53,12 +59,6 @@ class API(object):
     def Search(self, feature_type, regex=False):
         """Search for something."""
         pass
-
-    def _ConstructError(self, msg):
-        return {
-            "status": self._status,
-            "message": msg
-        }
 
     def _ConstructQLQuery(self, userquery):
         raw_query = str(userquery)
@@ -79,7 +79,7 @@ class API(object):
         try:
             r = requests.get(self.endpoint, params=payload, timeout=self.timeout)
         except requests.exceptions.Timeout:
-            return self._ConstructError(
+            raise OverpassException(408, 
                 'Query timed out. API instance is set to time out in {timeout} seconds. '
                 'Try passing in a higher value when instantiating this API:'
                 'api = Overpass.API(timeout=60)'.format(timeout=self.timeout))
@@ -88,13 +88,12 @@ class API(object):
 
         if self._status != 200:
             if self._status == 400:
-                return self._ConstructError('Query syntax error')
-            elif self._status == 500:
-                return self._ConstructError('Overpass internal server error')
+                message = 'Query syntax error'
             else:
-                return self._ConstructError('Something unexpected happened')
-
-        return r.text
+                message = 'Error from Overpass API'
+            raise OverpassException(self._status, message)
+        else:
+            return r.text
 
     def _asGeoJSON(self, elements):
         """construct geoJSON from elements"""
@@ -110,3 +109,10 @@ class API(object):
             for elem in elements if elem["type"] == "way"]
         print nodes
         print ways
+
+class OverpassException(Exception):
+    def __init__(self, status_code, message):
+        self.status_code = status_code
+        self.message = message
+    def __str__(self):
+        return json.dumps({'status': self.status_code, 'message': self.message})
