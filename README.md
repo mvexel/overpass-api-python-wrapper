@@ -61,12 +61,22 @@ In addition to just send you query and parse it, the wrapper provides shortcuts 
 
 #### MapQuery
 
-Up to now, only a query for [complete ways and relations](http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide#Completed_ways_and_relations) in a bounding box is supported.
+This is a shorthand for a [complete ways and relations](http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide#Completed_ways_and_relations) query in a bounding box (the 'map call').
 You just pass the bounding box to the constructor:
 
 ```python
->>> map_query = overpass.MapQuery((50.746,7.154,50.748,7.157))
+>>> map_query = overpass.MapQuery(50.746,7.154,50.748,7.157)
 >>> response = api.Get(map_query)
+```
+
+#### WayQuery
+
+This is shorthand for getting a set of ways and their child nodes that satisfy certain criteria.
+Pass the criteria as a Overpass QL stub to the constructor:
+
+```python
+>>> way_query = overpass.WayQuery('[name=Highway 51]')
+>>> response = api.Get(way_query)
 ```
 
 ## Need help? Want feature?
