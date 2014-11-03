@@ -1,7 +1,8 @@
 import sys
 import requests
 import json
-from shapely.geometry import mapping, Point
+import geojson
+#from shapely.geometry import mapping, Point
 
 
 class API(object):
@@ -96,10 +97,47 @@ class API(object):
             return r.text
 
     def _asGeoJSON(self, elements):
-        """construct geoJSON from elements"""
+        """
+        Construct geoJSON from elements
+        TODO:  Add secondary overpass call to get coords for ways for nodes not included in elements.
+        """
+        node_elements_by_id = {}
+
+        # index node elements by id
+        for elem in elements:
+            if elem["type"] == "node": 
+                node_elements_by_id[elem["id"]] = elem
+
+        features = []
+        for elem in elements:
+            elem_type = elem["type"]
+            if elem["type"] == "node":
+                geometry=geojson.Point((elem["lon"], elem["lat"]))
+            elif elem["type"] == "way":
+                points = []
+                for node_id in elem["nodes"]:
+                    node_elem = node_elements_by_id.get(node_id)
+                    if node_elem:
+                        point = (node_elem["lon"], node_elem["lat"])
+                        points.append(point)
+                    else
+                        print 'WARNING _asGeoJson skipping missing node ref in way
+                geometry = geojson.LineString(points)
+            else:
+                continue
+
+            feature = geojson.Feature(
+                        id=elem["id"],
+                        geometry=geometry,
+                        properties=elem.get("tags"))
+            features.append(feature)
+
+        return geojson.FeatureCollection(features)
+
+'''
         nodes = [{
             "id": elem.get("id"),
-            "tags": elem.get("tags"),
+            "tags": elem.get("tags")
             "geom": Point(elem["lon"], elem["lat"])}
             for elem in elements if elem["type"] == "node"]
         ways = [{
@@ -107,8 +145,10 @@ class API(object):
             "tags": elem.get("tags"),
             "nodes": elem.get("nodes")}
             for elem in elements if elem["type"] == "way"]
-        print nodes
-        print ways
+'''
+
+
+
 
 class OverpassException(Exception):
     def __init__(self, status_code, message):
