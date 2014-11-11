@@ -2,8 +2,6 @@ import sys
 import requests
 import json
 import geojson
-#from shapely.geometry import mapping, Point
-
 
 class API(object):
     """A simple Python wrapper for the OpenStreetMap Overpass API"""
@@ -16,6 +14,7 @@ class API(object):
     _bbox = [-180.0, -90.0, 180.0, 90.0]
 
     _QUERY_TEMPLATE = "[out:{responseformat}];{query}out body;"
+    _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out body geom;"
 
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
@@ -43,7 +42,7 @@ class API(object):
 
         try:
             response = json.loads(self._GetFromOverpass(
-                self._ConstructQLQuery(query)))
+                self._ConstructQLQuery(query, asGeoJSON=asGeoJSON)))
         except OverpassException as oe:
             print oe
             sys.exit(1)
@@ -61,12 +60,18 @@ class API(object):
         """Search for something."""
         pass
 
-    def _ConstructQLQuery(self, userquery):
+    def _ConstructQLQuery(self, userquery, asGeoJSON=False):
         raw_query = str(userquery)
         if not raw_query.endswith(";"):
             raw_query += ";"
 
-        complete_query = self._QUERY_TEMPLATE.format(responseformat=self.responseformat, query=raw_query)
+        if asGeoJSON:
+            template = self._GEOJSON_QUERY_TEMPLATE
+        else:
+            template = self._QUERY_TEMPLATE
+
+        complete_query = template.format(responseformat=self.responseformat, query=raw_query)
+
         if self.debug:
             print complete_query
         return complete_query
@@ -97,16 +102,7 @@ class API(object):
             return r.text
 
     def _asGeoJSON(self, elements):
-        """
-        Construct geoJSON from elements
-        TODO:  Add secondary overpass call to get coords for ways for nodes not included in elements.
-        """
-        node_elements_by_id = {}
-
-        # index node elements by id
-        for elem in elements:
-            if elem["type"] == "node": 
-                node_elements_by_id[elem["id"]] = elem
+        #print 'DEB _asGeoJson elements:', elements
 
         features = []
         for elem in elements:
@@ -115,13 +111,8 @@ class API(object):
                 geometry=geojson.Point((elem["lon"], elem["lat"]))
             elif elem["type"] == "way":
                 points = []
-                for node_id in elem["nodes"]:
-                    node_elem = node_elements_by_id.get(node_id)
-                    if node_elem:
-                        point = (node_elem["lon"], node_elem["lat"])
-                        points.append(point)
-                    else
-                        print 'WARNING _asGeoJson skipping missing node ref in way
+                for coords in elem["geometry"]:
+                    points.append((coords["lon"], coords["lat"]))
                 geometry = geojson.LineString(points)
             else:
                 continue
@@ -133,22 +124,6 @@ class API(object):
             features.append(feature)
 
         return geojson.FeatureCollection(features)
-
-'''
-        nodes = [{
-            "id": elem.get("id"),
-            "tags": elem.get("tags")
-            "geom": Point(elem["lon"], elem["lat"])}
-            for elem in elements if elem["type"] == "node"]
-        ways = [{
-            "id": elem.get("id"),
-            "tags": elem.get("tags"),
-            "nodes": elem.get("nodes")}
-            for elem in elements if elem["type"] == "way"]
-'''
-
-
-
 
 class OverpassException(Exception):
     def __init__(self, status_code, message):
