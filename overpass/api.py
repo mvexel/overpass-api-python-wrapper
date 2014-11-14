@@ -19,7 +19,10 @@ class API(object):
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
         self.timeout = kwargs.get("timeout", self._timeout)
-        self.responseformat = kwargs.get("responseformat", self._responseformat)
+        self.responseformat = kwargs.get(
+            "responseformat",
+            self._responseformat
+        )
         self.debug = kwargs.get("debug", self._debug)
         self.bbox = kwargs.get("bbox", self._bbox)
         self._status = None
@@ -48,7 +51,10 @@ class API(object):
             sys.exit(1)
 
         if "elements" not in response or len(response["elements"]) == 0:
-            raise OverpassException(204, 'No OSM features satisfied your query')
+            raise OverpassException(
+                204,
+                'No OSM features satisfied your query'
+            )
 
         if not asGeoJSON:
             return response
@@ -65,7 +71,10 @@ class API(object):
         if not raw_query.endswith(";"):
             raw_query += ";"
 
-        complete_query = self._QUERY_TEMPLATE.format(responseformat=self.responseformat, query=raw_query)
+        complete_query = self._QUERY_TEMPLATE.format(
+            responseformat=self.responseformat,
+            query=raw_query
+        )
         if self.debug:
             print complete_query
         return complete_query
@@ -77,12 +86,20 @@ class API(object):
         payload = {"data": query}
 
         try:
-            r = requests.get(self.endpoint, params=payload, timeout=self.timeout)
+            r = requests.get(
+                self.endpoint,
+                params=payload,
+                timeout=self.timeout
+            )
         except requests.exceptions.Timeout:
-            raise OverpassException(408, 
-                'Query timed out. API instance is set to time out in {timeout} seconds. '
-                'Try passing in a higher value when instantiating this API:'
-                'api = Overpass.API(timeout=60)'.format(timeout=self.timeout))
+            raise OverpassException(
+                408,
+                'Query timed out. API instance is set to time out in {timeout}'
+                ' seconds. Try passing in a higher value when instantiating'
+                ' this API: api = Overpass.API(timeout=60)'.format(
+                    timeout=self.timeout
+                )
+            )
 
         self._status = r.status_code
 
@@ -110,9 +127,14 @@ class API(object):
         print nodes
         print ways
 
+
 class OverpassException(Exception):
     def __init__(self, status_code, message):
         self.status_code = status_code
         self.message = message
+
     def __str__(self):
-        return json.dumps({'status': self.status_code, 'message': self.message})
+        return json.dumps({
+            'status': self.status_code,
+            'message': self.message
+        })
