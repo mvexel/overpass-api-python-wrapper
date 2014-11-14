@@ -1,7 +1,7 @@
 import sys
 import requests
 import json
-from shapely.geometry import mapping, Point
+from shapely.geometry import Point
 
 
 class API(object):
@@ -12,7 +12,6 @@ class API(object):
     _endpoint = "http://overpass-api.de/api/interpreter"
     _responseformat = "json"
     _debug = False
-    _bbox = [-180.0, -90.0, 180.0, 90.0]
 
     _QUERY_TEMPLATE = "[out:{responseformat}];{query}out body;"
 
@@ -24,7 +23,6 @@ class API(object):
             self._responseformat
         )
         self.debug = kwargs.get("debug", self._debug)
-        self.bbox = kwargs.get("bbox", self._bbox)
         self._status = None
 
         if self.debug:
