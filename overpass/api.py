@@ -1,4 +1,3 @@
-import sys
 import requests
 import json
 from shapely.geometry import Point
@@ -12,9 +11,9 @@ class API(object):
     _endpoint = "http://overpass-api.de/api/interpreter"
     _responseformat = "json"
     _debug = False
-    _bbox = [-180.0, -90.0, 180.0, 90.0]
+    _bbox = None
 
-    _QUERY_TEMPLATE = "[out:{responseformat}];{query}out body;"
+    _QUERY_TEMPLATE = "[out:{responseformat}][timeout:{timeout}];{query}{bbox};out body;"
 
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
@@ -43,9 +42,8 @@ class API(object):
         try:
             response = json.loads(self._GetFromOverpass(
                 self._ConstructQLQuery(query)))
-        except OverpassException as oe:
-            print(oe)
-            sys.exit(1)
+        except OverpassException:
+            raise
 
         if "elements" not in response or len(response["elements"]) == 0:
             raise OverpassException(204, 'No OSM features satisfied your query')
@@ -62,10 +60,15 @@ class API(object):
 
     def _ConstructQLQuery(self, userquery):
         raw_query = str(userquery)
-        if not raw_query.endswith(";"):
-            raw_query += ";"
+        # Strip the semicolon if present, we'll add back later
+        if raw_query.endswith(";"):
+            raw_query = raw_query[:-1]
 
-        complete_query = self._QUERY_TEMPLATE.format(responseformat=self.responseformat, query=raw_query)
+        complete_query = self._QUERY_TEMPLATE.format(
+            responseformat=self.responseformat,
+            timeout=self.timeout,
+            bbox=self._bbox_str(),
+            query=raw_query)
         if self.debug:
             print(complete_query)
         return complete_query
@@ -80,9 +83,10 @@ class API(object):
             r = requests.get(self.endpoint, params=payload, timeout=self.timeout)
         except requests.exceptions.Timeout:
             raise OverpassException(408,
-                'Query timed out. API instance is set to time out in {timeout} seconds. '
-                'Try passing in a higher value when instantiating this API:'
-                'api = Overpass.API(timeout=60)'.format(timeout=self.timeout))
+                'Query timed out. API instance is set to time out '
+                'in {timeout} seconds. '
+                'Try passing in a higher value when instantiating this API: '
+                'API(timeout=60)'.format(timeout=self.timeout))
 
         self._status = r.status_code
 
@@ -109,6 +113,10 @@ class API(object):
             for elem in elements if elem["type"] == "way"]
         print(nodes)
         print(ways)
+
+    def _bbox_str(self):
+        """Returns the bounding box as an Overpass-compatible string"""
+        return ('({}, {}, {}, {})'.format(*self.bbox) if self.bbox else '')
 
 
 class OverpassException(Exception):
