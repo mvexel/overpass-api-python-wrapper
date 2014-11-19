@@ -8,3 +8,5 @@ python:
 install: "python setup.py install"
 # command to run tests
 script: python test_api.py
+notifications:
+  email: false
