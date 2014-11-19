@@ -107,8 +107,8 @@ class API(object):
             "tags": elem.get("tags"),
             "nodes": elem.get("nodes")}
             for elem in elements if elem["type"] == "way"]
-        print nodes
-        print ways
+        print(nodes)
+        print(ways)
 
 
 class OverpassException(Exception):
