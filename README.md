@@ -2,6 +2,8 @@
 
 This is a thin wrapper around the OpenStreetMap [Overpass API](http://wiki.openstreetmap.org/wiki/Overpass_API).
 
+![travis](https://travis-ci.org/mvexel/overpass-api-python-wrapper.svg)
+
 ## Install it
 
 ```bash
