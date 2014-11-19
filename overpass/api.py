@@ -1,7 +1,7 @@
 import sys
 import requests
 import json
-from shapely.geometry import mapping, Point
+from shapely.geometry import Point
 
 
 class API(object):
@@ -44,7 +44,7 @@ class API(object):
             response = json.loads(self._GetFromOverpass(
                 self._ConstructQLQuery(query)))
         except OverpassException as oe:
-            print oe
+            print(oe)
             sys.exit(1)
 
         if "elements" not in response or len(response["elements"]) == 0:
@@ -67,7 +67,7 @@ class API(object):
 
         complete_query = self._QUERY_TEMPLATE.format(responseformat=self.responseformat, query=raw_query)
         if self.debug:
-            print complete_query
+            print(complete_query)
         return complete_query
 
     def _GetFromOverpass(self, query):
@@ -79,7 +79,7 @@ class API(object):
         try:
             r = requests.get(self.endpoint, params=payload, timeout=self.timeout)
         except requests.exceptions.Timeout:
-            raise OverpassException(408, 
+            raise OverpassException(408,
                 'Query timed out. API instance is set to time out in {timeout} seconds. '
                 'Try passing in a higher value when instantiating this API:'
                 'api = Overpass.API(timeout=60)'.format(timeout=self.timeout))
@@ -107,12 +107,14 @@ class API(object):
             "tags": elem.get("tags"),
             "nodes": elem.get("nodes")}
             for elem in elements if elem["type"] == "way"]
-        print nodes
-        print ways
+        print(nodes)
+        print(ways)
+
 
 class OverpassException(Exception):
     def __init__(self, status_code, message):
         self.status_code = status_code
         self.message = message
+
     def __str__(self):
         return json.dumps({'status': self.status_code, 'message': self.message})
