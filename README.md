@@ -12,6 +12,17 @@ $ python setup.py install
 
 The module is not on PyPi yet.
 
+If you get an error similar to
+
+```
+OSError: Could not find library geos_c or load any of its variants ['libgeos_c.so.1', 'libgeos_c.so']
+```
+
+you can install the required libraries on linux with
+```
+$ sudo apt-get install libgeos-c1 libgeos-3.4.2
+```
+
 ## Use it
 
 ```python
@@ -53,13 +64,9 @@ api = overpass.API(timeout=600)
 
 Setting this to `True` will get you debug output.
 
-#### `bbox`
-
-This takes a list in the form `[minlon, minlat, maxlon, maxlat]`, the default is the world: `[-180.0, -90.0, 180.0, 90.0]`
-
 ### Simple queries
 
-In addition to just send you query and parse it, the wrapper provides shortcuts for often used map queries. To use them, just pass them like to normal query to the API.
+In addition to just send your query and parse the result, the wrapper provides shortcuts for often used map queries. To use them, just pass them like to normal query to the API.
 
 #### MapQuery
 
