@@ -53,10 +53,6 @@ api = overpass.API(timeout=600)
 
 Setting this to `True` will get you debug output.
 
-#### `bbox`
-
-This takes a list in the form `[minlon, minlat, maxlon, maxlat]`, the default is the world: `[-180.0, -90.0, 180.0, 90.0]`
-
 ### Simple queries
 
 In addition to just send you query and parse it, the wrapper provides shortcuts for often used map queries. To use them, just pass them like to normal query to the API.
