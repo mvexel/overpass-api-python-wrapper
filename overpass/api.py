@@ -11,16 +11,14 @@ class API(object):
     _endpoint = "http://overpass-api.de/api/interpreter"
     _responseformat = "json"
     _debug = False
-    _bbox = None
 
-    _QUERY_TEMPLATE = "[out:{responseformat}][timeout:{timeout}];{query}{bbox};out body;"
+    _QUERY_TEMPLATE = "[out:{responseformat}][timeout:{timeout}];{query};out body;"
 
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
         self.timeout = kwargs.get("timeout", self._timeout)
         self.responseformat = kwargs.get("responseformat", self._responseformat)
         self.debug = kwargs.get("debug", self._debug)
-        self.bbox = kwargs.get("bbox", self._bbox)
         self._status = None
 
         if self.debug:
@@ -67,7 +65,6 @@ class API(object):
         complete_query = self._QUERY_TEMPLATE.format(
             responseformat=self.responseformat,
             timeout=self.timeout,
-            bbox=self._bbox_str(),
             query=raw_query)
         if self.debug:
             print(complete_query)
@@ -113,10 +110,6 @@ class API(object):
             for elem in elements if elem["type"] == "way"]
         print(nodes)
         print(ways)
-
-    def _bbox_str(self):
-        """Returns the bounding box as an Overpass-compatible string"""
-        return ('({}, {}, {}, {})'.format(*self.bbox) if self.bbox else '')
 
 
 class OverpassException(Exception):
