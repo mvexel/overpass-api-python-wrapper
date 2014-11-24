@@ -1,4 +1,8 @@
+*~
+*.swp
+.DS_Store
 *.pyc
-build
-dist
-overpass.egg-info
+
+/build/
+/dist/
+/*.egg-info
