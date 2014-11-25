@@ -1,7 +1,8 @@
 import sys
 import requests
 import json
-from shapely.geometry import Point
+import geojson
+
 
 class API(object):
     """A simple Python wrapper for the OpenStreetMap Overpass API"""
@@ -69,10 +70,15 @@ class API(object):
         if not raw_query.endswith(";"):
             raw_query += ";"
 
-        complete_query = self._QUERY_TEMPLATE.format(
+        if asGeoJSON:
+            template = self._GEOJSON_QUERY_TEMPLATE
+        else:
+            template = self._QUERY_TEMPLATE
+
+        complete_query = template.format(
             responseformat=self.responseformat,
-            query=raw_query
-        )
+            query=raw_query)
+
         if self.debug:
             print(complete_query)
         return complete_query
@@ -116,9 +122,9 @@ class API(object):
         features = []
         for elem in elements:
             elem_type = elem["type"]
-            if elem["type"] == "node":
-                geometry=geojson.Point((elem["lon"], elem["lat"]))
-            elif elem["type"] == "way":
+            if elem_type == "node":
+                geometry = geojson.Point((elem["lon"], elem["lat"]))
+            elif elem_type == "way":
                 points = []
                 for coords in elem["geometry"]:
                     points.append((coords["lon"], coords["lat"]))
@@ -127,12 +133,13 @@ class API(object):
                 continue
 
             feature = geojson.Feature(
-                        id=elem["id"],
-                        geometry=geometry,
-                        properties=elem.get("tags"))
+                id=elem["id"],
+                geometry=geometry,
+                properties=elem.get("tags"))
             features.append(feature)
 
         return geojson.FeatureCollection(features)
+
 
 class OverpassException(Exception):
     def __init__(self, status_code, message):
