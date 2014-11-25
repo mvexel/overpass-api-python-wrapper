@@ -1,7 +1,8 @@
 import geojson
 import overpass
 
-class TestAPI:
+
+class TestAPI(object):
 
     def test_initialize_api(self):
         api = overpass.API()
