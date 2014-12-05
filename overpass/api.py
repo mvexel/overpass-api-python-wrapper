@@ -1,4 +1,3 @@
-import sys
 import requests
 import json
 import geojson
@@ -37,17 +36,21 @@ class API(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
-    def Get(self, query, asGeoJSON=False):
-        """Pass in an Overpass query in Overpass QL"""
+    def get(self, query, asGeoJSON=False):
+        """Pass a literal Overpass QL query directly to the Overpass API"""
+        return self.raw_get(self._ConstructQLQuery(
+            query,
+            asGeoJSON=asGeoJSON), asGeoJSON=asGeoJSON)
+
+    def raw_get(self, raw_query, asGeoJSON=False):
+        """Pass in an abbreviated Overpass query in Overpass QL"""
 
         response = ""
 
         try:
-            response = json.loads(self._GetFromOverpass(
-                self._ConstructQLQuery(query, asGeoJSON=asGeoJSON)))
-        except OverpassException as oe:
-            print(oe)
-            sys.exit(1)
+            response = json.loads(self._GetFromOverpass(raw_query))
+        except OverpassException:
+            raise
 
         if "elements" not in response or len(response["elements"]) == 0:
             raise OverpassException(
@@ -61,11 +64,8 @@ class API(object):
         # construct geojson
         return self._asGeoJSON(response["elements"])
 
-    def Search(self, feature_type, regex=False):
-        """Search for something."""
-        pass
-
     def _ConstructQLQuery(self, userquery, asGeoJSON=False):
+        """Constructs a full Overpass QL query from a stub"""
         raw_query = str(userquery)
         if not raw_query.endswith(";"):
             raw_query += ";"
@@ -117,7 +117,7 @@ class API(object):
             return r.text
 
     def _asGeoJSON(self, elements):
-        #print 'DEB _asGeoJson elements:', elements
+        """Converts elements from raw response to geoJSON"""
 
         features = []
         for elem in elements:
@@ -142,6 +142,7 @@ class API(object):
 
 
 class OverpassException(Exception):
+    """Base API exception class"""
     def __init__(self, status_code, message):
         self.status_code = status_code
         self.message = message
