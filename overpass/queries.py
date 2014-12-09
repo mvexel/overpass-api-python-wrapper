@@ -29,8 +29,7 @@ class MapQuery(object):
 
 class WayQuery(object):
 
-    """Query to retrieve a set of ways and their dependent nodes satisfying
-    the input parameters"""
+    """Query to retrieve a set of ways and their dependent nodes satisfying the input parameters"""
 
     _QUERY_TEMPLATE = "(way{query_parameters});(._;>;);"
 
