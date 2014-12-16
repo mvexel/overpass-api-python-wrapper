@@ -1,7 +1,8 @@
-import sys
 import requests
 import json
 import geojson
+
+from .errors import OverpassSyntaxError, TimeoutError, MultipleRequestsError, ServerLoadError, UnknownOverpassError
 
 
 class API(object):
@@ -40,20 +41,12 @@ class API(object):
     def Get(self, query, asGeoJSON=False):
         """Pass in an Overpass query in Overpass QL"""
 
-        response = ""
+        full_query = self._ConstructQLQuery(query, asGeoJSON=asGeoJSON)
+        raw_response = self._GetFromOverpass(full_query)
+        response = json.loads(raw_response)
 
-        try:
-            response = json.loads(self._GetFromOverpass(
-                self._ConstructQLQuery(query, asGeoJSON=asGeoJSON)))
-        except OverpassException as oe:
-            print(oe)
-            sys.exit(1)
-
-        if "elements" not in response or len(response["elements"]) == 0:
-            raise OverpassException(
-                204,
-                'No OSM features satisfied your query'
-            )
+        if "elements" not in response:
+            raise UnknownOverpassError("Received an invalid answer from Overpass.")
 
         if not asGeoJSON:
             return response
@@ -63,7 +56,7 @@ class API(object):
 
     def Search(self, feature_type, regex=False):
         """Search for something."""
-        pass
+        raise NotImplementedError()
 
     def _ConstructQLQuery(self, userquery, asGeoJSON=False):
         raw_query = str(userquery)
@@ -96,23 +89,18 @@ class API(object):
                 timeout=self.timeout
             )
         except requests.exceptions.Timeout:
-            raise OverpassException(
-                408,
-                'Query timed out. API instance is set to time out in {timeout}'
-                ' seconds. Try passing in a higher value when instantiating'
-                ' this API: api = Overpass.API(timeout=60)'.format(
-                    timeout=self.timeout
-                )
-            )
+            raise TimeoutError(self._timeout)
 
         self._status = r.status_code
 
         if self._status != 200:
             if self._status == 400:
-                message = 'Query syntax error'
-            else:
-                message = 'Error from Overpass API'
-            raise OverpassException(self._status, message)
+                raise OverpassSyntaxError(query)
+            elif self._status == 429:
+                raise MultipleRequestsError()
+            elif self._status == 504:
+                raise ServerLoadError(self._timeout)
+            raise UnknownOverpassError("The request returned status code {code}".format(code = self._status))
         else:
             return r.text
 
@@ -139,15 +127,3 @@ class API(object):
             features.append(feature)
 
         return geojson.FeatureCollection(features)
-
-
-class OverpassException(Exception):
-    def __init__(self, status_code, message):
-        self.status_code = status_code
-        self.message = message
-
-    def __str__(self):
-        return json.dumps({
-            'status': self.status_code,
-            'message': self.message
-        })
