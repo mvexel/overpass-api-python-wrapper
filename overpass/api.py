@@ -2,7 +2,8 @@ import requests
 import json
 import geojson
 
-from .errors import OverpassSyntaxError, TimeoutError, MultipleRequestsError, ServerLoadError, UnknownOverpassError
+from .errors import OverpassSyntaxError, TimeoutError, MultipleRequestsError
+from .errors import ServerLoadError, UnknownOverpassError
 
 
 class API(object):
@@ -100,7 +101,11 @@ class API(object):
                 raise MultipleRequestsError()
             elif self._status == 504:
                 raise ServerLoadError(self._timeout)
-            raise UnknownOverpassError("The request returned status code {code}".format(code = self._status))
+            raise UnknownOverpassError(
+                "The request returned status code {code}".format(
+                    code=self._status
+                    )
+                )
         else:
             return r.text
 
