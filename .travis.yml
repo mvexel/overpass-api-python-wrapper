@@ -7,6 +7,6 @@ python:
   - "3.4"
 install: "python setup.py install"
 # command to run tests
-script: python test_api.py
+script: py.test
 notifications:
   email: false
