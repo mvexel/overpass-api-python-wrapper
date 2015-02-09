@@ -5,7 +5,8 @@ python:
   - "3.2"
   - "3.3"
   - "3.4"
-install: "python setup.py install"
+install:
+  - "pip install ."
 # command to run tests
 script: py.test
 notifications:
