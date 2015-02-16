@@ -7,7 +7,7 @@ This is a thin wrapper around the OpenStreetMap [Overpass API](http://wiki.opens
 ## Install it
 
 ```bash
-$ python setup.py install
+$ pip install git+https://github.com/mvexel/overpass-api-python-wrapper.git#egg=overpass-api-python-wrapper
 ```
 
 The module is not on PyPi yet.
