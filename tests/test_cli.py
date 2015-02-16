@@ -10,7 +10,7 @@ def test_cli():
     runner = CliRunner()
     with runner.isolated_filesystem():
         result = runner.invoke(cli,
-            ['node(area:3602758138)[amenity=cafe]', 'out.json']
+            ['--timeout', 30, 'node(area:3602758138)[amenity=cafe]', 'out.json']
             )
         assert result.exit_code == 0
         assert exists('out.json')
