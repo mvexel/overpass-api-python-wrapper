@@ -32,6 +32,17 @@ You can use the overpass Python library or our command line interface.
 The command line inteface is not fully functional yet, but you can use it to execute
 queries and save the result in a GeoJSON file.
 
+```bash
+Usage: overpass [OPTIONS] QUERY OUTPUT_FILE
+
+  Run the query and save the result in a output_file
+
+Options:
+  --timeout INTEGER  Timeout in seconds
+  --endpoint TEXT    URL of your prefered API
+  --help
+```
+
 For example:
 
 ```bash
