@@ -108,16 +108,36 @@ class API(object):
     def _asGeoJSON(self, elements):
         #print 'DEB _asGeoJson elements:', elements
 
-        features = []
+        ignore_ids = set()
+        features = {}
         for elem in elements:
+
             elem_type = elem["type"]
             if elem_type == "node":
                 geometry = geojson.Point((elem["lon"], elem["lat"]))
             elif elem_type == "way":
                 points = []
-                for coords in elem["geometry"]:
-                    points.append((coords["lon"], coords["lat"]))
+                if elem.has_key("geometry"):
+                    for coords in elem["geometry"]:
+                        points.append((coords["lon"], coords["lat"]))
+                if elem.has_key("nodes"):
+                    for node_id in elem["nodes"]:
+                        if features.has_key(node_id):
+                            geom = features[node_id].geometry
+                            points.append(geom['coordinates'])
+                            # since we have "consumed" this point, do not return it
+                            ignore_ids.add(node_id)
                 geometry = geojson.LineString(points)
+            elif elem_type == "relation":
+                ways = []
+                if elem.has_key("nodes"):
+                    for node_id in elem["nodes"]:
+                        if features.has_key(node_id):
+                            geom = features[node_id].geometry
+                            ways.append(geom['coordinates'])
+                            # since we have "consumed" this way, do not return it
+                            ignore_ids.add(node_id)
+                geometry = geojson.MultiLineString(ways)
             else:
                 continue
 
@@ -125,6 +145,6 @@ class API(object):
                 id=elem["id"],
                 geometry=geometry,
                 properties=elem.get("tags"))
-            features.append(feature)
+            features[elem["id"]] = feature
 
-        return geojson.FeatureCollection(features)
+        return geojson.FeatureCollection([v for (k, v) in features.items() if not k in ignore_ids])
