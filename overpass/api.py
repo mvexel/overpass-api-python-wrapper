@@ -15,7 +15,7 @@ class API(object):
     _debug = False
 
     _QUERY_TEMPLATE = "[out:{responseformat}];{query}out body;"
-    _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out body geom;"
+    _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out body;>;out skel qt;"
 
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
@@ -88,7 +88,7 @@ class API(object):
                 data=payload,
                 timeout=self.timeout
             )
-            
+
         except requests.exceptions.Timeout:
             raise TimeoutError(self._timeout)
 
@@ -108,43 +108,61 @@ class API(object):
     def _asGeoJSON(self, elements):
         #print 'DEB _asGeoJson elements:', elements
 
-        ignore_ids = set()
-        features = {}
-        for elem in elements:
-
-            elem_type = elem["type"]
-            if elem_type == "node":
-                geometry = geojson.Point((elem["lon"], elem["lat"]))
-            elif elem_type == "way":
-                points = []
-                if elem.has_key("geometry"):
-                    for coords in elem["geometry"]:
-                        points.append((coords["lon"], coords["lat"]))
-                if elem.has_key("nodes"):
-                    for node_id in elem["nodes"]:
-                        if features.has_key(node_id):
-                            geom = features[node_id].geometry
-                            points.append(geom['coordinates'])
-                            # since we have "consumed" this point, do not return it
-                            ignore_ids.add(node_id)
-                geometry = geojson.LineString(points)
-            elif elem_type == "relation":
-                ways = []
-                if elem.has_key("nodes"):
-                    for node_id in elem["nodes"]:
-                        if features.has_key(node_id):
-                            geom = features[node_id].geometry
-                            ways.append(geom['coordinates'])
-                            # since we have "consumed" this way, do not return it
-                            ignore_ids.add(node_id)
-                geometry = geojson.MultiLineString(ways)
-            else:
-                continue
-
-            feature = geojson.Feature(
+        def makeFeature(elem, geometry):
+            return geojson.Feature(
                 id=elem["id"],
                 geometry=geometry,
                 properties=elem.get("tags"))
-            features[elem["id"]] = feature
+
+        ignore_ids = set()
+        features = {}
+
+        def collectFeatures():
+            # 1. Collect all points
+            for elem in elements:
+                elem_type = elem["type"]
+                if elem_type == "node":
+                    yield makeFeature(elem, geojson.Point((elem["lon"], elem["lat"])))
+
+            # 2. Collect all ways
+            for elem in elements:
+                elem_type = elem["type"]
+                if elem_type == "way":
+                    points = []
+                    if elem.has_key("geometry"):
+                        for coords in elem["geometry"]:
+                            points.append((coords["lon"], coords["lat"]))
+                    if elem.has_key("nodes"):
+                        for node_id in elem["nodes"]:
+                            if features.has_key(node_id):
+                                geom = features[node_id].geometry
+                                points.append(geom['coordinates'])
+                                # since we have "consumed" this point, do not return it
+                                ignore_ids.add(node_id)
+                    yield makeFeature(elem, geojson.LineString(points))
+
+            # 3. Collect all relations
+            for elem in elements:
+                elem_type = elem["type"]
+                if elem_type == "relation":
+                    ways = []
+
+                    if elem.has_key("members"):
+                        for member in elem["members"]:
+                            if member["type"] == "way":
+                                way_points = []
+                                if member.has_key("ref") and features.has_key(member["ref"]):
+                                    way_id = member["ref"]
+                                    ways.append(features[way_id].geometry["coordinates"])
+                                    # since we have "consumed" this point, do not return it
+                                    ignore_ids.add(way_id)
+                                if member.has_key("geometry"):
+                                    for coords in member["geometry"]:
+                                        way_points.append((coords["lon"], coords["lat"]))
+                                    ways.append(geojson.LineString(way_points))
+                    yield makeFeature(elem, geojson.MultiLineString(ways))
+
+        for feature in collectFeatures():
+            features[feature.id] = feature
 
         return geojson.FeatureCollection([v for (k, v) in features.items() if not k in ignore_ids])
