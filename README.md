@@ -7,7 +7,7 @@ This is a thin wrapper around the OpenStreetMap [Overpass API](http://wiki.opens
 ## Install it
 
 ```bash
-$ python setup.py install
+$ pip install git+https://github.com/mvexel/overpass-api-python-wrapper.git#egg=overpass-api-python-wrapper
 ```
 
 The module is not on PyPi yet.
@@ -25,6 +25,32 @@ $ sudo apt-get install libgeos-c1 libgeos-3.4.2
 
 ## Use it
 
+You can use the overpass Python library or our command line interface.
+
+### Command line interface
+
+The command line inteface is not fully functional yet, but you can use it to execute
+queries and save the result in a GeoJSON file.
+
+```bash
+Usage: overpass [OPTIONS] QUERY OUTPUT_FILE
+
+  Run the query and save the result in a output_file
+
+Options:
+  --timeout INTEGER  Timeout in seconds
+  --endpoint TEXT    URL of your prefered API
+  --help
+```
+
+For example:
+
+```bash
+overpass 'node(area:3602758138)[amenity=cafe]' brasilia-cafe.geojson
+```
+
+### Python Library
+
 ```python
 >>> import overpass
 >>> api = overpass.API()
@@ -40,11 +66,11 @@ You will get your result as a dictionary, which (for now) represents the JSON ou
 [(u'Salt Lake City', 150935219), (u'Salt Lake City', 585370637), (u'Salt Lake City', 1615721573)]
 ```
 
-### Parameters
+#### Parameters
 
 The API takes a few parameters:
 
-#### `endpoint`
+##### `endpoint`
 
 The default endpoint is `http://overpass-api.de/api/interpreter` but you can pass in the rambler instance (`http://overpass.osm.rambler.ru/cgi/interpreter`) or your own:
 
@@ -52,7 +78,7 @@ The default endpoint is `http://overpass-api.de/api/interpreter` but you can pas
 api = overpass.API(endpoint=http://overpass.myserver/interpreter)
 ```
 
-#### `timeout`
+##### `timeout`
 
 The default timeout is 25 seconds, but you can set it to whatever you want.
 
@@ -60,15 +86,15 @@ The default timeout is 25 seconds, but you can set it to whatever you want.
 api = overpass.API(timeout=600)
 ```
 
-#### `debug`
+##### `debug`
 
 Setting this to `True` will get you debug output.
 
-### Simple queries
+#### Simple queries
 
 In addition to just send your query and parse the result, the wrapper provides shortcuts for often used map queries. To use them, just pass them like to normal query to the API.
 
-#### MapQuery
+##### MapQuery
 
 This is a shorthand for a [complete ways and relations](http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide#Completed_ways_and_relations) query in a bounding box (the 'map call').
 You just pass the bounding box to the constructor:
@@ -78,7 +104,7 @@ You just pass the bounding box to the constructor:
 >>> response = api.Get(map_query)
 ```
 
-#### WayQuery
+##### WayQuery
 
 This is shorthand for getting a set of ways and their child nodes that satisfy certain criteria.
 Pass the criteria as a Overpass QL stub to the constructor:
@@ -103,4 +129,3 @@ _There are almost no tests yet._
 ## Fork it
 
 [Yes please](https://github.com/mvexel/overpass-api-python-wrapper/fork). [Help wanted](https://github.com/mvexel/overpass-api-python-wrapper/labels/help%20wanted).
-
