@@ -6,8 +6,9 @@ class OverpassError(Exception):
 class OverpassSyntaxError(OverpassError, ValueError):
     """The request contains a syntax error."""
 
-    def __init__(self, request):
+    def __init__(self, request, msg):
         self.request = request
+        super(OverpassSyntaxError, self).__init__(msg)
 
 
 class TimeoutError(OverpassError):

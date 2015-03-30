@@ -1,8 +1,11 @@
-import requests
 import json
-import geojson
+import re
 
-from .errors import OverpassSyntaxError, TimeoutError, MultipleRequestsError, ServerLoadError, UnknownOverpassError
+import geojson
+import requests
+
+from .errors import (MultipleRequestsError, OverpassSyntaxError,
+                     ServerLoadError, TimeoutError, UnknownOverpassError)
 
 
 class API(object):
@@ -96,7 +99,8 @@ class API(object):
 
         if self._status != 200:
             if self._status == 400:
-                raise OverpassSyntaxError(query)
+                error_msgs = list(re.findall("line [0-9]+:[^<]+", r.content))
+                raise OverpassSyntaxError(query, "\n".join(error_msgs))
             elif self._status == 429:
                 raise MultipleRequestsError()
             elif self._status == 504:
