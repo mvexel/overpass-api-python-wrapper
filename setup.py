@@ -1,10 +1,16 @@
-from setuptools import setup
+from codecs import open as codecs_open
+from setuptools import setup, find_packages
+
+# Get the long description from the relevant file
+with codecs_open('README.rst', encoding='utf-8') as f:
+    long_description = f.read()
 
 setup(
     name='overpass',
     packages=['overpass'],
-    version='0.2.3',
+    version='0.2.4',
     description='Python wrapper for the OpenStreetMap Overpass API',
+    long_description=long_description,
     author='Martijn van Exel',
     author_email='m@rtijn.org',
     mantainer='Wille Marcel',
