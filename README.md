@@ -7,10 +7,8 @@ This is a thin wrapper around the OpenStreetMap [Overpass API](http://wiki.opens
 ## Install it
 
 ```bash
-$ pip install git+https://github.com/mvexel/overpass-api-python-wrapper.git#egg=overpass-api-python-wrapper
+$ pip install overpass
 ```
-
-The module is not on PyPi yet.
 
 If you get an error similar to
 
@@ -19,23 +17,33 @@ OSError: Could not find library geos_c or load any of its variants ['libgeos_c.s
 ```
 
 you can install the required libraries on linux with
-```
+```bash
 $ sudo apt-get install libgeos-c1 libgeos-3.4.2
 ```
 
 ## Use it
 
-You can use the overpass Python library or our command line interface.
+You can use the overpass command line interface or use it as a Python library.
 
 ### Command line interface
 
-The command line inteface is not fully functional yet, but you can use it to execute
+You can use the CLI to execute
 queries and save the result in a GeoJSON file.
+
+    Usage: overpass [OPTIONS] QUERY OUTPUT_FILE
+
+    Run query and save the result in output_file
+
+    Options:
+    --timeout INTEGER  Timeout in seconds
+    --endpoint TEXT    URL of your prefered API
+    --help             Show this message and exit.
+
 
 For example:
 
 ```bash
-overpass 'node(area:3602758138)[amenity=cafe]' brasilia-cafe.geojson
+overpass --timeout 50 'node(area:3602758138)[amenity=cafe]' brasilia-cafe.geojson
 ```
 
 ### Python Library
@@ -112,8 +120,6 @@ Create a [new issue](https://github.com/mvexel/overpass-api-python-wrapper/issue
 ```
 py.test
 ```
-
-_There are almost no tests yet._
 
 ## Fork it
 
