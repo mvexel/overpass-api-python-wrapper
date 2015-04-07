@@ -8,14 +8,12 @@ with codecs_open('README.rst', encoding='utf-8') as f:
 setup(
     name='overpass',
     packages=['overpass'],
-    version='0.2.4',
+    version='0.2.5',
     description='Python wrapper for the OpenStreetMap Overpass API',
     long_description=long_description,
     author='Martijn van Exel',
     author_email='m@rtijn.org',
-    mantainer='Wille Marcel',
-    mantainer_email='wille@wille.blog.br',
-    url='https://github.com/willemarcel/overpass-api-python-wrapper',
+    url='https://github.com/mvexel/overpass-api-python-wrapper',
     license='Apache',
     keywords=['openstreetmap', 'overpass', 'wrapper'],
     classifiers=[
