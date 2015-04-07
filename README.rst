@@ -9,7 +9,7 @@ API <http://wiki.openstreetmap.org/wiki/Overpass_API>`__.
 
 
 Install it
-----------
+==========
 
 .. code:: bash
 
@@ -28,13 +28,13 @@ you can install the required libraries on linux with
     $ sudo apt-get install libgeos-c1 libgeos-3.4.2
 
 Use it
-------
+======
 
 You can use the overpass command line interface or use it as a Python
 library.
 
 Command line interface
-~~~~~~~~~~~~~~~~~~~~~~
+---------------------
 
 You can use the CLI to execute queries and save the result in a GeoJSON
 file.
@@ -57,7 +57,7 @@ For example:
     overpass --timeout 50 'node(area:3602758138)[amenity=cafe]' brasilia-cafe.geojson
 
 Python Library
-~~~~~~~~~~~~~~
+-------------
 
 .. code:: python
 
@@ -79,12 +79,12 @@ could do this for example:
     [(u'Salt Lake City', 150935219), (u'Salt Lake City', 585370637), (u'Salt Lake City', 1615721573)]
 
 Parameters
-^^^^^^^^^^
+~~~~~~~~~~
 
 The API takes a few parameters:
 
 ``endpoint``
-''''''''''''
+^^^^^^^^^^
 
 The default endpoint is ``http://overpass-api.de/api/interpreter`` but
 you can pass in the rambler instance
@@ -95,7 +95,7 @@ you can pass in the rambler instance
     api = overpass.API(endpoint=http://overpass.myserver/interpreter)
 
 ``timeout``
-'''''''''''
+^^^^^^^^^^
 
 The default timeout is 25 seconds, but you can set it to whatever you
 want.
@@ -105,19 +105,19 @@ want.
     api = overpass.API(timeout=600)
 
 ``debug``
-'''''''''
+^^^^^^^^^^
 
 Setting this to ``True`` will get you debug output.
 
 Simple queries
-^^^^^^^^^^^^^^
+~~~~~~~~~~~
 
 In addition to just send your query and parse the result, the wrapper
 provides shortcuts for often used map queries. To use them, just pass
 them like to normal query to the API.
 
 MapQuery
-''''''''
+^^^^^^^^
 
 This is a shorthand for a `complete ways and
 relations <http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide#Completed_ways_and_relations>`__
@@ -130,7 +130,7 @@ to the constructor:
     >>> response = api.Get(map_query)
 
 WayQuery
-''''''''
+^^^^^^^^
 
 This is shorthand for getting a set of ways and their child nodes that
 satisfy certain criteria. Pass the criteria as a Overpass QL stub to the
@@ -142,7 +142,7 @@ constructor:
     >>> response = api.Get(way_query)
 
 Need help? Want feature?
-------------------------
+=======================
 
 Create a `new
 issue <https://github.com/mvexel/overpass-api-python-wrapper/issues>`__.
