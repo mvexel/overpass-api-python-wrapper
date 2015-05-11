@@ -135,6 +135,8 @@ class API(object):
             # 2. Collect all ways
             for elem in elements:
                 elem_type = elem["type"]
+                osm_geom_type = elem.get("tags", {}).get("type", "")
+
                 if elem_type == "way":
                     points = []
                     if elem.has_key("geometry"):
@@ -147,8 +149,8 @@ class API(object):
                                 points.append(geom['coordinates'])
                                 # since we have "consumed" this point, do not return it
                                 ignore_ids.add(node_id)
-                    if points[0] == points[-1]:
-                        yield makeFeature(elem, geojson.Polygon(points))
+                    if points[0] == points[-1] or osm_geom_type == 'polygon':
+                        yield makeFeature(elem, geojson.Polygon([points]))
                     else:
                         yield makeFeature(elem, geojson.LineString(points))
 
@@ -158,28 +160,41 @@ class API(object):
                 osm_geom_type = elem.get("tags", {}).get("type", "")
 
                 if elem_type == "relation":
-                    ways = []
+                    if osm_geom_type == "multipolygon":
+                        ways = []
 
-                    if elem.has_key("members"):
-                        for member in elem["members"]:
-                            if member["type"] == "way":
-                                way_points = []
-                                if member.has_key("ref") and features.has_key(member["ref"]):
-                                    way_id = member["ref"]
-                                    ways.append(features[way_id].geometry)
-                                    # since we have "consumed" this point, do not return it
-                                    ignore_ids.add(way_id)
-                                if member.has_key("geometry"):
-                                    for coords in member["geometry"]:
-                                        way_points.append((coords["lon"], coords["lat"]))
-
-                                    if way_points[0] == way_points[-1] or osm_geom_type == 'polygon':
-                                        ways.append(geojson.Polygon(way_points))
-                                    else:
-                                        ways.append(geojson.LineString(way_points))
-                    if all([type(w) == geojson.geometry.Polygon for w in ways]) or osm_geom_type == "multipolygon":
+                        if elem.has_key("members"):
+                            for member in elem["members"]:
+                                if member["type"] == "way":
+                                    way_points = []
+                                    if member.has_key("ref") and features.has_key(member["ref"]):
+                                        way_id = member["ref"]
+                                        if type(features[way_id].geometry) == geojson.geometry.Polygon:
+                                            ways.append(features[way_id].geometry)
+                                        # since we have "consumed" this way, do not return it
+                                        ignore_ids.add(way_id)
+                                    if member.has_key("geometry"):
+                                        for coords in member["geometry"]:
+                                            way_points.append((coords["lon"], coords["lat"]))
+                                        ways.append(geojson.Polygon([way_points]))
                         yield makeFeature(elem, geojson.MultiPolygon([way_geom["coordinates"] for way_geom in ways]))
                     else:
+                        ways = []
+
+                        if elem.has_key("members"):
+                            for member in elem["members"]:
+                                if member["type"] == "way":
+                                    way_points = []
+                                    if member.has_key("ref") and features.has_key(member["ref"]):
+                                        way_id = member["ref"]
+                                        if type(features[way_id].geometry) == geojson.geometry.LineString:
+                                            ways.append(features[way_id].geometry)
+                                        # since we have "consumed" this way, do not return it
+                                        ignore_ids.add(way_id)
+                                    if member.has_key("geometry"):
+                                        for coords in member["geometry"]:
+                                            way_points.append((coords["lon"], coords["lat"]))
+                                        ways.append(geojson.LineString(way_points))
                         yield makeFeature(elem, geojson.MultiLineString([way_geom["coordinates"] for way_geom in ways]))
 
         for feature in collectFeatures():
