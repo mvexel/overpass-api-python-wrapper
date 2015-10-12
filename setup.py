@@ -8,7 +8,7 @@ with codecs_open('README.rst', encoding='utf-8') as f:
 setup(
     name='overpass',
     packages=['overpass'],
-    version='0.3',
+    version='0.3.1',
     description='Python wrapper for the OpenStreetMap Overpass API',
     long_description=long_description,
     author='Martijn van Exel',

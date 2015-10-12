@@ -25,8 +25,8 @@ def cli(timeout, endpoint, format, query, output_file):
         print('File saved at %s.' % output_file)
     elif format == 'osm':
         result = api.Get(query, asGeoJSON=False)
-        with open(output_file, 'w') as f:
-            f.write(result)
+        with open(output_file, 'wb') as f:
+            f.write(result.encode('utf-8'))
             f.close()
         print('File saved at %s.' % output_file)
     else:
