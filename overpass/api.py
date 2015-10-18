@@ -104,6 +104,7 @@ class API(object):
                 raise ServerLoadError(self._timeout)
             raise UnknownOverpassError("The request returned status code {code}".format(code = self._status))
         else:
+            r.encoding = 'utf-8'
             return r.text
 
     def _asGeoJSON(self, elements):
