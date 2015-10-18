@@ -86,7 +86,8 @@ class API(object):
             r = requests.post(
                 self.endpoint,
                 data=payload,
-                timeout=self.timeout
+                timeout=self.timeout,
+                headers={'Accept-Charset': 'utf-8;q=0.7,*;q=0.7'}
             )
             
         except requests.exceptions.Timeout:
