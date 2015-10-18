@@ -54,12 +54,15 @@ file.
 For example:
 
 To make a query and save the result as GeoJSON:
+
 .. code:: bash
 
     overpass --timeout 50 'node(area:3602758138)[amenity=cafe]' brasilia-cafe.geojson
 
 Or to get the result as an OSM XML file:
+
 .. code:: bash
+
     overpass --timeout 50 --format osm 'node(area:3602758138)[amenity=cafe]' brasilia-cafe.osm
 
 Python Library
