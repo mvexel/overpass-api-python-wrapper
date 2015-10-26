@@ -86,7 +86,8 @@ class API(object):
             r = requests.post(
                 self.endpoint,
                 data=payload,
-                timeout=self.timeout
+                timeout=self.timeout,
+                headers={'Accept-Charset': 'utf-8;q=0.7,*;q=0.7'}
             )
             
         except requests.exceptions.Timeout:
@@ -103,6 +104,7 @@ class API(object):
                 raise ServerLoadError(self._timeout)
             raise UnknownOverpassError("The request returned status code {code}".format(code = self._status))
         else:
+            r.encoding = 'utf-8'
             return r.text
 
     def _asGeoJSON(self, elements):
