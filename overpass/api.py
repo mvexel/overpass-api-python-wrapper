@@ -1,8 +1,11 @@
-import requests
 import json
-import geojson
+import re
 
-from .errors import OverpassSyntaxError, TimeoutError, MultipleRequestsError, ServerLoadError, UnknownOverpassError
+import geojson
+import requests
+
+from .errors import OverpassSyntaxError, TimeoutError, MultipleRequestsError
+from .errors import ServerLoadError, UnknownOverpassError
 
 
 class API(object):
@@ -15,7 +18,7 @@ class API(object):
     _debug = False
 
     _QUERY_TEMPLATE = "[out:{responseformat}];{query}out body;"
-    _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out body geom;"
+    _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out body;>;out skel qt;"
 
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
@@ -89,7 +92,7 @@ class API(object):
                 timeout=self.timeout,
                 headers={'Accept-Charset': 'utf-8;q=0.7,*;q=0.7'}
             )
-            
+
         except requests.exceptions.Timeout:
             raise TimeoutError(self._timeout)
 
@@ -97,12 +100,17 @@ class API(object):
 
         if self._status != 200:
             if self._status == 400:
-                raise OverpassSyntaxError(query)
+                error_msgs = list(re.findall("line [0-9]+:[^<]+", r.content))
+                raise OverpassSyntaxError(query, "\n".join(error_msgs))
             elif self._status == 429:
                 raise MultipleRequestsError()
             elif self._status == 504:
                 raise ServerLoadError(self._timeout)
-            raise UnknownOverpassError("The request returned status code {code}".format(code = self._status))
+            raise UnknownOverpassError(
+                "The request returned status code {code}".format(
+                    code=self._status
+                    )
+                )
         else:
             r.encoding = 'utf-8'
             return r.text
@@ -110,23 +118,88 @@ class API(object):
     def _asGeoJSON(self, elements):
         #print 'DEB _asGeoJson elements:', elements
 
-        features = []
-        for elem in elements:
-            elem_type = elem["type"]
-            if elem_type == "node":
-                geometry = geojson.Point((elem["lon"], elem["lat"]))
-            elif elem_type == "way":
-                points = []
-                for coords in elem["geometry"]:
-                    points.append((coords["lon"], coords["lat"]))
-                geometry = geojson.LineString(points)
-            else:
-                continue
-
-            feature = geojson.Feature(
+        def makeFeature(elem, geometry):
+            return geojson.Feature(
                 id=elem["id"],
                 geometry=geometry,
                 properties=elem.get("tags"))
-            features.append(feature)
 
-        return geojson.FeatureCollection(features)
+        ignore_ids = set()
+        features = {}
+
+        def collectFeatures():
+            # 1. Collect all points
+            for elem in elements:
+                elem_type = elem["type"]
+                if elem_type == "node":
+                    yield makeFeature(elem, geojson.Point((elem["lon"], elem["lat"])))
+
+            # 2. Collect all ways
+            for elem in elements:
+                elem_type = elem["type"]
+                osm_geom_type = elem.get("tags", {}).get("type", "")
+
+                if elem_type == "way":
+                    points = []
+                    if elem.has_key("geometry"):
+                        for coords in elem["geometry"]:
+                            points.append((coords["lon"], coords["lat"]))
+                    if elem.has_key("nodes"):
+                        for node_id in elem["nodes"]:
+                            if features.has_key(node_id):
+                                geom = features[node_id].geometry
+                                points.append(geom['coordinates'])
+                                # since we have "consumed" this point, do not return it
+                                ignore_ids.add(node_id)
+                    if points[0] == points[-1] or osm_geom_type == 'polygon':
+                        yield makeFeature(elem, geojson.Polygon([points]))
+                    else:
+                        yield makeFeature(elem, geojson.LineString(points))
+
+            # 3. Collect all relations
+            for elem in elements:
+                elem_type = elem["type"]
+                osm_geom_type = elem.get("tags", {}).get("type", "")
+
+                if elem_type == "relation":
+                    if osm_geom_type == "multipolygon":
+                        ways = []
+
+                        if elem.has_key("members"):
+                            for member in elem["members"]:
+                                if member["type"] == "way":
+                                    way_points = []
+                                    if member.has_key("ref") and features.has_key(member["ref"]):
+                                        way_id = member["ref"]
+                                        if type(features[way_id].geometry) == geojson.geometry.Polygon:
+                                            ways.append(features[way_id].geometry)
+                                        # since we have "consumed" this way, do not return it
+                                        ignore_ids.add(way_id)
+                                    if member.has_key("geometry"):
+                                        for coords in member["geometry"]:
+                                            way_points.append((coords["lon"], coords["lat"]))
+                                        ways.append(geojson.Polygon([way_points]))
+                        yield makeFeature(elem, geojson.MultiPolygon([way_geom["coordinates"] for way_geom in ways]))
+                    else:
+                        ways = []
+
+                        if elem.has_key("members"):
+                            for member in elem["members"]:
+                                if member["type"] == "way":
+                                    way_points = []
+                                    if member.has_key("ref") and features.has_key(member["ref"]):
+                                        way_id = member["ref"]
+                                        if type(features[way_id].geometry) == geojson.geometry.LineString:
+                                            ways.append(features[way_id].geometry)
+                                        # since we have "consumed" this way, do not return it
+                                        ignore_ids.add(way_id)
+                                    if member.has_key("geometry"):
+                                        for coords in member["geometry"]:
+                                            way_points.append((coords["lon"], coords["lat"]))
+                                        ways.append(geojson.LineString(way_points))
+                        yield makeFeature(elem, geojson.MultiLineString([way_geom["coordinates"] for way_geom in ways]))
+
+        for feature in collectFeatures():
+            features[feature.id] = feature
+
+        return geojson.FeatureCollection([v for (k, v) in features.items() if not k in ignore_ids])

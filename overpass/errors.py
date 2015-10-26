@@ -1,13 +1,15 @@
 class OverpassError(Exception):
-    """An error during your request occurred. Super class for all Overpass api errors."""
+    """An error during your request occurred.
+    Super class for all Overpass api errors."""
     pass
 
 
 class OverpassSyntaxError(OverpassError, ValueError):
     """The request contains a syntax error."""
 
-    def __init__(self, request):
+    def __init__(self, request, msg):
         self.request = request
+        super(OverpassSyntaxError, self).__init__(msg)
 
 
 class TimeoutError(OverpassError):
@@ -23,8 +25,8 @@ class MultipleRequestsError(OverpassError):
 
 
 class ServerLoadError(OverpassError):
-    """The Overpass server is currently under load and declined the request. Try again later or retry with reduced
-    timeout value."""
+    """The Overpass server is currently under load and declined the request.
+    Try again later or retry with reduced timeout value."""
 
     def __init__(self, timeout):
         self.timeout = timeout
