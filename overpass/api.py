@@ -2,7 +2,8 @@ import requests
 import json
 import geojson
 
-from .errors import OverpassSyntaxError, TimeoutError, MultipleRequestsError, ServerLoadError, UnknownOverpassError
+from .errors import OverpassSyntaxError, TimeoutError, MultipleRequestsError
+from .errors import ServerLoadError, UnknownOverpassError
 
 
 class API(object):
@@ -11,19 +12,14 @@ class API(object):
     # defaults for the API class
     _timeout = 25  # seconds
     _endpoint = "http://overpass-api.de/api/interpreter"
-    _responseformat = "json"
     _debug = False
 
-    _QUERY_TEMPLATE = "[out:{responseformat}];{query}out body;"
+    _QUERY_TEMPLATE = "{query}out body;"
     _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out body geom;"
 
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
         self.timeout = kwargs.get("timeout", self._timeout)
-        self.responseformat = kwargs.get(
-            "responseformat",
-            self._responseformat
-        )
         self.debug = kwargs.get("debug", self._debug)
         self._status = None
 
@@ -43,15 +39,14 @@ class API(object):
 
         full_query = self._ConstructQLQuery(query, asGeoJSON=asGeoJSON)
         raw_response = self._GetFromOverpass(full_query)
-        response = json.loads(raw_response)
-
-        if "elements" not in response:
-            raise UnknownOverpassError("Received an invalid answer from Overpass.")
 
         if not asGeoJSON:
-            return response
+            return raw_response
 
         # construct geojson
+        response = json.loads(raw_response)
+        if "elements" not in response:
+            raise UnknownOverpassError("Received an invalid answer from Overpass.")
         return self._asGeoJSON(response["elements"])
 
     def Search(self, feature_type, regex=False):
@@ -68,9 +63,7 @@ class API(object):
         else:
             template = self._QUERY_TEMPLATE
 
-        complete_query = template.format(
-            responseformat=self.responseformat,
-            query=raw_query)
+        complete_query = template.format(query=raw_query)
 
         if self.debug:
             print(complete_query)
@@ -102,7 +95,11 @@ class API(object):
                 raise MultipleRequestsError()
             elif self._status == 504:
                 raise ServerLoadError(self._timeout)
-            raise UnknownOverpassError("The request returned status code {code}".format(code = self._status))
+            raise UnknownOverpassError(
+                "The request returned status code {code}".format(
+                    code=self._status
+                    )
+                )
         else:
             r.encoding = 'utf-8'
             return r.text

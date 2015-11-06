@@ -2,7 +2,6 @@
 
 
 class MapQuery(object):
-
     """Query to retrieve complete ways and relations in an area."""
 
     _QUERY_TEMPLATE = "(node({south},{west},{north},{east});<;);"
@@ -28,16 +27,15 @@ class MapQuery(object):
 
 
 class WayQuery(object):
-
-    """Query to retrieve a set of ways and their dependent nodes satisfying the input parameters"""
+    """Query to retrieve a set of ways and their dependent nodes satisfying
+    the input parameters"""
 
     _QUERY_TEMPLATE = "(way{query_parameters});(._;>;);"
 
     def __init__(self, query_parameters):
-        """
-        Initialize a query for a set of ways satisfying the given parameters.
-        :param query_parameters Overpass QL query parameters
-        """
+        """Initialize a query for a set of ways satisfying the given parameters.
+        :param query_parameters Overpass QL query parameters"""
+
         self.query_parameters = query_parameters
 
     def __str__(self):
