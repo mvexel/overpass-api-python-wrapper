@@ -2,7 +2,8 @@ import requests
 import json
 import geojson
 
-from .errors import OverpassSyntaxError, TimeoutError, MultipleRequestsError, ServerLoadError, UnknownOverpassError
+from .errors import (OverpassSyntaxError, TimeoutError, MultipleRequestsError,
+                     ServerLoadError, UnknownOverpassError, ServerRuntimeError)
 
 
 class API(object):
@@ -47,6 +48,10 @@ class API(object):
 
         if "elements" not in response:
             raise UnknownOverpassError("Received an invalid answer from Overpass.")
+
+        remark = response.get('remark', None)
+        if remark is not None and remark.startswith('runtime error'):
+            raise ServerRuntimeError(remark)
 
         if not asGeoJSON:
             return response
