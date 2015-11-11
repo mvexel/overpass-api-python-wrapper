@@ -35,3 +35,10 @@ class UnknownOverpassError(OverpassError):
 
     def __init__(self, message):
         self.message = message
+
+
+class ServerRuntimeError(OverpassError):
+    """The Overpass server returned a runtime error"""
+
+    def __init__(self, message):
+        self.message = message
