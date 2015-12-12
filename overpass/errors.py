@@ -1,5 +1,6 @@
 class OverpassError(Exception):
-    """An error during your request occurred. Super class for all Overpass api errors."""
+    """An error during your request occurred.
+    Super class for all Overpass api errors."""
     pass
 
 
@@ -23,8 +24,8 @@ class MultipleRequestsError(OverpassError):
 
 
 class ServerLoadError(OverpassError):
-    """The Overpass server is currently under load and declined the request. Try again later or retry with reduced
-    timeout value."""
+    """The Overpass server is currently under load and declined the request.
+    Try again later or retry with reduced timeout value."""
 
     def __init__(self, timeout):
         self.timeout = timeout
