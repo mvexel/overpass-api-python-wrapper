@@ -6,11 +6,21 @@ This is a thin wrapper around the OpenStreetMap [Overpass API](http://wiki.opens
 
 ## Install it
 
+### From PyPi
+
+This is the recommended way.
+
+```bash
+pip install overpass
+```
+
+### From source
+
+You will get the latest and greatest, but untested version.
+
 ```bash
 $ python setup.py install
 ```
-
-The module is not on PyPi yet.
 
 If you get an error similar to
 
