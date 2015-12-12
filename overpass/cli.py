@@ -18,16 +18,16 @@ def cli(timeout, endpoint, format, query, output_file):
     """Run query and save the result in output_file"""
 
     api = overpass.API(timeout=timeout, endpoint=endpoint)
-    if format == 'geojson':
-        result = api.Get(query, asGeoJSON=True)
-        with open(output_file, 'w') as f:
+
+    if format not in api.SUPPORTED_FORMATS:
+        print("format {} not supported. Supported formats: {}".format(
+            format,
+            api.SUPPORTED_FORMATS.join(", ")))
+    result = api.Get(query, responseformat=format)
+    with open(output_file, 'w') as f:
+        if responseformat=="geojson":
             geojson.dump(result, f, indent=2, sort_keys=True)
-        print('File saved at %s.' % output_file)
-    elif format == 'osm':
-        result = api.Get(query, asGeoJSON=False)
-        with open(output_file, 'wb') as f:
+        else:
             f.write(result.encode('utf-8'))
-            f.close()
-        print('File saved at %s.' % output_file)
-    else:
-        print('The format you typed is not supported.')
+        f.close()
+    print('File saved at %s.' % output_file)

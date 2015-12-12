@@ -8,13 +8,14 @@ from .errors import (OverpassSyntaxError, TimeoutError, MultipleRequestsError,
 class API(object):
     """A simple Python wrapper for the OpenStreetMap Overpass API"""
 
+    SUPPORTED_FORMATS = ["geojson", "json", "xml"]
+
     # defaults for the API class
     _timeout = 25  # seconds
     _endpoint = "http://overpass-api.de/api/interpreter"
     _debug = False
 
-    _XML_QUERY_TEMPLATE = "[out:xml]{query}out body;"
-    _JSON_QUERY_TEMPLATE = "[out:json]{query}out body;"
+    _QUERY_TEMPLATE = "[out:{out}];{query}out body;"
     _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out body geom;"
 
     def __init__(self, *args, **kwargs):
@@ -34,19 +35,18 @@ class API(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
-    def Get(self, query, asGeoJSON=False):
+    def Get(self, query, responseformat="geojson"):
         """Pass in an Overpass query in Overpass QL"""
 
         # Construct full Overpass query
-        full_query = self._ConstructQLQuery(query, asGeoJSON=asGeoJSON)
+        full_query = self._ConstructQLQuery(query, responseformat=responseformat)
         
-        print("full query: ", full_query)
-
         # Get the response from Overpass
         raw_response = self._GetFromOverpass(full_query)
 
-        print("raw response: ", raw_response)
-
+        if responseformat == "xml":
+            return raw_response
+            
         response = json.loads(raw_response)
 
         # Check for valid answer from Overpass. A valid answer contains an 'elements' key at the root level.
@@ -58,11 +58,8 @@ class API(object):
         if overpass_remark and overpass_remark.startswith('runtime error'):
             raise ServerRuntimeError(overpass_remark)
 
-        if not asGeoJSON:
+        if responseformat is not "geojson":
             return response
-
-        # construct geojson
-        return self._asGeoJSON(response["elements"])
 
         # construct geojson
         return self._asGeoJSON(response["elements"])
@@ -71,17 +68,17 @@ class API(object):
         """Search for something."""
         raise NotImplementedError()
 
-    def _ConstructQLQuery(self, userquery, asGeoJSON=False):
+    def _ConstructQLQuery(self, userquery, responseformat):
         raw_query = str(userquery)
         if not raw_query.endswith(";"):
             raw_query += ";"
 
-        if asGeoJSON:
+        if responseformat == "geojson":
             template = self._GEOJSON_QUERY_TEMPLATE
+            complete_query = template.format(query=raw_query)
         else:
-            template = self._JSON_QUERY_TEMPLATE
-
-        complete_query = template.format(query=raw_query)
+            template = self._QUERY_TEMPLATE
+            complete_query = template.format(query=raw_query, out=responseformat)
 
         if self.debug:
             print(complete_query)
@@ -90,8 +87,6 @@ class API(object):
     def _GetFromOverpass(self, query):
         """This sends the API request to the Overpass instance and
         returns the raw result, or an error."""
-
-        print("query: ", query)
 
         payload = {"data": query}
 
@@ -125,7 +120,6 @@ class API(object):
             return r.text
 
     def _asGeoJSON(self, elements):
-        #print 'DEB _asGeoJson elements:', elements
 
         features = []
         for elem in elements:

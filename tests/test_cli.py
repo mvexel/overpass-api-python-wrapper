@@ -23,7 +23,7 @@ def test_cli_xml():
     with runner.isolated_filesystem():
         result = runner.invoke(cli, [
             '--timeout', 40,
-            '--endpoint', 'http://overpass.osm.rambler.ru/cgi/interpreter',
+            '--endpoint', 'http://overpass-api.de/api/interpreter',
             '--format', 'osm',
             'node(area:3600362504)[amenity=cafe]', 'out.osm'
             ])

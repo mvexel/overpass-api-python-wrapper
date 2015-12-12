@@ -48,7 +48,7 @@ file.
     Options:
     --timeout INTEGER  Timeout in seconds
     --endpoint TEXT    URL of your prefered API
-    --format TEXT      Format to save the data. Options are 'geojson' and 'osm'. Default format is geojson.
+    --format TEXT      Format to save the data. Options are 'geojson', 'json', 'xml'. Default format is geojson.
     --help             Show this message and exit.
 
 For example:
@@ -63,7 +63,7 @@ Or to get the result as an OSM XML file:
 
 .. code:: bash
 
-    overpass --timeout 50 --format osm 'node(area:3602758138)[amenity=cafe]' brasilia-cafe.osm
+    overpass --timeout 50 --format xml 'node(area:3602758138)[amenity=cafe]' brasilia-cafe.osm
 
 Python Library
 -------------
@@ -87,13 +87,13 @@ could do this for example:
     >>> print [(feature['tags']['name'], feature['id']) for feature in response['elements']]
     [(u'Salt Lake City', 150935219), (u'Salt Lake City', 585370637), (u'Salt Lake City', 1615721573)]
 
-If you want to get the data on the OSM XML format, pass the option 'asGeoJSON=False':
+You can specify the format of the response. By default, you will get GeoJSON using the `responseformat` parameter. Alternatives are plain JSON (`json`) and OSM XML (`xml`), as ouput directly by the Overpass API.
 
 .. code:: python
 
     >>> import overpass
     >>> api = overpass.API()
-    >>> response = api.Get('node["name"="Salt Lake City"]', asGeoJSON=False)
+    >>> response = api.Get('node["name"="Salt Lake City"]', responseformat="xml")
 
 Parameters
 ~~~~~~~~~~
