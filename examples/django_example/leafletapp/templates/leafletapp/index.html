@@ -1,0 +1,14 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+{% load leaflet_tags %}
+<head>
+	<title>Python Overpass API leaflet example</title>
+    <link rel="stylesheet" type="text/css" href="{% static 'leafletapp/leafletapp.css' %}">
+    {% leaflet_js %}
+    {% leaflet_css %}
+</head>
+<body>
+    {% leaflet_map "yourmap" %}
+</body>
+</html>
