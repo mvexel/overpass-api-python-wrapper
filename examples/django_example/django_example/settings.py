@@ -32,7 +32,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'django.contrib.staticfiles',
-    'leaflet',
     'leafletapp'
 ]
 
@@ -95,9 +94,3 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(
     os.path.dirname(__file__),
     'static')
-
-# django-leaflet configuration
-
-LEAFLET_CONFIG = {
-    'SPATIAL_EXTENT': (4.0, 50.0, 7.0, 53.0)
-}
