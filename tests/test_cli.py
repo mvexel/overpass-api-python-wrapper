@@ -4,7 +4,7 @@ from click.testing import CliRunner
 from overpass.cli import cli
 from nose.tools import nottest
 
-@nottest
+#@nottest
 def test_cli():
     runner = CliRunner()
     with runner.isolated_filesystem():
@@ -16,7 +16,7 @@ def test_cli():
         assert result.exit_code == 0
         assert exists('out.geojson')
 
-@nottest
+#@nottest
 def test_cli_xml():
     runner = CliRunner()
     with runner.isolated_filesystem():
