@@ -17,6 +17,7 @@ function init() {
 };
 
 function loadFromOverpass() {
+	console.log('loadFromOverpass');
 	var key = $("#key").val();
 	var value = $("#value").val() || "---";
 	var osmtype = $("#osmtype").val();
@@ -29,7 +30,7 @@ function loadFromOverpass() {
 		].join('/');
 	console.log(url);
 	// Load --> Wait
-	$("#load").prop("onclick", null).prop('disabled', true).text("Wait...");
+	$("#load").unbind("click").prop('disabled', true).text("Wait...");
 	$.ajax(url, {
 		success: function(data) {
 			overpassLayer.clearLayers();
