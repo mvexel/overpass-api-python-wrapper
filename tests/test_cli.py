@@ -23,7 +23,7 @@ def test_cli_xml():
         result = runner.invoke(cli, [
             '--timeout', 40,
             '--endpoint', 'http://overpass-api.de/api/interpreter',
-            '--format', 'osm',
+            '--responseformat', 'osm',
             'node(area:3600362504)[amenity=cafe]', 'out.osm'
             ])
         assert result.exit_code == 0
