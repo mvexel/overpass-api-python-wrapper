@@ -18,7 +18,7 @@ function init() {
 
 function loadFromOverpass() {
 	var key = $("#key").val();
-	var value = $("#value").val();
+	var value = $("#value").val() || "---";
 	var osmtype = $("#osmtype").val();
 	var bounds = map.getBounds();
 	var url = 'overpass/' + osmtype + '/' + key + '/' + value + '/' + [
@@ -28,12 +28,15 @@ function loadFromOverpass() {
 			bounds.getNorthEast().lng,
 		].join('/');
 	console.log(url);
+	// Load --> Wait
+	$("#load").prop("onclick", null).prop('disabled', true).text("Wait...");
 	$.ajax(url, {
 		success: function(data) {
 			overpassLayer.clearLayers();
 			overpassLayer.addData(data);
 			map.addLayer(overpassLayer);
 			$('#message').text(data.features.length + ' features loaded');
+			$("#load").click(loadFromOverpass).prop('disabled', false).text("Load!");
 		}
 	});
 };
