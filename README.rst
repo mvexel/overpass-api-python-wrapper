@@ -155,7 +155,7 @@ constructor:
 
 .. code:: python
 
-    >>> way_query = overpass.WayQuery('[name=Highway 51]')
+    >>> way_query = overpass.WayQuery('[name="Highway 51"]')
     >>> response = api.Get(way_query)
 
 Need help? Want feature?
