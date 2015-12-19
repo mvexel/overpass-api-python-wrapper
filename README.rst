@@ -146,6 +146,14 @@ to the constructor:
     >>> map_query = overpass.MapQuery(50.746,7.154,50.748,7.157)
     >>> response = api.Get(map_query)
 
+The wrapper also supports the Overpass `api/map` call that the OpenStreetMap web site uses as an alternative to the OSM API 0.6 map call. This call will always return OSM XML.
+
+..code:: python
+
+    >>> api = overpass.API()
+    >>> map_xml = api.Map(-111.4023,40.7172,-111.3838,40.7266)
+
+
 WayQuery
 ^^^^^^^^
 

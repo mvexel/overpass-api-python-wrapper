@@ -50,6 +50,9 @@ class API(object):
         # Get the response from Overpass
         raw_response = self._GetFromOverpass(full_query)
 
+        if self.debug:
+            print("raw response from overpass: ", raw_response)
+
         if responseformat == "xml":
             return raw_response
             
@@ -70,6 +73,20 @@ class API(object):
         # construct geojson
         return self._asGeoJSON(response["elements"])
 
+    def Map(self, min_lon, min_lat, max_lon, max_lat):
+        """Get the full OSM XML for the given extent"""
+        map_query_url = "http://overpass-api.de/api/map?bbox={min_lon},{min_lat},{max_lon},{max_lat}".format(
+            min_lon=min_lon,
+            min_lat=min_lat,
+            max_lon=max_lon,
+            max_lat=max_lat)
+        response = requests.get(map_query_url)
+        if not response.status_code == 200:
+            raise UnknownOverpassError("The request returned status code {code}".format(
+                code=response.status_code))
+        return response.text
+
+
     def Search(self, feature_type, regex=False):
         """Search for something."""
         raise NotImplementedError()
@@ -87,7 +104,7 @@ class API(object):
             complete_query = template.format(query=raw_query, out=responseformat)
 
         if self.debug:
-            print(complete_query)
+            print("complete query: ", complete_query)
         return complete_query
 
     def _GetFromOverpass(self, query):
