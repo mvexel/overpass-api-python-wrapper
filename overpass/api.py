@@ -25,9 +25,15 @@ class API(object):
         self._status = None
 
         if self.debug:
-            import httplib
+            import sys
+            if sys.version_info > (3, 0):
+                import http.client
+                http.client.HTTPConnection.debuglevel = 1
+            else:
+                import httplib
+                httplib.HTTPConnection.debuglevel = 1
             import logging
-            httplib.HTTPConnection.debuglevel = 1
+
 
             logging.basicConfig()
             logging.getLogger().setLevel(logging.DEBUG)
