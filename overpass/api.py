@@ -15,7 +15,7 @@ class API(object):
     _endpoint = "http://overpass-api.de/api/interpreter"
     _debug = False
 
-    _QUERY_TEMPLATE = "[out:{out}];{query}out body;"
+    _QUERY_TEMPLATE = "[out:{out}];{query}out {verbosity};"
     _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out body geom;"
 
     def __init__(self, *args, **kwargs):
@@ -35,11 +35,11 @@ class API(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
-    def Get(self, query, responseformat="geojson"):
+    def Get(self, query, responseformat="geojson", verbosity="body"):
         """Pass in an Overpass query in Overpass QL"""
 
         # Construct full Overpass query
-        full_query = self._ConstructQLQuery(query, responseformat=responseformat)
+        full_query = self._ConstructQLQuery(query, responseformat=responseformat, verbosity=verbosity)
         
         # Get the response from Overpass
         raw_response = self._GetFromOverpass(full_query)
@@ -68,17 +68,17 @@ class API(object):
         """Search for something."""
         raise NotImplementedError()
 
-    def _ConstructQLQuery(self, userquery, responseformat):
+    def _ConstructQLQuery(self, userquery, responseformat, verbosity):
         raw_query = str(userquery)
         if not raw_query.endswith(";"):
             raw_query += ";"
 
         if responseformat == "geojson":
             template = self._GEOJSON_QUERY_TEMPLATE
-            complete_query = template.format(query=raw_query)
+            complete_query = template.format(query=raw_query, verbosity=verbosity)
         else:
             template = self._QUERY_TEMPLATE
-            complete_query = template.format(query=raw_query, out=responseformat)
+            complete_query = template.format(query=raw_query, out=responseformat, verbosity=verbosity)
 
         if self.debug:
             print(complete_query)
