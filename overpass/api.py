@@ -5,6 +5,7 @@ import geojson
 from .errors import (OverpassSyntaxError, TimeoutError, MultipleRequestsError,
                      ServerLoadError, UnknownOverpassError, ServerRuntimeError)
 
+
 class API(object):
     """A simple Python wrapper for the OpenStreetMap Overpass API"""
 
@@ -14,14 +15,18 @@ class API(object):
     _timeout = 25  # seconds
     _endpoint = "http://overpass-api.de/api/interpreter"
     _debug = False
+    _limit = ""
+    _headers = {'Accept-Charset': 'utf-8;q=0.7,*;q=0.7'}
 
-    _QUERY_TEMPLATE = "[out:{out}];{query}out {verbosity};"
-    _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out body geom;"
+    _QUERY_TEMPLATE = u"[out:{out}];{query}out {limit} {verbosity};"
+    _GEOJSON_QUERY_TEMPLATE = u"[out:json];{query}out {limit} body geom;"
 
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
         self.timeout = kwargs.get("timeout", self._timeout)
         self.debug = kwargs.get("debug", self._debug)
+        self.limit = kwargs.get("limit", self._limit)
+        self.headers = self._headers.update(kwargs.get("headers", {}))
         self._status = None
 
         if self.debug:
@@ -40,13 +45,13 @@ class API(object):
 
         # Construct full Overpass query
         full_query = self._ConstructQLQuery(query, responseformat=responseformat, verbosity=verbosity)
-        
+
         # Get the response from Overpass
         raw_response = self._GetFromOverpass(full_query)
 
         if responseformat == "xml":
             return raw_response
-            
+
         response = json.loads(raw_response)
 
         # Check for valid answer from Overpass. A valid answer contains an 'elements' key at the root level.
@@ -69,16 +74,15 @@ class API(object):
         raise NotImplementedError()
 
     def _ConstructQLQuery(self, userquery, responseformat, verbosity):
-        raw_query = str(userquery)
-        if not raw_query.endswith(";"):
-            raw_query += ";"
+        if not userquery.strip().endswith(";"):
+            userquery += ";"
 
         if responseformat == "geojson":
             template = self._GEOJSON_QUERY_TEMPLATE
-            complete_query = template.format(query=raw_query, verbosity=verbosity)
+            complete_query = template.format(query=userquery, verbosity=verbosity, limit=self.limit)
         else:
             template = self._QUERY_TEMPLATE
-            complete_query = template.format(query=raw_query, out=responseformat, verbosity=verbosity)
+            complete_query = template.format(query=userquery, out=responseformat, verbosity=verbosity, limit=self.limit)
 
         if self.debug:
             print(complete_query)
@@ -95,9 +99,9 @@ class API(object):
                 self.endpoint,
                 data=payload,
                 timeout=self.timeout,
-                headers={'Accept-Charset': 'utf-8;q=0.7,*;q=0.7'}
+                headers=self.headers,
             )
-            
+
         except requests.exceptions.Timeout:
             raise TimeoutError(self._timeout)
 
@@ -113,8 +117,8 @@ class API(object):
             raise UnknownOverpassError(
                 "The request returned status code {code}".format(
                     code=self._status
-                    )
                 )
+            )
         else:
             r.encoding = 'utf-8'
             return r.text
