@@ -44,7 +44,7 @@ class API(object):
         # Get the response from Overpass
         raw_response = self._GetFromOverpass(full_query)
 
-        if responseformat is  not "geojson":
+        if responseformat != "geojson":
             return raw_response
 
         # construct geojson
