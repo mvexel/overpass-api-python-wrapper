@@ -40,13 +40,13 @@ class API(object):
 
         # Construct full Overpass query
         full_query = self._ConstructQLQuery(query, responseformat=responseformat, verbosity=verbosity)
-        
+
         # Get the response from Overpass
         raw_response = self._GetFromOverpass(full_query)
 
         if responseformat == "xml":
             return raw_response
-            
+
         response = json.loads(raw_response)
 
         # Check for valid answer from Overpass. A valid answer contains an 'elements' key at the root level.
