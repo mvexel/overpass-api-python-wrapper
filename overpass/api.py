@@ -40,29 +40,26 @@ class API(object):
 
         # Construct full Overpass query
         full_query = self._ConstructQLQuery(query, responseformat=responseformat, verbosity=verbosity)
-        
+
         # Get the response from Overpass
         raw_response = self._GetFromOverpass(full_query)
 
-        if responseformat == "xml":
+        if responseformat != "geojson":
             return raw_response
-            
-        response = json.loads(raw_response)
-
-        # Check for valid answer from Overpass. A valid answer contains an 'elements' key at the root level.
-        if "elements" not in response:
-            raise UnknownOverpassError("Received an invalid answer from Overpass.")
-
-        # If there is a 'remark' key, it spells trouble.
-        overpass_remark = response.get('remark', None)
-        if overpass_remark and overpass_remark.startswith('runtime error'):
-            raise ServerRuntimeError(overpass_remark)
-
-        if responseformat is not "geojson":
-            return response
 
         # construct geojson
-        return self._asGeoJSON(response["elements"])
+        try:
+            response = json.loads(raw_response)
+            geojson = self._asGeoJSON(response["elements"])
+            # If there is a 'remark' key, it spells trouble.
+            overpass_remark = response.get('remark', None)
+            if overpass_remark and overpass_remark.startswith('runtime error'):
+                raise ServerRuntimeError(overpass_remark)
+            return json.dumps(geojson)
+
+        # check the response is valid ('elements' key must be present)
+        except KeyError: # elements not in response
+            raise UnknownOverpassError("Received an invalid answer from Overpass.")
 
     def Search(self, feature_type, regex=False):
         """Search for something."""
@@ -97,7 +94,7 @@ class API(object):
                 timeout=self.timeout,
                 headers={'Accept-Charset': 'utf-8;q=0.7,*;q=0.7'}
             )
-            
+
         except requests.exceptions.Timeout:
             raise TimeoutError(self._timeout)
 
@@ -120,6 +117,7 @@ class API(object):
             return r.text
 
     def _asGeoJSON(self, elements):
+
 
         features = []
         for elem in elements:
