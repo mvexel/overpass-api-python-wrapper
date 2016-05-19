@@ -13,7 +13,7 @@ class API(object):
     # defaults for the API class
     _timeout = 25  # seconds
     _endpoint = "http://overpass-api.de/api/interpreter"
-    _debug = True
+    _debug = False
 
     _QUERY_TEMPLATE = "[out:{out}];{query}out {verbosity};"
     _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out body geom;"
