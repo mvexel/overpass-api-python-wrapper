@@ -12,8 +12,9 @@ import overpass
     help='URL of your prefered API.')
 @click.option('--responseformat', default='geojson', help="""Format to save the data.
     Options are 'geojson' and 'osm'. Default format is geojson.""")
+@click.option('-q', '--queryfile', type=click.File("r"))
 @click.argument('query', type=str)
-def cli(timeout, endpoint, responseformat, query):
+def cli(timeout, endpoint, responseformat, query, queryfile):
     """Run query"""
     api = overpass.API(timeout=timeout, endpoint=endpoint)
     if responseformat not in api.SUPPORTED_FORMATS:
@@ -21,5 +22,7 @@ def cli(timeout, endpoint, responseformat, query):
             responseformat,
             ", ".join(api.SUPPORTED_FORMATS)))
         sys.exit(1)
-    result = api.Get(query, responseformat=responseformat)
+    if queryfile:
+        query = queryfile.read()
+    result = api.Get(query, responseformat=responseformat, build=not bool(queryfile))
     click.echo(result)

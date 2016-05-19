@@ -13,7 +13,7 @@ class API(object):
     # defaults for the API class
     _timeout = 25  # seconds
     _endpoint = "http://overpass-api.de/api/interpreter"
-    _debug = False
+    _debug = True
 
     _QUERY_TEMPLATE = "[out:{out}];{query}out {verbosity};"
     _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out body geom;"
@@ -35,11 +35,14 @@ class API(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
-    def Get(self, query, responseformat="geojson", verbosity="body"):
+    def Get(self, query, responseformat="geojson", verbosity="body", build=True):
         """Pass in an Overpass query in Overpass QL"""
 
         # Construct full Overpass query
-        full_query = self._ConstructQLQuery(query, responseformat=responseformat, verbosity=verbosity)
+        if build:
+            full_query = self._ConstructQLQuery(query, responseformat=responseformat, verbosity=verbosity)
+        else:
+            full_query = query
         
         # Get the response from Overpass
         raw_response = self._GetFromOverpass(full_query)
