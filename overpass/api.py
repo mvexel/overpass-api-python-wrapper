@@ -44,7 +44,7 @@ class API(object):
         # Get the response from Overpass
         raw_response = self._GetFromOverpass(full_query)
 
-        if responseformat == "xml":
+        if responseformat == "xml" or responseformat.startswith("csv"):
             return raw_response
             
         response = json.loads(raw_response)
