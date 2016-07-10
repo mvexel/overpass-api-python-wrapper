@@ -25,7 +25,12 @@ class API(object):
         self._status = None
 
         if self.debug:
-            import httplib
+            # Python 3 compatibility
+            try:
+                import httplib
+            except ImportError:
+                import http.client as httplib
+                
             import logging
             httplib.HTTPConnection.debuglevel = 1
 
