@@ -31,7 +31,8 @@ could do this for example:
 
 ```python
 print [(feature['tags']['name'], feature['id']) for feature in response['elements']]
-[(u'Salt Lake City', 150935219), (u'Salt Lake City', 585370637), (u'Salt Lake City', 1615721573)]```
+[(u'Salt Lake City', 150935219), (u'Salt Lake City', 585370637), (u'Salt Lake City', 1615721573)]
+```
 
 You can specify the format of the response. By default, you will get GeoJSON using the `responseformat` parameter. Alternatives are plain JSON (`json`) and OSM XML (`xml`), as ouput directly by the Overpass API.
 
@@ -81,7 +82,8 @@ to the constructor:
 
 ```python
 map_query = overpass.MapQuery(50.746,7.154,50.748,7.157)
-response = api.Get(map_query)```
+response = api.Get(map_query)
+```
 
 #### WayQuery
 
@@ -91,7 +93,8 @@ constructor:
 
 ```python
 way_query = overpass.WayQuery('[name="Highway 51"]')
-response = api.Get(way_query)```
+response = api.Get(way_query)
+```
 
 ## Testing
 

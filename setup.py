@@ -11,7 +11,7 @@ except(IOError, ImportError):
 setup(
     name='overpass',
     packages=['overpass'],
-    version='0.5.4',
+    version='0.5.5',
     description='Python wrapper for the OpenStreetMap Overpass API',
     long_description=long_description,
     author='Martijn van Exel',
