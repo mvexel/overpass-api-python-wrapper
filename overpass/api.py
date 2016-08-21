@@ -35,11 +35,14 @@ class API(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
-    def Get(self, query, responseformat="geojson", verbosity="body"):
+    def Get(self, query, responseformat="geojson", verbosity="body", build=True):
         """Pass in an Overpass query in Overpass QL"""
 
         # Construct full Overpass query
-        full_query = self._ConstructQLQuery(query, responseformat=responseformat, verbosity=verbosity)
+        if build:
+            full_query = self._ConstructQLQuery(query, responseformat=responseformat, verbosity=verbosity)
+        else:
+            full_query = query
         
         # Get the response from Overpass
         raw_response = self._GetFromOverpass(full_query)
