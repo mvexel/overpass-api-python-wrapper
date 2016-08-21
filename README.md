@@ -1,11 +1,10 @@
 Overpass API python wrapper
 ===========================
 
-This is a thin wrapper around the OpenStreetMap `Overpass
-API <http://wiki.openstreetmap.org/wiki/Overpass_API>`__.
+This is a thin wrapper around the OpenStreetMap [Overpass
+API](http://wiki.openstreetmap.org/wiki/Overpass_API>).
 
-![travis-build-badge](https://travis-ci.org/mvexel/overpass-api-python-wrapper.svg?branch=master)
-
+[![Build Status](https://travis-ci.org/mvexel/overpass-api-python-wrapper.svg?branch=master)](https://travis-ci.org/mvexel/overpass-api-python-wrapper)
 
 Install it
 ==========

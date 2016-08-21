@@ -1,14 +1,17 @@
 from codecs import open as codecs_open
 from setuptools import setup, find_packages
 
-# Get the long description from the relevant file
-with codecs_open('README.md', encoding='utf-8') as f:
-    long_description = f.read()
+# Get README in rst
+try:
+    import pypandoc
+    long_description = pypandoc.convert('README.md', 'rst')
+except(IOError, ImportError):
+    long_description = open('README.md').read()
 
 setup(
     name='overpass',
     packages=['overpass'],
-    version='0.5.0',
+    version='0.5.4',
     description='Python wrapper for the OpenStreetMap Overpass API',
     long_description=long_description,
     author='Martijn van Exel',
