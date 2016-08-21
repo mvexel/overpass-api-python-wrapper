@@ -2,13 +2,13 @@ from codecs import open as codecs_open
 from setuptools import setup, find_packages
 
 # Get the long description from the relevant file
-with codecs_open('README.rst', encoding='utf-8') as f:
+with codecs_open('README.md', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
     name='overpass',
     packages=['overpass'],
-    version='0.3.1',
+    version='0.5.0',
     description='Python wrapper for the OpenStreetMap Overpass API',
     long_description=long_description,
     author='Martijn van Exel',
@@ -26,12 +26,8 @@ setup(
     'Topic :: Scientific/Engineering :: GIS',
     'Topic :: Utilities',
     ],
-    install_requires=['click', 'requests>=2.3.0', 'geojson>=1.0.9'],
+    install_requires=['requests>=2.3.0', 'geojson>=1.0.9'],
     extras_require={
         'test': ['pytest'],
-    },
-    entry_points="""
-        [console_scripts]
-        overpass=overpass.cli:cli
-"""
+    }
 )
