@@ -1,19 +1,12 @@
 from codecs import open as codecs_open
 from setuptools import setup, find_packages
 
-# Get README in rst
-try:
-    import pypandoc
-    long_description = pypandoc.convert('README.md', 'rst')
-except(IOError, ImportError):
-    long_description = open('README.md').read()
-
 setup(
     name='overpass',
     packages=['overpass'],
-    version='0.5.5',
+    version='0.5.6',
     description='Python wrapper for the OpenStreetMap Overpass API',
-    long_description=long_description,
+    long_description='See README.md',
     author='Martijn van Exel',
     author_email='m@rtijn.org',
     url='https://github.com/mvexel/overpass-api-python-wrapper',
