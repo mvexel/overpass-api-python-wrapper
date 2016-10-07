@@ -75,8 +75,8 @@ them like to normal query to the API.
 
 #### MapQuery
 
-This is a shorthand for a `complete ways and
-relations <http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide#Completed_ways_and_relations>`__
+This is a shorthand for a [complete ways and
+relations](http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide#Recursing_up_and_down:_Completed_ways_and_relations)
 query in a bounding box (the 'map call'). You just pass the bounding box
 to the constructor:
 
