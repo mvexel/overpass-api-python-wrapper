@@ -1,6 +1,7 @@
 import requests
 import json
 import geojson
+import logging
 
 from .errors import (OverpassSyntaxError, TimeoutError, MultipleRequestsError,
                      ServerLoadError, UnknownOverpassError, ServerRuntimeError)
@@ -11,7 +12,7 @@ class API(object):
     SUPPORTED_FORMATS = ["geojson", "json", "xml"]
 
     # defaults for the API class
-    _timeout = 25  # seconds
+    _timeout = 25  # second
     _endpoint = "http://overpass-api.de/api/interpreter"
     _debug = False
 
@@ -25,15 +26,21 @@ class API(object):
         self._status = None
 
         if self.debug:
-            import httplib
-            import logging
-            httplib.HTTPConnection.debuglevel = 1
+            # http://stackoverflow.com/a/16630836
+            try:
+                import http.client as http_client
+            except ImportError:
+                # Python 2
+                import httplib as http_client
+            http_client.HTTPConnection.debuglevel = 1
 
+            # You must initialize logging, otherwise you'll not see debug output.
             logging.basicConfig()
             logging.getLogger().setLevel(logging.DEBUG)
             requests_log = logging.getLogger("requests.packages.urllib3")
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
+
 
     def Get(self, query, responseformat="geojson", verbosity="body", build=True):
         """Pass in an Overpass query in Overpass QL"""
@@ -43,6 +50,9 @@ class API(object):
             full_query = self._ConstructQLQuery(query, responseformat=responseformat, verbosity=verbosity)
         else:
             full_query = query
+
+        if self.debug:
+            logging.getLogger().info(query)
         
         # Get the response from Overpass
         raw_response = self._GetFromOverpass(full_query)
