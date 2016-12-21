@@ -11,3 +11,4 @@ from .queries import MapQuery, WayQuery
 from .errors import (
     OverpassError, OverpassSyntaxError, TimeoutError, MultipleRequestsError, ServerLoadError, UnknownOverpassError
 )
+from .utils import *
