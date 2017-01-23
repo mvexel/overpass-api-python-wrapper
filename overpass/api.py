@@ -2,6 +2,7 @@ import requests
 import json
 import geojson
 import logging
+import pkg_resources
 
 from .errors import (OverpassSyntaxError, TimeoutError, MultipleRequestsError,
                      ServerLoadError, UnknownOverpassError, ServerRuntimeError)
@@ -23,6 +24,7 @@ class API(object):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
         self.timeout = kwargs.get("timeout", self._timeout)
         self.debug = kwargs.get("debug", self._debug)
+        self.version = pkg_resources.get_distribution('overpass').version
         self._status = None
 
         if self.debug:
@@ -108,7 +110,10 @@ class API(object):
                 self.endpoint,
                 data=payload,
                 timeout=self.timeout,
-                headers={'Accept-Charset': 'utf-8;q=0.7,*;q=0.7'}
+                headers={'Accept-Charset': 'utf-8;q=0.7,*;q=0.7'
+                	,'User-Agent' : 'overpass-api-python-wrapper/'
+                	+ self.version
+                }
             )
             
         except requests.exceptions.Timeout:
