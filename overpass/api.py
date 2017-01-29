@@ -17,7 +17,7 @@ class API(object):
     _debug = False
 
     _QUERY_TEMPLATE = "[out:{out}];{query}out {verbosity};"
-    _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out body geom;"
+    _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out {verbosity};"
 
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
