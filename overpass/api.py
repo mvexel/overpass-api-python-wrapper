@@ -139,18 +139,81 @@ class API(object):
             elem_type = elem["type"]
             if elem_type == "node":
                 geometry = geojson.Point((elem["lon"], elem["lat"]))
+                feature = geojson.Feature(
+                    id=elem["id"],
+                    geometry=geometry,
+                    properties=elem.get("tags"))
+                features.append(feature)
+
             elif elem_type == "way":
                 points = []
                 for coords in elem["geometry"]:
                     points.append((coords["lon"], coords["lat"]))
                 geometry = geojson.LineString(points)
-            else:
-                continue
+                feature = geojson.Feature(
+                    id=elem["id"],
+                    geometry=geometry,
+                    properties=elem.get("tags"))
+                features.append(feature)
 
-            feature = geojson.Feature(
-                id=elem["id"],
-                geometry=geometry,
-                properties=elem.get("tags"))
-            features.append(feature)
+            elif elem_type == "relation":
+                # initialize result lists
+                polygons = []
+                poly = []
+                points = []
+                # conditions
+                prev = "inner"
+                not_first = False
+                for mem in elem["members"]:
+                    # address outer values
+                    if mem['role'] == 'outer':
+                        if prev == "inner":
+                            # start new outer polygon
+                            points = []
+                        
+                        if points == [] and not_first:
+                            # append the previous poly to the polygon list
+                            polygons.append(poly)
+                            poly = []
+                        
+                        for coords in mem["geometry"]:
+                            points.append([coords["lon"], coords["lat"]])
+                        
+                        if points[-1] == points[0]:
+                            # finish the outer polygon if it has met the start
+                            is_complete = True
+                            poly.append(points)
+                            points = []
+                        # update condition
+                        prev = "outer"
+
+                    # address inner points
+                    if mem['role'] == "inner":
+                        for coords in mem["geometry"]:
+                            points.append([coords["lon"], coords["lat"]])
+
+                        # check if the inner is complete
+                        if points[-1] == points[0]:
+                            poly.append(points)
+                            points = []
+                        # update conditoin
+                        prev = "inner"
+                    
+                    not_first = True
+                #
+                polygons.append(poly)
+
+                if polygons != [[]]:
+                    # create MultiPolygon feature
+                    poly_props = elem.get("tags")
+                    poly_props.update({'id':elem['id']})
+                    multipoly = {"type": "Feature",
+                    "properties" : poly_props,
+                    "geometry": {
+                    "type": "MultiPolygon",
+                    "coordinates": polygons}}
+
+                    # add to features
+                    features.append(multipoly)
 
         return geojson.FeatureCollection(features)
