@@ -26,7 +26,7 @@ The wrapper will, well, wrap those.
 
 You will get your result as a dictionary, which represents the
 JSON output you would get [from the Overpass API
-directly](http://overpass-api.de/output_formats.html#json>). So you
+directly](https://overpass-api.de/output_formats.html#json>). So you
 could do this for example:
 
 ```python
@@ -47,11 +47,11 @@ The API object takes a few parameters:
 
 #### endpoint
 
-The default endpoint is `http://overpass-api.de/api/interpreter` but
+The default endpoint is `https://overpass-api.de/api/interpreter` but
 you can pass in another instance:
 
 ```python
-api = overpass.API(endpoint=http://overpass.myserver/interpreter)
+api = overpass.API(endpoint=https://overpass.myserver/interpreter)
 ```
 
 #### timeout
@@ -76,7 +76,7 @@ them like to normal query to the API.
 #### MapQuery
 
 This is a shorthand for a [complete ways and
-relations](http://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide#Recursing_up_and_down:_Completed_ways_and_relations)
+relations](https://wiki.openstreetmap.org/wiki/Overpass_API/Language_Guide#Recursing_up_and_down:_Completed_ways_and_relations)
 query in a bounding box (the 'map call'). You just pass the bounding box
 to the constructor:
 
