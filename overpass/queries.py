@@ -4,7 +4,7 @@
 class MapQuery(object):
     """Query to retrieve complete ways and relations in an area."""
 
-    _QUERY_TEMPLATE = "(node({south},{west},{north},{east});<;);"
+    _QUERY_TEMPLATE = "(node({south},{west},{north},{east});<;>;);"
 
     def __init__(self, south, west, north, east):
         """
