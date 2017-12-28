@@ -2,7 +2,7 @@ Overpass API python wrapper
 ===========================
 
 This is a thin wrapper around the OpenStreetMap [Overpass
-API](http://wiki.openstreetmap.org/wiki/Overpass_API>).
+API](http://wiki.openstreetmap.org/wiki/Overpass_API).
 
 [![Build Status](https://travis-ci.org/mvexel/overpass-api-python-wrapper.svg?branch=master)](https://travis-ci.org/mvexel/overpass-api-python-wrapper)
 
@@ -26,7 +26,7 @@ The wrapper will, well, wrap those.
 
 You will get your result as a dictionary, which represents the
 JSON output you would get [from the Overpass API
-directly](https://overpass-api.de/output_formats.html#json>). So you
+directly](https://overpass-api.de/output_formats.html#json). So you
 could do this for example:
 
 ```python
@@ -107,7 +107,7 @@ Using `nose`.
 ### I need help or have an idea for a feature
 
 Create a [new
-issue](https://github.com/mvexel/overpass-api-python-wrapper/issues>).
+issue](https://github.com/mvexel/overpass-api-python-wrapper/issues).
 
 ### Where did the CLI tool go?
 
