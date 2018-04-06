@@ -17,6 +17,7 @@ class API(object):
     _timeout = 25  # second
     _endpoint = "https://overpass-api.de/api/interpreter"
     _debug = False
+    _proxies = None
 
     _QUERY_TEMPLATE = "[out:{out}];{query}out {verbosity};"
     _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out {verbosity};"
@@ -25,6 +26,7 @@ class API(object):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
         self.timeout = kwargs.get("timeout", self._timeout)
         self.debug = kwargs.get("debug", self._debug)
+        self.proxies = kwargs.get("proxies", self._proxies)
         self._status = None
 
         if self.debug:
@@ -133,6 +135,7 @@ class API(object):
                 self.endpoint,
                 data=payload,
                 timeout=self.timeout,
+                proxies=self.proxies,
                 headers={'Accept-Charset': 'utf-8;q=0.7,*;q=0.7'}
             )
 
