@@ -1,4 +1,0 @@
-[
-  "tests/test_api.py::test_initialize_api", 
-  "tests/test_api.py::test_geojson"
-]
