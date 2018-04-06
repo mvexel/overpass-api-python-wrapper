@@ -4,11 +4,13 @@
 
 import overpass
 
+# Change this to the name of the area you're interested in.
+# Keep it small to not abuse the Overpass server.
 area_name = "Kanab"
 
-query = """area[name="{}"]->.slc;(node(area.slc);<;);""".format(area_name)
-
+query = """area[name="{}"]->.a;(node(area.a);<;);""".format(area_name)
 users = {"ids": [], "usernames": []}
+message_urls = []
 api = overpass.API(debug=False)
 result = api.Get(
     query,
@@ -22,4 +24,7 @@ for row in result:
         continue
     users["ids"].append(uid)
     users["usernames"].append(username)
+    message_urls.append("https://www.openstreetmap.org/message/new/{}".format(
+        username))
 print(users)
+print(message_urls)
