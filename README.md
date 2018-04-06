@@ -30,8 +30,10 @@ Note that the Overpass query passed to `get()` should not contain any `out` or o
 Another example:
 
 ```python
-print [(feature['tags']['name'], feature['id']) for feature in response['elements']]
-[(u'Salt Lake City', 150935219), (u'Salt Lake City', 585370637), (u'Salt Lake City', 1615721573)]
+>>> print [(
+...     feature['properties']['name'],
+...     feature['id']) for feature in response["features"]]
+[(u'Salt Lake City', 150935219), (u'Salt Lake City', 585370637)]
 ```
 
 You can find more examples in the `examples/` directory of this repository.

@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 # Retrieves a list of turn restriction relations in Toronto.
 
