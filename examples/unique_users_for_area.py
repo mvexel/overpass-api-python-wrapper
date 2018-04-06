@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 
+# Copyright 2015-2018 Martijn van Exel.
+# This file is part of the overpass-api-python-wrapper project
+# which is licensed under Apache 2.0.
+# See LICENSE.txt for the full license text.
+
 # Retrieves a list of unique usernames and user IDs for a named area.
 
 import overpass
