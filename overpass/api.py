@@ -1,8 +1,9 @@
 import requests
 import json
+import csv
 import geojson
 import logging
-
+from io import StringIO
 from .errors import (OverpassSyntaxError, TimeoutError, MultipleRequestsError,
                      ServerLoadError, UnknownOverpassError, ServerRuntimeError)
 
@@ -10,7 +11,7 @@ from .errors import (OverpassSyntaxError, TimeoutError, MultipleRequestsError,
 class API(object):
     """A simple Python wrapper for the OpenStreetMap Overpass API."""
 
-    SUPPORTED_FORMATS = ["geojson", "json", "xml"]
+    SUPPORTED_FORMATS = ["geojson", "json", "xml", "csv"]
 
     # defaults for the API class
     _timeout = 25  # second
@@ -43,7 +44,7 @@ class API(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
-    def Get(self,
+    def get(self,
             query,
             responseformat="geojson",
             verbosity="body",
@@ -51,9 +52,10 @@ class API(object):
         """Pass in an Overpass query in Overpass QL."""
         # Construct full Overpass query
         if build:
-            full_query = self._ConstructQLQuery(query,
-                                                responseformat=responseformat,
-                                                verbosity=verbosity)
+            full_query = self._construct_ql_query(
+                query,
+                responseformat=responseformat,
+                verbosity=verbosity)
         else:
             full_query = query
 
@@ -61,12 +63,21 @@ class API(object):
             logging.getLogger().info(query)
 
         # Get the response from Overpass
-        raw_response = self._GetFromOverpass(full_query)
+        r = self._get_from_overpass(full_query)
+        content_type = r.headers.get('content-type')
 
-        if responseformat == "xml" or responseformat.startswith("csv"):
-            return raw_response
+        if self.debug:
+            print(content_type)
+        if content_type == "text/csv":
+            result = []
+            reader = csv.reader(StringIO(r.text), delimiter='\t')
+            for row in reader:
+                result.append(row)
+            return result
+        elif content_type == "text/xml" or content_type == "application/xml":
+            return r.text
 
-        response = json.loads(raw_response)
+        response = json.loads(r)
 
         # Check for valid answer from Overpass.
         # A valid answer contains an 'elements' key at the root level.
@@ -83,13 +94,17 @@ class API(object):
             return response
 
         # construct geojson
-        return self._asGeoJSON(response["elements"])
+        return self._as_geojson(response["elements"])
 
-    def Search(self, feature_type, regex=False):
+    def search(self, feature_type, regex=False):
         """Search for something."""
         raise NotImplementedError()
 
-    def _ConstructQLQuery(self, userquery, responseformat, verbosity):
+    # deprecation of upper case functions
+    Get = get
+    Search = search
+
+    def _construct_ql_query(self, userquery, responseformat, verbosity):
         raw_query = str(userquery)
         if not raw_query.endswith(";"):
             raw_query += ";"
@@ -110,10 +125,7 @@ class API(object):
             print(complete_query)
         return complete_query
 
-    def _GetFromOverpass(self, query):
-        """This sends the API request to the Overpass instance and
-        returns the raw result, or an error."""
-
+    def _get_from_overpass(self, query):
         payload = {"data": query}
 
         try:
@@ -141,20 +153,22 @@ class API(object):
                     code=self._status))
         else:
             r.encoding = 'utf-8'
-            return r.text
+            return r
 
-    def _asGeoJSON(self, elements):
+    def _as_geojson(self, elements):
 
         features = []
         for elem in elements:
-            elem_type = elem["type"]
-            if elem_type == "node":
-                geometry = geojson.Point((elem["lon"], elem["lat"]))
-            elif elem_type == "way":
+            elem_type = elem.get("type")
+            if elem_type and elem_type == "node":
+                geometry = geojson.Point((elem.get("lon"), elem.get("lat")))
+            elif elem_type and elem_type == "way":
                 points = []
-                for coords in elem["geometry"]:
-                    points.append((coords["lon"], coords["lat"]))
-                geometry = geojson.LineString(points)
+                geom = elem.get("geometry")
+                if geom:
+                    for coords in elem.get("geometry"):
+                        points.append((coords["lon"], coords["lat"]))
+                    geometry = geojson.LineString(points)
             else:
                 continue
 

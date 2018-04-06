@@ -1,10 +1,9 @@
-from codecs import open as codecs_open
-from setuptools import setup, find_packages
+from setuptools import setup
 
 setup(
     name='overpass',
     packages=['overpass'],
-    version='0.5.6',
+    version='0.5.7',
     description='Python wrapper for the OpenStreetMap Overpass API',
     long_description='See README.md',
     author='Martijn van Exel',
@@ -13,14 +12,14 @@ setup(
     license='Apache',
     keywords=['openstreetmap', 'overpass', 'wrapper'],
     classifiers=[
-    'License :: OSI Approved :: Apache Software License',
-    'Programming Language :: Python :: 2.6',
-    'Programming Language :: Python :: 2.7',
-    'Programming Language :: Python :: 3.3',
-    'Programming Language :: Python :: 3.4',
-    'Programming Language :: Python :: 3.5',
-    'Topic :: Scientific/Engineering :: GIS',
-    'Topic :: Utilities',
+        'License :: OSI Approved :: Apache Software License',
+        'Programming Language :: Python :: 2.6',
+        'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.3',
+        'Programming Language :: Python :: 3.4',
+        'Programming Language :: Python :: 3.5',
+        'Topic :: Scientific/Engineering :: GIS',
+        'Topic :: Utilities',
     ],
     install_requires=['requests>=2.3.0', 'geojson>=1.0.9'],
     extras_require={
