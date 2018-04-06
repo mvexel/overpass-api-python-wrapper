@@ -77,7 +77,7 @@ class API(object):
         elif content_type == "text/xml" or content_type == "application/xml":
             return r.text
 
-        response = json.loads(r)
+        response = json.loads(r.text)
 
         # Check for valid answer from Overpass.
         # A valid answer contains an 'elements' key at the root level.

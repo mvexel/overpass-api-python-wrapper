@@ -18,7 +18,7 @@ Simplest example:
 ```python
 import overpass
 api = overpass.API()
-response = api.Get('node["name"="Salt Lake City"]')
+response = api.get('node["name"="Salt Lake City"]')
 ```
 
 Note that you don't have to include any of the output meta statements.
@@ -37,7 +37,7 @@ print [(feature['tags']['name'], feature['id']) for feature in response['element
 You can specify the format of the response. By default, you will get GeoJSON using the `responseformat` parameter. Alternatives are plain JSON (`json`) and OSM XML (`xml`), as ouput directly by the Overpass API.
 
 ```python
-response = api.Get('node["name"="Salt Lake City"]', responseformat="xml")
+response = api.get('node["name"="Salt Lake City"]', responseformat="xml")
 ```
 
 ### Parameters
@@ -81,8 +81,8 @@ query in a bounding box (the 'map call'). You just pass the bounding box
 to the constructor:
 
 ```python
-map_query = overpass.MapQuery(50.746,7.154,50.748,7.157)
-response = api.Get(map_query)
+MapQuery = overpass.MapQuery(50.746,7.154,50.748,7.157)
+response = api.get(MapQuery)
 ```
 
 #### WayQuery
@@ -92,8 +92,8 @@ satisfy certain criteria. Pass the criteria as a Overpass QL stub to the
 constructor:
 
 ```python
-way_query = overpass.WayQuery('[name="Highway 51"]')
-response = api.Get(way_query)
+WayQuery = overpass.WayQuery('[name="Highway 51"]')
+response = api.get(WayQuery)
 ```
 
 ## Testing
