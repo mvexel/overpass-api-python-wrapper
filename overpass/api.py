@@ -166,6 +166,7 @@ class API(object):
     def _as_geojson(self, elements):
 
         features = []
+        geometry = None
         for elem in elements:
             elem_type = elem.get("type")
             if elem_type and elem_type == "node":
