@@ -1,7 +1,7 @@
 Overpass API python wrapper
 ===========================
 
-This is a thin wrapper around the OpenStreetMap [Overpass
+Python bindings for the OpenStreetMap [Overpass
 API](http://wiki.openstreetmap.org/wiki/Overpass_API).
 
 [![Build Status](https://travis-ci.org/mvexel/overpass-api-python-wrapper.svg?branch=master)](https://travis-ci.org/mvexel/overpass-api-python-wrapper)
@@ -74,7 +74,7 @@ Setting this to `True` will get you debug output.
 
 ### Simple queries
 
-In addition to just sending your query and parse the result, the wrapper
+In addition to just sending your query and parse the result, `overpass`
 provides shortcuts for often used map queries. To use them, just pass
 them like to normal query to the API.
 
