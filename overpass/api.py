@@ -81,10 +81,13 @@ class API(object):
             for row in reader:
                 result.append(row)
             return result
-        elif content_type == "text/xml" or content_type == "application/xml":
+        elif content_type in ("text/xml", "application/xml", "application/osm3s+xml"):
             return r.text
+        elif content_type == "application/json":
+            response = json.loads(r.text)
 
-        response = json.loads(r.text)
+        if not build:
+            return response
 
         # Check for valid answer from Overpass.
         # A valid answer contains an 'elements' key at the root level.
