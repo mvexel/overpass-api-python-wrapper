@@ -17,7 +17,7 @@ def test_geojson():
 
     map_query = overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635)
     osm_geo = api.get(map_query)
-    assert len(osm_geo['features']) > 1
+    assert len(osm_geo["features"]) > 1
 
-    osm_geo = api.get('node(area:3602758138)[amenity=cafe]')
-    assert len(osm_geo['features']) > 1
+    osm_geo = api.get("node(area:3602758138)[amenity=cafe]")
+    assert len(osm_geo["features"]) > 1

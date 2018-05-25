@@ -9,7 +9,6 @@ import overpass
 
 api = overpass.API()
 response = api.get('node["name"="Salt Lake City"]')
-print([(
-    feature['id'],
-    feature['properties']['name'])
-    for feature in response['features']])
+print(
+    [(feature["id"], feature["properties"]["name"]) for feature in response["features"]]
+)

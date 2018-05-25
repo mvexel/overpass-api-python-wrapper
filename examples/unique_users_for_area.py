@@ -17,10 +17,7 @@ query = """area[name="{}"]->.a;(node(area.a);<;);""".format(area_name)
 users = {"ids": [], "usernames": []}
 message_urls = []
 api = overpass.API(debug=False)
-result = api.Get(
-    query,
-    responseformat="csv(::uid,::user)",
-    verbosity="meta")
+result = api.Get(query, responseformat="csv(::uid,::user)", verbosity="meta")
 del result[0]  # header
 for row in result:
     uid = int(row[0])
@@ -29,7 +26,6 @@ for row in result:
         continue
     users["ids"].append(uid)
     users["usernames"].append(username)
-    message_urls.append("https://www.openstreetmap.org/message/new/{}".format(
-        username))
+    message_urls.append("https://www.openstreetmap.org/message/new/{}".format(username))
 print(users)
 print(message_urls)

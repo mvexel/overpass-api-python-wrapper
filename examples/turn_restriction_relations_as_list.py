@@ -18,6 +18,7 @@ turn_restrictions_list = []
 overpass_response = api.get(
     turn_restrictions_query,
     responseformat='csv(::"id",::"user",::"timestamp",restriction,"restriction:conditional")',
-    verbosity='meta')
+    verbosity="meta",
+)
 
 print(overpass_response)

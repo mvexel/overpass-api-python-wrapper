@@ -25,10 +25,7 @@ class MapQuery(object):
 
     def __str__(self):
         return self._QUERY_TEMPLATE.format(
-            west=self.west,
-            south=self.south,
-            east=self.east,
-            north=self.north
+            west=self.west, south=self.south, east=self.east, north=self.north
         )
 
 
@@ -45,6 +42,4 @@ class WayQuery(object):
         self.query_parameters = query_parameters
 
     def __str__(self):
-        return self._QUERY_TEMPLATE.format(
-            query_parameters=self.query_parameters
-        )
+        return self._QUERY_TEMPLATE.format(query_parameters=self.query_parameters)

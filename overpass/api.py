@@ -9,8 +9,14 @@ import csv
 import geojson
 import logging
 from io import StringIO
-from .errors import (OverpassSyntaxError, TimeoutError, MultipleRequestsError,
-                     ServerLoadError, UnknownOverpassError, ServerRuntimeError)
+from .errors import (
+    OverpassSyntaxError,
+    TimeoutError,
+    MultipleRequestsError,
+    ServerLoadError,
+    UnknownOverpassError,
+    ServerRuntimeError,
+)
 
 
 class API(object):
@@ -51,18 +57,13 @@ class API(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
-    def get(self,
-            query,
-            responseformat="geojson",
-            verbosity="body",
-            build=True):
+    def get(self, query, responseformat="geojson", verbosity="body", build=True):
         """Pass in an Overpass query in Overpass QL."""
         # Construct full Overpass query
         if build:
             full_query = self._construct_ql_query(
-                query,
-                responseformat=responseformat,
-                verbosity=verbosity)
+                query, responseformat=responseformat, verbosity=verbosity
+            )
         else:
             full_query = query
 
@@ -71,13 +72,13 @@ class API(object):
 
         # Get the response from Overpass
         r = self._get_from_overpass(full_query)
-        content_type = r.headers.get('content-type')
+        content_type = r.headers.get("content-type")
 
         if self.debug:
             print(content_type)
         if content_type == "text/csv":
             result = []
-            reader = csv.reader(StringIO(r.text), delimiter='\t')
+            reader = csv.reader(StringIO(r.text), delimiter="\t")
             for row in reader:
                 result.append(row)
             return result
@@ -92,12 +93,11 @@ class API(object):
         # Check for valid answer from Overpass.
         # A valid answer contains an 'elements' key at the root level.
         if "elements" not in response:
-            raise UnknownOverpassError(
-                "Received an invalid answer from Overpass.")
+            raise UnknownOverpassError("Received an invalid answer from Overpass.")
 
         # If there is a 'remark' key, it spells trouble.
-        overpass_remark = response.get('remark', None)
-        if overpass_remark and overpass_remark.startswith('runtime error'):
+        overpass_remark = response.get("remark", None)
+        if overpass_remark and overpass_remark.startswith("runtime error"):
             raise ServerRuntimeError(overpass_remark)
 
         if responseformat is not "geojson":
@@ -121,15 +121,12 @@ class API(object):
 
         if responseformat == "geojson":
             template = self._GEOJSON_QUERY_TEMPLATE
-            complete_query = template.format(
-                query=raw_query,
-                verbosity=verbosity)
+            complete_query = template.format(query=raw_query, verbosity=verbosity)
         else:
             template = self._QUERY_TEMPLATE
             complete_query = template.format(
-                query=raw_query,
-                out=responseformat,
-                verbosity=verbosity)
+                query=raw_query, out=responseformat, verbosity=verbosity
+            )
 
         if self.debug:
             print(complete_query)
@@ -144,7 +141,7 @@ class API(object):
                 data=payload,
                 timeout=self.timeout,
                 proxies=self.proxies,
-                headers={'Accept-Charset': 'utf-8;q=0.7,*;q=0.7'}
+                headers={"Accept-Charset": "utf-8;q=0.7,*;q=0.7"},
             )
 
         except requests.exceptions.Timeout:
@@ -160,10 +157,10 @@ class API(object):
             elif self._status == 504:
                 raise ServerLoadError(self._timeout)
             raise UnknownOverpassError(
-                "The request returned status code {code}".format(
-                    code=self._status))
+                "The request returned status code {code}".format(code=self._status)
+            )
         else:
-            r.encoding = 'utf-8'
+            r.encoding = "utf-8"
             return r
 
     def _as_geojson(self, elements):
@@ -185,9 +182,8 @@ class API(object):
                 continue
 
             feature = geojson.Feature(
-                id=elem["id"],
-                geometry=geometry,
-                properties=elem.get("tags"))
+                id=elem["id"], geometry=geometry, properties=elem.get("tags")
+            )
             features.append(feature)
 
         return geojson.FeatureCollection(features)

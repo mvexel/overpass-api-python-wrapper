@@ -18,10 +18,12 @@ api = overpass.API()
 def response():
     Settings(timeout=1400)
     search = Area(3600134503) + Area(3600134502)
-    ways = Way(search,
-               maxspeed=None,
-               highway=NotRegex("cycleway|footway|path|service"),
-               access=NotRegex("private"))
+    ways = Way(
+        search,
+        maxspeed=None,
+        highway=NotRegex("cycleway|footway|path|service"),
+        access=NotRegex("private"),
+    )
     out(ways, body=True, geom=True, qt=True)
     noop()
 
