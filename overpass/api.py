@@ -143,7 +143,7 @@ class API(object):
                 data=payload,
                 timeout=self.timeout,
                 proxies=self.proxies,
-                headers=self.headers),
+                headers=self.headers,
             )
 
         except requests.exceptions.Timeout:
