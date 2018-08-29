@@ -115,7 +115,7 @@ class API(object):
     Search = search
 
     def _construct_ql_query(self, userquery, responseformat, verbosity):
-        raw_query = str(userquery)
+        raw_query = str(userquery).rstrip()
         if not raw_query.endswith(";"):
             raw_query += ";"
 
