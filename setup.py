@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
     name="overpass",
     packages=["overpass"],
-    version="0.6.0",
+    version="0.6.1",
     description="Python wrapper for the OpenStreetMap Overpass API",
     long_description="See README.md",
     author="Martijn van Exel",
@@ -17,6 +17,8 @@ setup(
         "Programming Language :: Python :: 3.3",
         "Programming Language :: Python :: 3.4",
         "Programming Language :: Python :: 3.5",
+        "Programming Language :: Python :: 3.6",
+        "Programming Language :: Python :: 3.7",
         "Topic :: Scientific/Engineering :: GIS",
         "Topic :: Utilities",
     ],

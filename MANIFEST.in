@@ -1,2 +1,3 @@
 include LICENSE.txt
-recursive-include tests *
+include tests/*
+include examples/*
