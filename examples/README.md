@@ -17,3 +17,20 @@ Sample output:
 ...
 ```
 
+## Plot state border
+
+File: `plot_state_border/main.py`
+
+This example requests the boundary of a state of Germany called Saxony. The overpass response contains points that will be connected with each other to draw the outer border of the state. The lines are drawn using `matplotlib`.
+Since the response is quite big (~2 MB) the response will be saved in a XML file.
+
+Overpass query:
+```osm
+area[name="Sachsen"][type="boundary"]->.saxony;
+rel(area.saxony)[admin_level=4][type="boundary"][boundary="administrative"];
+out geom;
+```
+
+Output:
+![Border of Saxony (Germany)](plot_state_border/output.png)
+
