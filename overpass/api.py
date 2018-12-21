@@ -27,6 +27,7 @@ class API(object):
     # defaults for the API class
     _timeout = 25  # second
     _endpoint = "https://overpass-api.de/api/interpreter"
+    _headers = {"Accept-Charset": "utf-8;q=0.7,*;q=0.7"}
     _debug = False
     _proxies = None
 
@@ -35,6 +36,7 @@ class API(object):
 
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
+        self.headers = kwargs.get("headers", self._headers)
         self.timeout = kwargs.get("timeout", self._timeout)
         self.debug = kwargs.get("debug", self._debug)
         self.proxies = kwargs.get("proxies", self._proxies)
@@ -141,7 +143,7 @@ class API(object):
                 data=payload,
                 timeout=self.timeout,
                 proxies=self.proxies,
-                headers={"Accept-Charset": "utf-8;q=0.7,*;q=0.7"},
+                headers=self.headers,
             )
 
         except requests.exceptions.Timeout:
