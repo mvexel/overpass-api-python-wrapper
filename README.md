@@ -30,7 +30,7 @@ The default endpoint is `https://overpass-api.de/api/interpreter` but
 you can pass in another instance:
 
 ```python
-api = overpass.API(endpoint=https://overpass.myserver/interpreter)
+api = overpass.API(endpoint="https://overpass.myserver/interpreter")
 ```
 
 #### `timeout`
