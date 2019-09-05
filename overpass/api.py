@@ -20,7 +20,17 @@ from .errors import (
 
 
 class API(object):
-    """A simple Python wrapper for the OpenStreetMap Overpass API."""
+    """A simple Python wrapper for the OpenStreetMap Overpass API.
+
+    :param timeout: If a single number, the TCP connection timeout for the request. If a tuple
+                    of two numbers, the connection timeout and the read timeout respectively.
+                    Timeouts can be integers or floats.
+    :param endpoint: URL of overpass interpreter
+    :param headers: HTTP headers to include when making requests to the overpass endpoint
+    :param debug: Boolean to turn on debugging output
+    :param proxies: Dictionary of proxies to pass to the request library. See
+                    requests documentation for details.
+    """
 
     SUPPORTED_FORMATS = ["geojson", "json", "xml", "csv"]
 
@@ -60,7 +70,17 @@ class API(object):
             requests_log.propagate = True
 
     def get(self, query, responseformat="geojson", verbosity="body", build=True):
-        """Pass in an Overpass query in Overpass QL."""
+        """Pass in an Overpass query in Overpass QL.
+
+        :param query: the Overpass QL query to send to the endpoint
+        :param responseformat: one of the supported output formats ["geojson", "json", "xml", "csv"]
+        :param verbosity: one of the supported levels out data verbosity ["ids",
+                          "skel", "body", "tags", "meta"] and optionally modifiers ["geom", "bb",
+                          "center"] followed by an optional sorting indicator ["asc", "qt"]. Example:
+                          "body geom qt"
+        :param build: boolean to indicate whether to build the overpass query from a template (True)
+                          or allow the programmer to specify full query manually (False)
+        """
         # Construct full Overpass query
         if build:
             full_query = self._construct_ql_query(
