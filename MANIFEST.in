@@ -1,0 +1,3 @@
+include LICENSE.txt
+include tests/*
+include examples/*
