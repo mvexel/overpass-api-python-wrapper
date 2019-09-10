@@ -8,7 +8,7 @@ import json
 import csv
 import geojson
 import logging
-import code
+from shapely.geometry import Polygon, Point
 from io import StringIO
 from .errors import (
     OverpassSyntaxError,
@@ -193,117 +193,38 @@ class API(object):
         for elem in elements:
             elem_type = elem.get("type")
             elem_tags = elem.get("tags")
-            if elem_type and elem_type == "node":
+            elem_geom = elem.get("geometry", [])
+            if elem_type == "node":
+                # Create Point geometry
                 geometry = geojson.Point((elem.get("lon"), elem.get("lat")))
-            elif elem_type and elem_type == "way":
-                points = []
-                geom = elem.get("geometry")
-                if geom:
-                    for coords in elem.get("geometry"):
-                        points.append((coords["lon"], coords["lat"]))
-                    geometry = geojson.LineString(points)
-            elif elem_type and elem_type == "relation":
-                # initialize result lists
+            elif elem_type == "way":
+                # Create LineString geometry
+                geometry = geojson.LineString([(coords["lon"], coords["lat"]) for coords in elem_geom])
+            elif elem_type == "relation":
+                # Initialize polygon list
                 polygons = []
-                poly = []
-                points = []
-                # conditions
-                prev = "inner"
-                not_first = False
-
-                for pos in range(len(elem["members"])):
-                    mem = elem['members'][pos]
-
-                    # check whether the coordinates of the next member need to be reversed
-                    # also sometimes the next member may not actually connect to the previous member, so if necessary,
-                    # find a matching member
-                    if points:
-                        dist_start = (points[-1][0] - mem["geometry"][0]["lon"]) ** 2 + (
-                                    points[-1][1] - mem["geometry"][0]["lat"]) ** 2
-                        dist_end = (points[-1][0] - mem["geometry"][-1]["lon"]) ** 2 + (
-                                    points[-1][1] - mem["geometry"][-1]["lat"]) ** 2
-                        if dist_start == 0:
-                            pass  # don't need to do anything
-                        elif dist_end == 0:
-                            # flip the next member - it is entered in the wrong direction
-                            mem["geometry"] = list(reversed(mem["geometry"]))
-                        else:
-                            # try flipping the previous member
-                            dist_flipped_start = (points[0][0] - mem["geometry"][0]["lon"]) ** 2 + (
-                                        points[0][1] - mem["geometry"][0]["lat"]) ** 2
-                            dist_flipped_end = (points[0][0] - mem["geometry"][-1]["lon"]) ** 2 + (
-                                        points[0][1] - mem["geometry"][-1]["lat"]) ** 2
-                            if dist_flipped_start == 0:
-                                # just flip the start
-                                points = list(reversed(points))
-                            elif dist_flipped_end == 0:
-                                # both need to be flipped
-                                points = list(reversed(points))
-                                mem["geometry"] = list(reversed(mem["geometry"]))
-                            else:
-                                # no matches -- look for a new match
-                                point_found = False
-                                for i in range(pos + 1, len(elem['members'])):
-                                    if not point_found:
-                                        new_pt = elem['members'][i]
-                                        dist_start = (new_pt['geometry'][0]['lon'] - points[-1][0]) ** 2 + (
-                                                    new_pt['geometry'][0]['lat'] - points[-1][1]) ** 2
-                                        dist_end = (new_pt['geometry'][-1]['lon'] - points[-1][0]) ** 2 + (
-                                                    new_pt['geometry'][-1]['lat'] - points[-1][1]) ** 2
-
-                                        if dist_start == 0 or dist_end == 0:
-                                            point_found = True
-                                            # swap the order of the members -- we have found the one we want
-                                            elem['members'][pos], elem['members'][i] = elem['members'][i], \
-                                                                                       elem['members'][pos]
-                                            # save this new point as mem
-                                            mem = elem['members'][pos]
-
-                                            if dist_end == 0:
-                                                mem['geometry'] = list(reversed(mem['geometry']))
-
-                    # address outer values
-                    if mem['role'] == 'outer':
-                        if prev == "inner":
-                            # start new outer polygon
-                            points = []
-
-                        if points == [] and not_first:
-                            # append the previous poly to the polygon list
-                            polygons.append(poly)
-                            poly = []
-
-                        for coords in mem["geometry"]:
-                            try:
-                                points.append([coords["lon"], coords["lat"]])
-                            except:
-                                code.interact(local=locals())
-
-                        if points[-1] == points[0]:
-                            # finish the outer polygon if it has met the start
-                            poly.append(points)
-                            points = []
-                        # update condition
-                        prev = "outer"
-
-                    # address inner points
-                    if mem['role'] == "inner":
-                        for coords in mem["geometry"]:
-                            points.append([coords["lon"], coords["lat"]])
-
-                        # check if the inner is complete
-                        if points[-1] == points[0]:
-                            poly.append(points)
-                            points = []
-                        # update condition
-                        prev = "inner"
-
-                    not_first = True
-
-                # add in the final poly
-                polygons.append(poly)
-
-                if polygons != [[]]:
+                # First obtain the outer polygons
+                for member in elem.get("members", []):
+                    if member["role"] == "outer":
+                        points = [(coords["lon"], coords["lat"]) for coords in member.get('geometry', [])]
+                        # Check that the outer polygon is complete
+                        if points and points[-1] == points[0]:
+                            polygons.append([points])
+                # Then get the inner polygons
+                for member in elem.get("members", []):
+                    if member["role"] == "inner":
+                        points = [(coords["lon"], coords["lat"]) for coords in member.get('geometry', [])]
+                        # Check that the inner polygon is complete
+                        if points and points[-1] == points[0]:
+                            # We need to check to which outer polygon the inner polygon belongs
+                            point = Point(points[0])
+                            for poly in polygons:
+                                polygon = Polygon(poly[0])
+                                if polygon.contains(point):
+                                    poly.append(points)
+                                    break
+                # Finally create MultiPolygon geometry
+                if polygons:
                     geometry = geojson.MultiPolygon(polygons)
             else:
                 continue
