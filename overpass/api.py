@@ -206,28 +206,37 @@ class API(object):
                 # First obtain the outer polygons
                 for member in elem.get("members", []):
                     if member["role"] == "outer":
-                        points = [(coords["lon"], coords["lat"]) for coords in member.get('geometry', [])]
+                        points = [(coords["lon"], coords["lat"]) for coords in member.get("geometry", [])]
                         # Check that the outer polygon is complete
                         if points and points[-1] == points[0]:
                             polygons.append([points])
+                        else:
+                            raise UnknownOverpassError("Received corrupt data from Overpass (incomplete polygon).")
                 # Then get the inner polygons
                 for member in elem.get("members", []):
                     if member["role"] == "inner":
-                        points = [(coords["lon"], coords["lat"]) for coords in member.get('geometry', [])]
+                        points = [(coords["lon"], coords["lat"]) for coords in member.get("geometry", [])]
                         # Check that the inner polygon is complete
                         if points and points[-1] == points[0]:
                             # We need to check to which outer polygon the inner polygon belongs
                             point = Point(points[0])
+                            check = False
                             for poly in polygons:
                                 polygon = Polygon(poly[0])
                                 if polygon.contains(point):
                                     poly.append(points)
+                                    check = True
                                     break
+                            if not check:
+                                raise UnknownOverpassError("Received corrupt data from Overpass (inner polygon cannot "
+                                                           "be matched to outer polygon).")
+                        else:
+                            raise UnknownOverpassError("Received corrupt data from Overpass (incomplete polygon).")
                 # Finally create MultiPolygon geometry
                 if polygons:
                     geometry = geojson.MultiPolygon(polygons)
             else:
-                continue
+                raise UnknownOverpassError("Received corrupt data from Overpass (invalid element).")
 
             if geometry:
                 feature = geojson.Feature(
