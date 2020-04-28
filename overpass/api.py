@@ -84,11 +84,13 @@ class API(object):
                           or allow the programmer to specify full query manually (False)
         :param date: a date with an optional time. Example: 2020-04-27 or 2020-04-27T00:00:00Z
         """
-        if date:
+        if date and not isinstance(date, datetime):
+            # If date is given and is not already a datetime, attempt to parse from string
             try:
-                date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
+                date = datetime.fromisoformat(date)
             except ValueError:
-                date = datetime.strptime(date, '%Y-%m-%d')
+                # The 'Z' in a standard overpass date will through fromisoformat() off
+                date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
         # Construct full Overpass query
         if build:
             full_query = self._construct_ql_query(
