@@ -6,9 +6,9 @@ setup(
     version="0.7",
     description="Python wrapper for the OpenStreetMap Overpass API",
     long_description="See README.md",
-    author="Martijn van Exel",
-    author_email="m@rtijn.org",
-    url="https://github.com/mvexel/overpass-api-python-wrapper",
+    author="Alexandre Domingues (original author: Martijn van Exel)",
+    author_email="adomingues@gmail.com",
+    url="https://github.com/Taxuspt/overpass-api-python-wrapper",
     license="Apache",
     keywords=["openstreetmap", "overpass", "wrapper"],
     classifiers=[
@@ -19,6 +19,6 @@ setup(
         "Topic :: Scientific/Engineering :: GIS",
         "Topic :: Utilities",
     ],
-    install_requires=["requests>=2.3.0", "geojson>=1.0.9", "shapely>=1.6.4"],
+    install_requires=["requests>=2.3.0", "geojson>=1.0.9", "shapely>=1.6.4", "osm2geojson>=0.1.17"],
     extras_require={"test": ["pytest"]},
 )

@@ -6,9 +6,8 @@
 import requests
 import json
 import csv
-import geojson
 import logging
-from shapely.geometry import Polygon, Point
+import osm2geojson
 from io import StringIO
 from .errors import (
     OverpassSyntaxError,
@@ -84,6 +83,7 @@ class API(object):
         """
         # Construct full Overpass query
         if build:
+            self._check_verbosity(responseformat, verbosity)
             full_query = self._construct_ql_query(
                 query, responseformat=responseformat, verbosity=verbosity
             )
@@ -127,7 +127,7 @@ class API(object):
             return response
 
         # construct geojson
-        return self._as_geojson(response["elements"])
+        return self._as_geojson(response)
 
     def search(self, feature_type, regex=False):
         """Search for something."""
@@ -186,64 +186,13 @@ class API(object):
             r.encoding = "utf-8"
             return r
 
-    def _as_geojson(self, elements):
+    def _as_geojson(self, response):
+        return osm2geojson.json2geojson(response)
 
-        features = []
-        geometry = None
-        for elem in elements:
-            elem_type = elem.get("type")
-            elem_tags = elem.get("tags")
-            elem_geom = elem.get("geometry", [])
-            if elem_type == "node":
-                # Create Point geometry
-                geometry = geojson.Point((elem.get("lon"), elem.get("lat")))
-            elif elem_type == "way":
-                # Create LineString geometry
-                geometry = geojson.LineString([(coords["lon"], coords["lat"]) for coords in elem_geom])
-            elif elem_type == "relation":
-                # Initialize polygon list
-                polygons = []
-                # First obtain the outer polygons
-                for member in elem.get("members", []):
-                    if member["role"] == "outer":
-                        points = [(coords["lon"], coords["lat"]) for coords in member.get("geometry", [])]
-                        # Check that the outer polygon is complete
-                        if points and points[-1] == points[0]:
-                            polygons.append([points])
-                        else:
-                            raise UnknownOverpassError("Received corrupt data from Overpass (incomplete polygon).")
-                # Then get the inner polygons
-                for member in elem.get("members", []):
-                    if member["role"] == "inner":
-                        points = [(coords["lon"], coords["lat"]) for coords in member.get("geometry", [])]
-                        # Check that the inner polygon is complete
-                        if points and points[-1] == points[0]:
-                            # We need to check to which outer polygon the inner polygon belongs
-                            point = Point(points[0])
-                            check = False
-                            for poly in polygons:
-                                polygon = Polygon(poly[0])
-                                if polygon.contains(point):
-                                    poly.append(points)
-                                    check = True
-                                    break
-                            if not check:
-                                raise UnknownOverpassError("Received corrupt data from Overpass (inner polygon cannot "
-                                                           "be matched to outer polygon).")
-                        else:
-                            raise UnknownOverpassError("Received corrupt data from Overpass (incomplete polygon).")
-                # Finally create MultiPolygon geometry
-                if polygons:
-                    geometry = geojson.MultiPolygon(polygons)
-            else:
-                raise UnknownOverpassError("Received corrupt data from Overpass (invalid element).")
-
-            if geometry:
-                feature = geojson.Feature(
-                    id=elem["id"],
-                    geometry=geometry,
-                    properties=elem_tags
-                )
-                features.append(feature)
-
-        return geojson.FeatureCollection(features)
+    def _check_verbosity(self, responseformat, verbosity):
+        if responseformat == 'geojson' and verbosity.find('geom') == -1:
+            logging.getLogger().warning('''
+            Output is geojson but verbosity doesn\'t contain \'geom\'!
+            Relations and ways will be ignored!
+            Set to e.g. verbosity="body geom"
+            ''')
