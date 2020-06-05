@@ -101,6 +101,7 @@ We will construct a valid Overpass QL query from the parameters you set by defau
 #### `date`
 
 You can query the data as it was on a given date. You can give either a standard ISO date alone (YYYY-MM-DD) or a full overpass date and time (YYYY-MM-DDTHH:MM:SSZ, i.e. 2020-04-28T00:00:00Z).
+You can also directly pass a `date` or `datetime` object from the `datetime` library.
 
 ### Pre-cooked Queries: `MapQuery`, `WayQuery`
 
