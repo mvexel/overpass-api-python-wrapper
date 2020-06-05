@@ -9,6 +9,7 @@ import csv
 import geojson
 import logging
 from datetime import datetime
+
 from shapely.geometry import Polygon, Point
 from io import StringIO
 from .errors import (
