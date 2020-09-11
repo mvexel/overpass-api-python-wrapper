@@ -4,8 +4,6 @@ Overpass API python wrapper
 Python bindings for the OpenStreetMap [Overpass
 API](http://wiki.openstreetmap.org/wiki/Overpass_API).
 
-[![Build Status](https://travis-ci.org/mvexel/overpass-api-python-wrapper.svg?branch=master)](https://travis-ci.org/mvexel/overpass-api-python-wrapper)
-
 Install it
 ==========
 
@@ -143,3 +141,10 @@ issue](https://github.com/mvexel/overpass-api-python-wrapper/issues).
 ### Where did the CLI tool go?
 
 The command line tool was deprecated in version 0.4.0.
+
+## See also
+
+There are other python modules that do similar things.
+
+* https://github.com/mocnik-science/osm-python-tools
+* https://github.com/DinoTools/python-overpy
