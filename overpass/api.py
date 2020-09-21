@@ -187,10 +187,16 @@ class API(object):
             return r
 
     def _as_geojson(self, elements):
-
+        ids_already_seen = set()
         features = []
         geometry = None
         for elem in elements:
+            try:
+                if elem["id"] in ids_already_seen:
+                    continue
+                ids_already_seen.add(elem["id"])
+            except KeyError:
+                raise UnknownOverpassError("Received corrupt data from Overpass (no id).")
             elem_type = elem.get("type")
             elem_tags = elem.get("tags")
             elem_geom = elem.get("geometry", [])
