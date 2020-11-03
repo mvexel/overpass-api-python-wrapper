@@ -54,7 +54,7 @@ response = api.get('node["name"="Salt Lake City"]')
 
 `response` will be a dictionary representing the
 JSON output you would get [from the Overpass API
-directly](https://overpass-api.de/output_formats.html#json). 
+directly](https://overpass-api.de/output_formats.html#json).
 
 **Note that the Overpass query passed to `get()` should not contain any `out` or other meta statements.** See `verbosity` below for how to control the output.
 
@@ -96,7 +96,12 @@ response = api.get('node["name"="Salt Lake City"]', responseformat="xml")
 
 We will construct a valid Overpass QL query from the parameters you set by default. This means you don't have to include 'meta' statements like `[out:json]`, `[timeout:60]`, `[out body]`, etcetera. You just supply the meat of the query, the part that actually tells Overpass what to query for. If for whatever reason you want to override this and supply a full, valid Overpass QL query, you can set `build` to `False` to make the API not do any pre-processing.
 
-### Pre-cooked Queries: `MapQuery`, `WayQuery` 
+#### `date`
+
+You can query the data as it was on a given date. You can give either a standard ISO date alone (YYYY-MM-DD) or a full overpass date and time (YYYY-MM-DDTHH:MM:SSZ, i.e. 2020-04-28T00:00:00Z).
+You can also directly pass a `date` or `datetime` object from the `datetime` library.
+
+### Pre-cooked Queries: `MapQuery`, `WayQuery`
 
 In addition to just sending your query and parse the result, `overpass`
 provides shortcuts for often used map queries. To use them, just pass

@@ -8,6 +8,7 @@ import json
 import csv
 import geojson
 import logging
+from datetime import datetime
 from shapely.geometry import Polygon, Point
 from io import StringIO
 from .errors import (
@@ -42,8 +43,8 @@ class API(object):
     _debug = False
     _proxies = None
 
-    _QUERY_TEMPLATE = "[out:{out}];{query}out {verbosity};"
-    _GEOJSON_QUERY_TEMPLATE = "[out:json];{query}out {verbosity};"
+    _QUERY_TEMPLATE = "[out:{out}]{date};{query}out {verbosity};"
+    _GEOJSON_QUERY_TEMPLATE = "[out:json]{date};{query}out {verbosity};"
 
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
@@ -70,7 +71,7 @@ class API(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
-    def get(self, query, responseformat="geojson", verbosity="body", build=True):
+    def get(self, query, responseformat="geojson", verbosity="body", build=True, date=''):
         """Pass in an Overpass query in Overpass QL.
 
         :param query: the Overpass QL query to send to the endpoint
@@ -81,11 +82,19 @@ class API(object):
                           "body geom qt"
         :param build: boolean to indicate whether to build the overpass query from a template (True)
                           or allow the programmer to specify full query manually (False)
+        :param date: a date with an optional time. Example: 2020-04-27 or 2020-04-27T00:00:00Z
         """
+        if date and isinstance(date, str):
+            # If date is given and is not already a datetime, attempt to parse from string
+            try:
+                date = datetime.fromisoformat(date)
+            except ValueError:
+                # The 'Z' in a standard overpass date will throw fromisoformat() off
+                date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
         # Construct full Overpass query
         if build:
             full_query = self._construct_ql_query(
-                query, responseformat=responseformat, verbosity=verbosity
+                query, responseformat=responseformat, verbosity=verbosity, date=date
             )
         else:
             full_query = query
@@ -137,18 +146,22 @@ class API(object):
     Get = get
     Search = search
 
-    def _construct_ql_query(self, userquery, responseformat, verbosity):
+    def _construct_ql_query(self, userquery, responseformat, verbosity, date):
         raw_query = str(userquery).rstrip()
         if not raw_query.endswith(";"):
             raw_query += ";"
 
+        if date:
+            date = f'[date:"{date.strftime("%Y-%m-%dT%H:%M:%SZ")}"]'
+
         if responseformat == "geojson":
             template = self._GEOJSON_QUERY_TEMPLATE
-            complete_query = template.format(query=raw_query, verbosity=verbosity)
+            complete_query = template.format(
+                query=raw_query, verbosity=verbosity, date=date)
         else:
             template = self._QUERY_TEMPLATE
             complete_query = template.format(
-                query=raw_query, out=responseformat, verbosity=verbosity
+                query=raw_query, out=responseformat, verbosity=verbosity, date=date
             )
 
         if self.debug:
