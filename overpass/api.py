@@ -3,22 +3,19 @@
 # which is licensed under Apache 2.0.
 # See LICENSE.txt for the full license text.
 
-import requests
-import json
 import csv
-import geojson
+import json
 import logging
 from datetime import datetime
-from shapely.geometry import Polygon, Point
 from io import StringIO
-from .errors import (
-    OverpassSyntaxError,
-    TimeoutError,
-    MultipleRequestsError,
-    ServerLoadError,
-    UnknownOverpassError,
-    ServerRuntimeError,
-)
+
+import geojson
+import requests
+from shapely.geometry import Point, Polygon
+
+from .errors import (MultipleRequestsError, OverpassSyntaxError,
+                     ServerLoadError, ServerRuntimeError, TimeoutError,
+                     UnknownOverpassError)
 
 
 class API(object):
@@ -109,14 +106,11 @@ class API(object):
         if self.debug:
             print(content_type)
         if content_type == "text/csv":
-            result = []
             reader = csv.reader(StringIO(r.text), delimiter="\t")
-            for row in reader:
-                result.append(row)
-            return result
+            return [row for row in reader]
         elif content_type in ("text/xml", "application/xml", "application/osm3s+xml"):
             return r.text
-        elif content_type == "application/json":
+        else:
             response = json.loads(r.text)
 
         if not build:
@@ -132,7 +126,7 @@ class API(object):
         if overpass_remark and overpass_remark.startswith("runtime error"):
             raise ServerRuntimeError(overpass_remark)
 
-        if responseformat is not "geojson":
+        if responseformat != "geojson":
             return response
 
         # construct geojson
@@ -236,21 +230,18 @@ class API(object):
                     if member["role"] == "inner":
                         points = [(coords["lon"], coords["lat"]) for coords in member.get("geometry", [])]
                         # Check that the inner polygon is complete
-                        if points and points[-1] == points[0]:
-                            # We need to check to which outer polygon the inner polygon belongs
-                            point = Point(points[0])
-                            check = False
-                            for poly in polygons:
-                                polygon = Polygon(poly[0])
-                                if polygon.contains(point):
-                                    poly.append(points)
-                                    check = True
-                                    break
-                            if not check:
-                                raise UnknownOverpassError("Received corrupt data from Overpass (inner polygon cannot "
-                                                           "be matched to outer polygon).")
-                        else:
+                        if not points or points[-1] != points[0]:
                             raise UnknownOverpassError("Received corrupt data from Overpass (incomplete polygon).")
+                        # We need to check to which outer polygon the inner polygon belongs
+                        point = Point(points[0])
+                        for poly in polygons:
+                            polygon = Polygon(poly[0])
+                            if polygon.contains(point):
+                                poly.append(points)
+                                break
+                        else:
+                            raise UnknownOverpassError("Received corrupt data from Overpass (inner polygon cannot "
+                                                       "be matched to outer polygon).")
                 # Finally create MultiPolygon geometry
                 if polygons:
                     geometry = geojson.MultiPolygon(polygons)

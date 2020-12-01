@@ -8,8 +8,8 @@ class Utils(object):
 
     @classmethod
     def to_overpass_id(cls, osmid, area=False):
-        area_base = 2400000000
-        relation_base = 3600000000
         if area:
+            area_base = 2400000000
             return int(osmid) + area_base
+        relation_base = 3600000000
         return int(osmid) + relation_base
