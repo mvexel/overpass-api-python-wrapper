@@ -98,7 +98,6 @@ class API(object):
             )
         else:
             full_query = query
-
         if self.debug:
             logging.getLogger().info(query)
 
@@ -212,6 +211,19 @@ class API(object):
                 raise UnknownOverpassError("Received corrupt data from Overpass (no id).")
             elem_type = elem.get("type")
             elem_tags = elem.get("tags")
+            elem_nodes = elem.get("nodes", None)
+            elem_timestamp = elem.get("timestamp", None)
+            elem_user = elem.get("user", None)
+            elem_uid = elem.get("uid", None)
+            elem_version = elem.get("version", None)
+            if elem_nodes:
+                elem_tags["nodes"] = elem_nodes
+            if elem_user:
+                elem_tags["user"] = elem_user
+            if elem_uid:
+                elem_tags["uid"] = elem_uid  
+            if elem_version:
+                elem_tags["version"] = elem_version                                                
             elem_geom = elem.get("geometry", [])
             if elem_type == "node":
                 # Create Point geometry
