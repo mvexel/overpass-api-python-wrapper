@@ -1,8 +1,13 @@
 Overpass API python wrapper
 ===========================
 
+.. image:: https://github.com/mvexel/overpass-api-python-wrapper/workflows/CI/badge.svg
+   :target: https://github.com/mvexel/overpass-api-python-wrapper/actions?query=workflow%3ACI
+
+
 This is a thin wrapper around the OpenStreetMap `Overpass
 API <http://wiki.openstreetmap.org/wiki/Overpass_API>`__.
+
 
 |Build Status|
 
