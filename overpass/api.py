@@ -13,9 +13,14 @@ import geojson
 import requests
 from shapely.geometry import Point, Polygon
 
-from .errors import (MultipleRequestsError, OverpassSyntaxError,
-                     ServerLoadError, ServerRuntimeError, TimeoutError,
-                     UnknownOverpassError)
+from .errors import (
+    MultipleRequestsError,
+    OverpassSyntaxError,
+    ServerLoadError,
+    ServerRuntimeError,
+    TimeoutError,
+    UnknownOverpassError,
+)
 
 
 class API(object):
