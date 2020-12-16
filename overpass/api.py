@@ -8,6 +8,7 @@ import json
 import csv
 import geojson
 import logging
+import re
 from datetime import datetime
 from shapely.geometry import Polygon, Point
 from io import StringIO
