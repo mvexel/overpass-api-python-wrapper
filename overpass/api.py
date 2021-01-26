@@ -111,8 +111,7 @@ class API(object):
         if self.debug:
             print(content_type)
         if content_type == "text/csv":
-            reader = csv.reader(StringIO(r.text), delimiter="\t")
-            return [row for row in reader]
+            return list(csv.reader(StringIO(r.text), delimiter="\t"))
         elif content_type in ("text/xml", "application/xml", "application/osm3s+xml"):
             return r.text
         else:
