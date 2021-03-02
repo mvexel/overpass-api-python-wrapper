@@ -1,7 +1,8 @@
 Overpass API python wrapper
 ===========================
 
-![CI](https://github.com/mvexel/overpass-api-python-wrapper/workflows/CI/badge.svg)
+**Looking for a maintainer**
+*Hi there, I am the original author of this project. I no longer have time to maintain it but it looks like it's still useful. I'd like to talk to someone who thinks they can take this on. Drop me a line at m@rtijn.org. Thanks! Martijn van Exel*
 
 Python bindings for the OpenStreetMap [Overpass
 API](http://wiki.openstreetmap.org/wiki/Overpass_API).
