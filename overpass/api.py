@@ -3,21 +3,24 @@
 # which is licensed under Apache 2.0.
 # See LICENSE.txt for the full license text.
 
-import requests
-import json
 import csv
-import geojson
+import json
 import logging
+import re
 from datetime import datetime
-from shapely.geometry import Polygon, Point
 from io import StringIO
+
+import geojson
+import requests
+from shapely.geometry import Point, Polygon
+
 from .errors import (
-    OverpassSyntaxError,
-    TimeoutError,
     MultipleRequestsError,
+    OverpassSyntaxError,
     ServerLoadError,
-    UnknownOverpassError,
     ServerRuntimeError,
+    TimeoutError,
+    UnknownOverpassError,
 )
 
 
@@ -109,14 +112,10 @@ class API(object):
         if self.debug:
             print(content_type)
         if content_type == "text/csv":
-            result = []
-            reader = csv.reader(StringIO(r.text), delimiter="\t")
-            for row in reader:
-                result.append(row)
-            return result
+            return list(csv.reader(StringIO(r.text), delimiter="\t"))
         elif content_type in ("text/xml", "application/xml", "application/osm3s+xml"):
             return r.text
-        elif content_type == "application/json":
+        else:
             response = json.loads(r.text)
 
         if not build:
@@ -132,11 +131,75 @@ class API(object):
         if overpass_remark and overpass_remark.startswith("runtime error"):
             raise ServerRuntimeError(overpass_remark)
 
-        if responseformat is not "geojson":
+        if responseformat != "geojson":
             return response
 
         # construct geojson
         return self._as_geojson(response["elements"])
+
+    @staticmethod
+    def _api_status() -> dict:
+        """
+        :returns: dict describing the client's status with the API
+        """
+        endpoint = "https://overpass-api.de/api/status"
+
+        r = requests.get(endpoint)
+        lines = tuple(r.text.splitlines())
+
+        available_re = re.compile(r'\d(?= slots? available)')
+        available_slots = int(
+            available_re.search(lines[3]).group()
+            if available_re.search(lines[3])
+            else 0
+        )
+
+        waiting_re = re.compile(r'(?<=Slot available after: )[\d\-TZ:]{20}')
+        waiting_slots = tuple(
+            datetime.strptime(
+                waiting_re.search(line).group(), "%Y-%m-%dT%H:%M:%S%z"
+            )
+            for line in lines if waiting_re.search(line)
+        )
+
+        current_idx = next(
+            i for i, word in enumerate(lines)
+            if word.startswith('Currently running queries')
+        )
+        running_slots = tuple(tuple(line.split()) for line in lines[current_idx + 1:])
+        running_slots_datetimes = tuple(
+            datetime.strptime(
+                slot[3], "%Y-%m-%dT%H:%M:%S%z"
+            )
+            for slot in running_slots
+        )
+
+        return {
+            "available_slots": available_slots,
+            "waiting_slots": waiting_slots,
+            "running_slots": running_slots_datetimes,
+        }
+
+    @property
+    def slots_available(self) -> int:
+        """
+        :returns: count of open slots the client has on the server
+        """
+        return self._api_status()["available_slots"]
+
+    @property
+    def slots_waiting(self) -> tuple:
+        """
+        :returns: tuple of datetimes representing waiting slots and when they will be available
+        """
+        return self._api_status()["waiting_slots"]
+
+    @property
+    def slots_running(self) -> tuple:
+        """
+        :returns: tuple of datetimes representing running slots and when they will be freed
+        """
+        return self._api_status()["running_slots"]
 
     def search(self, feature_type, regex=False):
         """Search for something."""
@@ -236,21 +299,18 @@ class API(object):
                     if member["role"] == "inner":
                         points = [(coords["lon"], coords["lat"]) for coords in member.get("geometry", [])]
                         # Check that the inner polygon is complete
-                        if points and points[-1] == points[0]:
-                            # We need to check to which outer polygon the inner polygon belongs
-                            point = Point(points[0])
-                            check = False
-                            for poly in polygons:
-                                polygon = Polygon(poly[0])
-                                if polygon.contains(point):
-                                    poly.append(points)
-                                    check = True
-                                    break
-                            if not check:
-                                raise UnknownOverpassError("Received corrupt data from Overpass (inner polygon cannot "
-                                                           "be matched to outer polygon).")
-                        else:
+                        if not points or points[-1] != points[0]:
                             raise UnknownOverpassError("Received corrupt data from Overpass (incomplete polygon).")
+                        # We need to check to which outer polygon the inner polygon belongs
+                        point = Point(points[0])
+                        for poly in polygons:
+                            polygon = Polygon(poly[0])
+                            if polygon.contains(point):
+                                poly.append(points)
+                                break
+                        else:
+                            raise UnknownOverpassError("Received corrupt data from Overpass (inner polygon cannot "
+                                                       "be matched to outer polygon).")
                 # Finally create MultiPolygon geometry
                 if polygons:
                     geometry = geojson.MultiPolygon(polygons)

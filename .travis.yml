@@ -1,13 +1,13 @@
 language: python
 python:
-  - "3.4"
-  - "3.5"
-  - "3.6"
-  - "3.7"
-  - "3.8"
+  - 3.6
+  - 3.7
+  - 3.8
+  - 3.9
 install:
-  - "pip install ."
-# command to run tests
-script: py.test
+  - sudo apt-get install libgeos-dev
+  - pip install -r requirements-dev.txt
+  - pip install -r requirements.txt
+script: python -m pytest
 notifications:
   email: false
