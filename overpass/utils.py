@@ -6,8 +6,8 @@
 
 class Utils(object):
 
-    @classmethod
-    def to_overpass_id(cls, osmid, area=False):
+    @staticmethod
+    def to_overpass_id(osmid, area=False):
         area_base = 2400000000
         relation_base = 3600000000
         if area:
