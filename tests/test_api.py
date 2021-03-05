@@ -56,6 +56,14 @@ def test_geojson(
     assert len(osm_geo["features"]) > length
 
 
+def test_multipolygon():
+    """
+    Test that multipolygons are processed without error
+    """
+    api = overpass.API()
+    api.get("rel(11038555)", verbosity="body geom")
+
+
 @pytest.mark.parametrize("verbosity,response,output", [
     ("body geom", "tests/example_body.json", "tests/example_body.geojson"),
     # ("tags geom", "tests/example.json", "tests/example.geojson"),
