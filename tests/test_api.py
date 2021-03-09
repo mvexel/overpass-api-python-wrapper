@@ -3,10 +3,13 @@
 # which is licensed under Apache 2.0.
 # See LICENSE.txt for the full license text.
 
-import overpass
-import geojson
 import pickle
-import os
+import datetime
+from pathlib import Path
+
+import geojson
+import overpass
+import pytest
 
 
 def test_initialize_api():
@@ -30,7 +33,7 @@ def test_geojson_extended():
 
     class API(overpass.API):
         def _get_from_overpass(self, query):
-            return pickle.load(open(os.path.join(os.path.dirname(__file__), "example.response"), "rb"))
+            return pickle.load((Path(__file__).parent / "example.response").open("rb"))
 
     # The commented code should only be executed once when major changes to the Overpass API and/or to this wrapper are
     # introduced. One than has to manually verify that the date in the  example.response file from the Overpass API
@@ -50,33 +53,140 @@ def test_geojson_extended():
     # geojson.dump(osm_geo, open(os.path.join(os.path.dirname(__file__), "example.json"), "w"))
 
     api = API()
-    osm_geo = api.get("rel(6518385);out body geom;way(10322303);out body geom;node(4927326183);", verbosity='body geom')
-    ref_geo = geojson.load(open(os.path.join(os.path.dirname(__file__), "example.json"), "r"))
-    assert osm_geo==ref_geo
+    osm_geo = api.get(
+        "rel(6518385);out body geom;way(10322303);out body geom;node(4927326183);", verbosity='body geom')
+    ref_geo = geojson.load(
+        (Path(__file__).parent / "example.json").open("r"))
+    assert osm_geo == ref_geo
 
 
-def test_slots_available():
+@pytest.mark.parametrize(
+    "response,slots",
+    [
+        ("tests/overpass_status/no_slots_waiting.txt", 2),
+        ("tests/overpass_status/one_slot_running.txt", 1),
+        ("tests/overpass_status/one_slot_waiting.txt", 1),
+        ("tests/overpass_status/two_slots_waiting.txt", 0),
+    ]
+)
+def test_slots_available(response, slots, requests_mock):
+    with open(response) as fp:
+        mock_response = fp.read()
+    requests_mock.get("https://overpass-api.de/api/status", text=mock_response)
+
     api = overpass.API(debug=True)
 
+    requests_mock.post(
+        "https://overpass-api.de/api/interpreter", json={"elements": []}
+    )
     map_query = overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635)
     api.get(map_query)
 
     assert api.slots_available <= 2 and api.slots_available >= 0
+    assert api.slots_available == slots
 
 
-def test_slots_running():
+@pytest.mark.parametrize(
+    "response,slots",
+    [
+        ("tests/overpass_status/no_slots_waiting.txt", ()),
+        (
+            "tests/overpass_status/one_slot_running.txt",
+            (
+                datetime.datetime(
+                    year=2021,
+                    month=3,
+                    day=8,
+                    hour=20,
+                    minute=22,
+                    second=55,
+                    tzinfo=datetime.timezone.utc
+                ),
+            )
+        ),
+        ("tests/overpass_status/one_slot_waiting.txt", ()),
+        ("tests/overpass_status/two_slots_waiting.txt", ()),
+    ]
+)
+def test_slots_running(response, slots, requests_mock):
+    with open(response) as fp:
+        mock_response = fp.read()
+    requests_mock.get("https://overpass-api.de/api/status", text=mock_response)
+
+    api = overpass.API(debug=True)
+
+    requests_mock.post(
+        "https://overpass-api.de/api/interpreter", json={"elements": []}
+    )
+
     api = overpass.API(debug=True)
 
     map_query = overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635)
     api.get(map_query)
 
     assert isinstance(api.slots_running, tuple)
+    assert api.slots_running == slots
 
 
-def test_slots_waiting():
+@pytest.mark.parametrize(
+    "response,slots",
+    [
+        ("tests/overpass_status/no_slots_waiting.txt", ()),
+        ("tests/overpass_status/one_slot_running.txt", ()),
+        (
+            "tests/overpass_status/one_slot_waiting.txt",
+            (
+                datetime.datetime(
+                    year=2021,
+                    month=3,
+                    day=8,
+                    hour=20,
+                    minute=23,
+                    second=28,
+                    tzinfo=datetime.timezone.utc
+                ),
+            )
+        ),
+        (
+            "tests/overpass_status/two_slots_waiting.txt",
+            (
+                datetime.datetime(
+                    year=2021,
+                    month=3,
+                    day=8,
+                    hour=20,
+                    minute=27,
+                    second=00,
+                    tzinfo=datetime.timezone.utc
+                ),
+                datetime.datetime(
+                    year=2021,
+                    month=3,
+                    day=8,
+                    hour=20,
+                    minute=30,
+                    second=28,
+                    tzinfo=datetime.timezone.utc
+                )
+            )
+        ),
+    ]
+)
+def test_slots_waiting(response, slots, requests_mock):
+    with open(response) as fp:
+        mock_response = fp.read()
+    requests_mock.get("https://overpass-api.de/api/status", text=mock_response)
+
+    api = overpass.API(debug=True)
+
+    requests_mock.post(
+        "https://overpass-api.de/api/interpreter", json={"elements": []}
+    )
+
     api = overpass.API(debug=True)
 
     map_query = overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635)
     api.get(map_query)
 
     assert isinstance(api.slots_waiting, tuple)
+    assert api.slots_waiting == slots
