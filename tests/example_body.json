@@ -2,7 +2,7 @@
   "version": 0.6,
   "generator": "Overpass API 0.7.56.9 76e5016d",
   "osm3s": {
-    "timestamp_osm_base": "2021-03-10T20:07:56Z",
+    "timestamp_osm_base": "2021-03-10T23:06:58Z",
     "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
   },
   "elements": [
@@ -407,16 +407,6 @@
       ],
       "tags": {"addr:city": "Berkeley", "foot": "yes", "highway": "service"}
     },
-    {
-      "type": "node",
-      "id": 4927326183,
-      "lat": 37.8696521,
-      "lon": -122.3184121,
-      "timestamp": "2017-06-20T19:06:58Z",
-      "version": 1,
-      "changeset": 49702282,
-      "user": "karitotp",
-      "uid": 2748195
-    }
+    {"type": "node", "id": 4927326183, "lat": 37.8696521, "lon": -122.3184121}
   ]
 }

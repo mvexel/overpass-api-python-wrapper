@@ -2,13 +2,18 @@
   "version": 0.6,
   "generator": "Overpass API 0.7.56.9 76e5016d",
   "osm3s": {
-    "timestamp_osm_base": "2021-03-10T20:06:57Z",
+    "timestamp_osm_base": "2021-03-10T23:05:48Z",
     "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
   },
   "elements": [
     {
       "type": "relation",
       "id": 6518385,
+      "timestamp": "2021-02-17T03:29:31Z",
+      "version": 14,
+      "changeset": 99415479,
+      "user": "Mstew354",
+      "uid": 11988139,
       "bounds": {
         "minlat": 37.8377218,
         "minlon": -122.2185527,
@@ -361,6 +366,11 @@
     {
       "type": "way",
       "id": 10322303,
+      "timestamp": "2017-06-20T19:07:01Z",
+      "version": 5,
+      "changeset": 49702282,
+      "user": "karitotp",
+      "uid": 2748195,
       "bounds": {
         "minlat": 37.8687499,
         "minlon": -122.3184769,
@@ -407,6 +417,16 @@
       ],
       "tags": {"addr:city": "Berkeley", "foot": "yes", "highway": "service"}
     },
-    {"type": "node", "id": 4927326183, "lat": 37.8696521, "lon": -122.3184121}
+    {
+      "type": "node",
+      "id": 4927326183,
+      "lat": 37.8696521,
+      "lon": -122.3184121,
+      "timestamp": "2017-06-20T19:06:58Z",
+      "version": 1,
+      "changeset": 49702282,
+      "user": "karitotp",
+      "uid": 2748195
+    }
   ]
 }
