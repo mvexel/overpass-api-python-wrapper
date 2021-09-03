@@ -53,30 +53,3 @@ def test_geojson_extended():
     osm_geo = api.get("rel(6518385);out body geom;way(10322303);out body geom;node(4927326183);", verbosity='body geom')
     ref_geo = geojson.load(open(os.path.join(os.path.dirname(__file__), "example.json"), "r"))
     assert osm_geo==ref_geo
-
-
-def test_slots_available():
-    api = overpass.API(debug=True)
-
-    map_query = overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635)
-    api.get(map_query)
-
-    assert api.slots_available <= 2 and api.slots_available >= 0
-
-
-def test_slots_running():
-    api = overpass.API(debug=True)
-
-    map_query = overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635)
-    api.get(map_query)
-
-    assert isinstance(api.slots_running, tuple)
-
-
-def test_slots_waiting():
-    api = overpass.API(debug=True)
-
-    map_query = overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635)
-    api.get(map_query)
-
-    assert isinstance(api.slots_waiting, tuple)
