@@ -9,25 +9,33 @@ import pickle
 import pytest
 import os
 
-
-PARAM_GEOJSON = (overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635),
-                 'node(area:3602758138)[amenity=cafe]')
+from tests import load_resource
 
 
-def test_initialize_api():
+PARAM_GEOJSON = ((overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635), 'map_query_response.json'),
+                 ('node(area:3602758138)[amenity=cafe]', 'map_query_response.json'))
+
+
+def test_initialize_api(requests):
     api = overpass.API()
     assert isinstance(api, overpass.API)
     assert api.debug is False
+    assert not requests.get.called
+    assert not requests.post.called
 
 
-@pytest.mark.parametrize('query', PARAM_GEOJSON)
-def test_geojson(query):
+@pytest.mark.parametrize('query, response_file', PARAM_GEOJSON)
+def test_geojson(requests, query, response_file):
+    requests.response._content = load_resource(response_file)
     api = overpass.API(debug=True)
     osm_geo = api.get(query)
     assert osm_geo["features"]
+    assert requests.post.called
+    assert requests.post.call_args.args == ('https://overpass-api.de/api/interpreter',)
+    assert not requests.get.called
 
 
-def test_geojson_extended():
+def test_geojson_extended(requests):
 
     class API(overpass.API):
         def _get_from_overpass(self, query):
@@ -54,3 +62,5 @@ def test_geojson_extended():
     osm_geo = api.get("rel(6518385);out body geom;way(10322303);out body geom;node(4927326183);", verbosity='body geom')
     ref_geo = geojson.load(open(os.path.join(os.path.dirname(__file__), "example.json"), "r"))
     assert osm_geo == ref_geo
+    assert not requests.get.called
+    assert not requests.post.called

@@ -1,0 +1,1141 @@
+{
+  "version": 0.6,
+  "generator": "Overpass API 0.7.56.9 76e5016d",
+  "osm3s": {
+    "timestamp_osm_base": "2021-09-06T06:22:14Z",
+    "timestamp_areas_base": "2021-09-06T05:56:43Z",
+    "copyright": "The data included in this document is from www.openstreetmap.org. The data is made available under ODbL."
+  },
+  "elements": [
+
+{
+  "type": "node",
+  "id": 830609255,
+  "lat": -15.7526149,
+  "lon": -47.8900512,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Café Sincera",
+    "smoking": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 1532856975,
+  "lat": -15.7600089,
+  "lon": -47.8791123,
+  "tags": {
+    "addr:street": "CLN 408",
+    "amenity": "cafe",
+    "name": "Senhoritas"
+  }
+},
+{
+  "type": "node",
+  "id": 1785424776,
+  "lat": -15.7399443,
+  "lon": -47.8933345,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Café Savana"
+  }
+},
+{
+  "type": "node",
+  "id": 2691239509,
+  "lat": -15.8268000,
+  "lon": -47.9062800,
+  "tags": {
+    "addr:place": "Asa Sul",
+    "addr:street": "Cls 410",
+    "amenity": "cafe",
+    "cuisine": "pizza",
+    "name": "Gentil"
+  }
+},
+{
+  "type": "node",
+  "id": 3051977281,
+  "lat": -15.7567262,
+  "lon": -47.8913837,
+  "tags": {
+    "amenity": "cafe",
+    "internet_access": "no",
+    "name": "Amor à Torta",
+    "opening_hours": "Mo-Fr 07:30-19:30; Sa 08:00-18:00",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3089963930,
+  "lat": -15.7869850,
+  "lon": -47.8864230,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Cafezinho Express"
+  }
+},
+{
+  "type": "node",
+  "id": 3093838425,
+  "lat": -15.7770943,
+  "lon": -47.8783130,
+  "tags": {
+    "addr:street": "CLN 204",
+    "amenity": "cafe",
+    "name": "Candy House",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3093842234,
+  "lat": -15.7575012,
+  "lon": -47.8825355,
+  "tags": {
+    "amenity": "cafe",
+    "brand": "Fran's Café",
+    "brand:wikidata": "Q62075645",
+    "cuisine": "coffee_shop",
+    "internet_access": "wlan",
+    "internet_access:fee": "no",
+    "name": "Fran's Café",
+    "opening_hours": "24/7",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3095008557,
+  "lat": -15.7665684,
+  "lon": -47.8779077,
+  "tags": {
+    "addr:street": "CLN 406",
+    "amenity": "cafe",
+    "name": "Sebinho"
+  }
+},
+{
+  "type": "node",
+  "id": 3139274344,
+  "lat": -15.8145074,
+  "lon": -47.8388265,
+  "tags": {
+    "amenity": "cafe"
+  }
+},
+{
+  "type": "node",
+  "id": 3161293041,
+  "lat": -15.7749509,
+  "lon": -47.8908733,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Café Cobogó"
+  }
+},
+{
+  "type": "node",
+  "id": 3190786485,
+  "lat": -15.7461875,
+  "lon": -47.8920840,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Moebius Café"
+  }
+},
+{
+  "type": "node",
+  "id": 3192140335,
+  "lat": -15.7661003,
+  "lon": -47.8772850,
+  "tags": {
+    "addr:street": "CLN 407",
+    "amenity": "cafe",
+    "name": "Cafezinho"
+  }
+},
+{
+  "type": "node",
+  "id": 3200216679,
+  "lat": -15.7470931,
+  "lon": -47.8836644,
+  "tags": {
+    "addr:street": "CLN 413",
+    "amenity": "cafe",
+    "internet_access": "wlan",
+    "level": "0",
+    "name": "Clandestino",
+    "opening_hours": "Mo 09:00-21:00; We-Sa 09:00-21:00; Su 09:00-15:00",
+    "outdoor_seating": "yes",
+    "smoking": "no",
+    "website": "http://www.cafeclandestino.com.br"
+  }
+},
+{
+  "type": "node",
+  "id": 3211680213,
+  "lat": -15.7459700,
+  "lon": -47.8913941,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Genaro - jazz burger café"
+  }
+},
+{
+  "type": "node",
+  "id": 3222516874,
+  "lat": -15.7806286,
+  "lon": -47.8860998,
+  "tags": {
+    "addr:place": "CLN 303",
+    "amenity": "cafe",
+    "internet_access": "wlan",
+    "internet_access:fee": "no",
+    "name": "Caramella",
+    "opening_hours": "Mo-Su 07:30-21:00",
+    "smoking": "no",
+    "website": "http://www.caramellaconfeitaria.com.br/",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3222516875,
+  "lat": -15.7805371,
+  "lon": -47.8847823,
+  "tags": {
+    "addr:place": "CLN 303",
+    "amenity": "cafe",
+    "internet_access": "wlan",
+    "name": "Martinica Café",
+    "opening_hours": "Mo-Fr 11:00-01:00; Sa 17:00-01:00; Su 18:00-01:00",
+    "phone": "+55 61 33262357"
+  }
+},
+{
+  "type": "node",
+  "id": 3223614838,
+  "lat": -15.7451711,
+  "lon": -47.8870925,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Torteria di Lorenza"
+  }
+},
+{
+  "type": "node",
+  "id": 3230418026,
+  "lat": -15.7832184,
+  "lon": -47.8829046,
+  "tags": {
+    "addr:city": "Brasília",
+    "addr:housenumber": "Loja 56",
+    "addr:postcode": "70722-520",
+    "addr:street": "CLN 102 Bloco B",
+    "addr:suburb": "Asa Norte",
+    "amenity": "cafe",
+    "internet_access": "wlan",
+    "name": "Objeto Encontrado",
+    "opening_hours": "Mo-Sa 12:00-23:00",
+    "phone": "+55 61 3081-8383",
+    "smoking": "no",
+    "website": "http://objetoencontrado.com.br"
+  }
+},
+{
+  "type": "node",
+  "id": 3231952883,
+  "lat": -15.7770016,
+  "lon": -47.8827129,
+  "tags": {
+    "amenity": "cafe",
+    "cuisine": "french",
+    "name": "Daniel Briand",
+    "opening_hours": "Tu-Fr 09:00-22:00; Sa 09:30-22:00; Su 08:00-22:00",
+    "phone": "+55 61 33261135",
+    "website": "https://www.cafedanielbriand.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 3324092861,
+  "lat": -15.7563860,
+  "lon": -47.8903219,
+  "tags": {
+    "amenity": "cafe",
+    "internet_access": "wlan",
+    "name": "D'Vilella",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3334254945,
+  "lat": -15.7454249,
+  "lon": -47.8874166,
+  "tags": {
+    "amenity": "cafe",
+    "diet:vegan": "only",
+    "name": "Canelle Confeitaria",
+    "opening_hours": "Tu-Sa 10:00-22:00;Su 12:00-20:00",
+    "phone": "+55 61 30372422"
+  }
+},
+{
+  "type": "node",
+  "id": 3334254946,
+  "lat": -15.7403494,
+  "lon": -47.8929929,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Florisa Café",
+    "opening_hours": "Mo-Sa 08:00-21:00",
+    "phone": "+55 61 32028882"
+  }
+},
+{
+  "type": "node",
+  "id": 3358345330,
+  "lat": -15.7833159,
+  "lon": -47.8785943,
+  "tags": {
+    "addr:city": "Brasilia",
+    "addr:street": "CLN 202 Bloco A",
+    "addr:suburb": "Asa Norte",
+    "amenity": "cafe",
+    "internet_access": "wlan",
+    "name": "Café Cristina Colina da Pedra",
+    "opening_hours": "Su 12:00-19:00; Mo-Sa 08:00-19:00"
+  }
+},
+{
+  "type": "node",
+  "id": 3362305606,
+  "lat": -15.7804074,
+  "lon": -47.8851897,
+  "tags": {
+    "amenity": "cafe",
+    "diet:gluten_free": "yes",
+    "diet:vegan": "yes",
+    "name": "Bioon Café"
+  }
+},
+{
+  "type": "node",
+  "id": 3362308337,
+  "lat": -15.7809705,
+  "lon": -47.8862323,
+  "tags": {
+    "amenity": "cafe",
+    "cuisine": "arab",
+    "name": "Café com Café"
+  }
+},
+{
+  "type": "node",
+  "id": 3364780124,
+  "lat": -15.8278397,
+  "lon": -47.9225416,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Dylan Cafe Bakery"
+  }
+},
+{
+  "type": "node",
+  "id": 3451247095,
+  "lat": -15.7597400,
+  "lon": -47.8805597,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Vincent Chás e Cafés"
+  }
+},
+{
+  "type": "node",
+  "id": 3525964203,
+  "lat": -15.7649188,
+  "lon": -47.8701905,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Café das Letras",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3634570440,
+  "lat": -15.8044722,
+  "lon": -47.8852709,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Rappot"
+  }
+},
+{
+  "type": "node",
+  "id": 3634570442,
+  "lat": -15.8045200,
+  "lon": -47.8851878,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Café do Ponto"
+  }
+},
+{
+  "type": "node",
+  "id": 3634570451,
+  "lat": -15.8048503,
+  "lon": -47.8846875,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Cristina Cafés",
+    "website": "http://cafecristina.com.br"
+  }
+},
+{
+  "type": "node",
+  "id": 3645307602,
+  "lat": -15.7626851,
+  "lon": -47.8896497,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Café Bem Casado",
+    "opening_hours": "Mo-Sa 09:00-19:30",
+    "website": "http://cafebemcasado.com.br"
+  }
+},
+{
+  "type": "node",
+  "id": 3768730374,
+  "lat": -15.7831717,
+  "lon": -47.8834145,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Rosa's Café"
+  }
+},
+{
+  "type": "node",
+  "id": 3900700774,
+  "lat": -15.7608557,
+  "lon": -47.8916129,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Grão Sabor"
+  }
+},
+{
+  "type": "node",
+  "id": 3958863453,
+  "lat": -15.7877449,
+  "lon": -47.8826614,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Art Café"
+  }
+},
+{
+  "type": "node",
+  "id": 3958863455,
+  "lat": -15.7871193,
+  "lon": -47.8828056,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Tomilla Café",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3971324159,
+  "lat": -15.7873255,
+  "lon": -47.8828911,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Especiarias de Minas"
+  }
+},
+{
+  "type": "node",
+  "id": 3971325069,
+  "lat": -15.7839330,
+  "lon": -47.8848583,
+  "tags": {
+    "amenity": "cafe",
+    "brand": "Fran's Café",
+    "brand:wikidata": "Q62075645",
+    "cuisine": "coffee_shop",
+    "name": "Fran's Café",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 3973507957,
+  "lat": -15.7812333,
+  "lon": -47.8881001,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Cópia com Café"
+  }
+},
+{
+  "type": "node",
+  "id": 4081269529,
+  "lat": -15.7736120,
+  "lon": -47.8765470,
+  "tags": {
+    "addr:city": "Brasília",
+    "addr:street": "CLN 404",
+    "addr:suburb": "Asa Norte",
+    "amenity": "cafe",
+    "internet_access": "yes",
+    "internet_access:fee": "no",
+    "name": "Los Baristas",
+    "opening_hours": "Mo-Fr 12:00-20:00; Sa 10:00-19:00",
+    "outdoor_seating": "yes",
+    "smoking": "no",
+    "website": "https://www.losbaristas.com/"
+  }
+},
+{
+  "type": "node",
+  "id": 4081269533,
+  "lat": -15.7901370,
+  "lon": -47.8849886,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Chateau Brasil"
+  }
+},
+{
+  "type": "node",
+  "id": 4119072799,
+  "lat": -15.7470135,
+  "lon": -47.8835617,
+  "tags": {
+    "amenity": "cafe",
+    "level": "1",
+    "name": "Quintal f/508",
+    "opening_hours": "Mo-Fr 15:30-20:30; Sa 09:00-12:00",
+    "outdoor_seating": "no",
+    "phone": "+55 61 33473985;+55 61 91400303",
+    "website": "https://f508.com.br/quintal/"
+  }
+},
+{
+  "type": "node",
+  "id": 4156321058,
+  "lat": -15.7770087,
+  "lon": -47.8840073,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Chico Mineiro Confeitaria e Café"
+  }
+},
+{
+  "type": "node",
+  "id": 4187993132,
+  "lat": -15.7746238,
+  "lon": -47.8856309,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Café Sarah Kubitscheck",
+    "opening_hours": "Mo-Fr 09:00-20:00; Sa 08:00-17:00",
+    "phone": "+55 61 39637373"
+  }
+},
+{
+  "type": "node",
+  "id": 4207805094,
+  "lat": -15.7636830,
+  "lon": -47.8815450,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Café da Vó Maria"
+  }
+},
+{
+  "type": "node",
+  "id": 4330783337,
+  "lat": -15.8192743,
+  "lon": -47.8998423,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Magrelas Café"
+  }
+},
+{
+  "type": "node",
+  "id": 4433154149,
+  "lat": -15.8097643,
+  "lon": -47.9078076,
+  "tags": {
+    "amenity": "cafe",
+    "cuisine": "french",
+    "name": "Le Jardin"
+  }
+},
+{
+  "type": "node",
+  "id": 4471601993,
+  "lat": -15.8307026,
+  "lon": -47.9242343,
+  "tags": {
+    "amenity": "cafe",
+    "internet_access": "yes",
+    "internet_access:fee": "no",
+    "name": "Ernesto Cafés Especiais",
+    "name:pt": "Ernesto Cafés Especiais",
+    "opening_hours": "Mo-Su 07:00-22:00",
+    "outdoor_seating": "yes",
+    "smoking": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 4558361197,
+  "lat": -15.7355928,
+  "lon": -47.8972574,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Rei do Mate",
+    "name:pt": "Rei do Mate"
+  }
+},
+{
+  "type": "node",
+  "id": 4558399090,
+  "lat": -15.7390367,
+  "lon": -47.8892686,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Croissanterie café | bistrô"
+  }
+},
+{
+  "type": "node",
+  "id": 4585501235,
+  "lat": -15.7865650,
+  "lon": -47.8888328,
+  "tags": {
+    "amenity": "cafe",
+    "brand": "Fran's Café",
+    "brand:wikidata": "Q62075645",
+    "cuisine": "coffee_shop",
+    "name": "Fran's Café",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 4585501236,
+  "lat": -15.7866114,
+  "lon": -47.8890018,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Martinica"
+  }
+},
+{
+  "type": "node",
+  "id": 4585501245,
+  "lat": -15.7871431,
+  "lon": -47.8892057,
+  "tags": {
+    "amenity": "cafe",
+    "cuisine": "chocolate",
+    "name": "Kopenhagen"
+  }
+},
+{
+  "type": "node",
+  "id": 4585529781,
+  "lat": -15.7871869,
+  "lon": -47.8840682,
+  "tags": {
+    "amenity": "cafe",
+    "level": "1",
+    "name": "Grande Café"
+  }
+},
+{
+  "type": "node",
+  "id": 4591337312,
+  "lat": -15.7501975,
+  "lon": -47.8933428,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Rei do Pão de Queijo"
+  }
+},
+{
+  "type": "node",
+  "id": 4591337315,
+  "lat": -15.7499358,
+  "lon": -47.8931995,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Iaga Arte Café"
+  }
+},
+{
+  "type": "node",
+  "id": 4608731433,
+  "lat": -15.7868298,
+  "lon": -47.8846300,
+  "tags": {
+    "amenity": "cafe",
+    "level": "0",
+    "name": "Crépe de Paris"
+  }
+},
+{
+  "type": "node",
+  "id": 4693815344,
+  "lat": -15.7334022,
+  "lon": -47.8996803,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Kopenhagen"
+  }
+},
+{
+  "type": "node",
+  "id": 4825889842,
+  "lat": -15.7337708,
+  "lon": -47.8987679,
+  "tags": {
+    "amenity": "cafe",
+    "level": "0",
+    "name": "Casa do Pão de Queijo"
+  }
+},
+{
+  "type": "node",
+  "id": 4897810422,
+  "lat": -15.7595750,
+  "lon": -47.8785977,
+  "tags": {
+    "amenity": "cafe",
+    "cuisine": "arab",
+    "name": "Snob",
+    "name:pt": "Snob"
+  }
+},
+{
+  "type": "node",
+  "id": 4908113823,
+  "lat": -15.7526495,
+  "lon": -47.8891559,
+  "tags": {
+    "amenity": "cafe",
+    "cuisine": "chocolate",
+    "name": "Lugano"
+  }
+},
+{
+  "type": "node",
+  "id": 4908141129,
+  "lat": -15.7906235,
+  "lon": -47.8831845,
+  "tags": {
+    "amenity": "cafe",
+    "level": "2",
+    "name": "Gaudi Café"
+  }
+},
+{
+  "type": "node",
+  "id": 4957238257,
+  "lat": -15.7591758,
+  "lon": -47.8877238,
+  "tags": {
+    "amenity": "cafe",
+    "cuisine": "nordestina",
+    "name": "Café e um Chêro",
+    "opening_hours": "Mo-Sa 07:00-22:00",
+    "website": "http://www.cafeeumchero.com.br"
+  }
+},
+{
+  "type": "node",
+  "id": 5029115521,
+  "lat": -15.7808340,
+  "lon": -47.8891390,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Oficina Café",
+    "name:pt": "Oficina Café"
+  }
+},
+{
+  "type": "node",
+  "id": 5053803039,
+  "lat": -15.7634877,
+  "lon": -47.8926765,
+  "tags": {
+    "amenity": "cafe",
+    "contact:instagram": "https://www.instagram.com/antonietacafe/",
+    "internet_access": "wlan",
+    "internet_access:fee": "no",
+    "name": "Antonieta Café",
+    "opening_hours": "Mo-Fr 13:00-21:00; Sa 14:00-20:00",
+    "outdoor_seating": "no",
+    "smoking": "no",
+    "wheelchair": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5087302622,
+  "lat": -15.7452496,
+  "lon": -47.8866603,
+  "tags": {
+    "amenity": "cafe",
+    "level": "-1",
+    "name": "Labbora Cafés Especiais",
+    "opening_hours": "Mo-Fr 10:00-19:00"
+  }
+},
+{
+  "type": "node",
+  "id": 5087302722,
+  "lat": -15.7446725,
+  "lon": -47.8870871,
+  "tags": {
+    "amenity": "cafe",
+    "cuisine": "hungarian",
+    "name": "Duna Casa Húngara",
+    "name:pt": "Duna Casa Húngara"
+  }
+},
+{
+  "type": "node",
+  "id": 5124575930,
+  "lat": -15.7962238,
+  "lon": -47.8927946,
+  "tags": {
+    "amenity": "cafe",
+    "internet_access": "wlan",
+    "name": "Café Civitá",
+    "name:pt": "Café Civitá"
+  }
+},
+{
+  "type": "node",
+  "id": 5125114322,
+  "lat": -15.7953783,
+  "lon": -47.8924834,
+  "tags": {
+    "amenity": "cafe",
+    "brand": "Fran's Café",
+    "brand:wikidata": "Q62075645",
+    "cuisine": "coffee_shop",
+    "name": "Fran's Café",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5135659820,
+  "lat": -15.7686257,
+  "lon": -47.8743398,
+  "tags": {
+    "amenity": "cafe"
+  }
+},
+{
+  "type": "node",
+  "id": 5225539396,
+  "lat": -15.8028809,
+  "lon": -47.8931241,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Nosso Quadrado"
+  }
+},
+{
+  "type": "node",
+  "id": 5230076441,
+  "lat": -15.8103402,
+  "lon": -47.9100841,
+  "tags": {
+    "amenity": "cafe",
+    "brand": "Fran's Café",
+    "brand:wikidata": "Q62075645",
+    "cuisine": "coffee_shop",
+    "name": "Fran's Café",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 5299457845,
+  "lat": -15.8195535,
+  "lon": -47.9121922,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Uai Bezinha!"
+  }
+},
+{
+  "type": "node",
+  "id": 5353491828,
+  "lat": -15.8184198,
+  "lon": -47.8749357,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Grão Espresso"
+  }
+},
+{
+  "type": "node",
+  "id": 5366399095,
+  "lat": -15.7514698,
+  "lon": -47.8846808,
+  "tags": {
+    "amenity": "cafe",
+    "internet_access": "wlan",
+    "name": "Ateliê Cuisine Deh",
+    "opening_hours": "Mo-Fr 08:30-20:00; Sa 10:00-18:00"
+  }
+},
+{
+  "type": "node",
+  "id": 5381047922,
+  "lat": -15.8136655,
+  "lon": -47.9130762,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Da Vici Cafeteria"
+  }
+},
+{
+  "type": "node",
+  "id": 5416977721,
+  "lat": -15.7902403,
+  "lon": -47.8846678,
+  "tags": {
+    "addr:street": "SHN Quadra 1",
+    "amenity": "cafe",
+    "name": "Melbourne Café & Co.",
+    "opening_hours": "Mo-Fr 08:15-17:30",
+    "outdoor_seating": "yes",
+    "website": "http://www.olamelbourne.com.br/"
+  }
+},
+{
+  "type": "node",
+  "id": 5436122015,
+  "lat": -15.8273745,
+  "lon": -47.9187069,
+  "tags": {
+    "addr:city": "Brasília",
+    "addr:housenumber": "Loja 07",
+    "addr:street": "CLS 114 Bloco B",
+    "amenity": "cafe",
+    "internet_access": "wlan",
+    "internet_access:fee": "no",
+    "name": "Belini Café",
+    "opening_hours": "Mo-Sa 08:00-23:00; Su 08:00-22:00",
+    "outdoor_seating": "yes",
+    "payment:cash": "yes",
+    "payment:credit_cards": "yes",
+    "smoking": "no",
+    "website": "https://pt-br.facebook.com/pg/belinicafe/about/?ref=page_internal"
+  }
+},
+{
+  "type": "node",
+  "id": 5470850733,
+  "lat": -15.7526191,
+  "lon": -47.8900604,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Sincera"
+  }
+},
+{
+  "type": "node",
+  "id": 5650571821,
+  "lat": -15.8263217,
+  "lon": -47.9066480,
+  "tags": {
+    "addr:housenumber": "Bloco A Loja 13",
+    "addr:street": "SQS 410",
+    "amenity": "cafe",
+    "cuisine": "cake;coffee_shop",
+    "email": "contato@cioccolateria.com.br",
+    "internet_access": "wlan",
+    "name": "Cioccolateria Doceria e Café",
+    "opening_hours": "Mo-Fr 10:00-19:00; Sa 09:00-17:00",
+    "phone": "+55 61 3242 6399",
+    "website": "http://www.cioccolateria.com.br"
+  }
+},
+{
+  "type": "node",
+  "id": 5766574433,
+  "lat": -15.7775553,
+  "lon": -47.8826493,
+  "tags": {
+    "addr:city": "Brasília",
+    "addr:street": "CLN 103/104",
+    "amenity": "cafe",
+    "internet_access": "yes",
+    "internet_access:fee": "no",
+    "name": "Quanto",
+    "opening_hours": "Mo-Fr 11:00-21:00, Sa 09:00-21:00",
+    "outdoor_seating": "yes",
+    "smoking": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 5766574435,
+  "lat": -15.7766530,
+  "lon": -47.8786953,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Aha!",
+    "smoking": "no",
+    "website": "http://www.ahacafe.com.br"
+  }
+},
+{
+  "type": "node",
+  "id": 5856741812,
+  "lat": -15.7398592,
+  "lon": -47.8994946,
+  "tags": {
+    "addr:street": "CLRN 716",
+    "amenity": "cafe",
+    "internet_access": "yes",
+    "internet_access:fee": "no",
+    "name": "Vai ter chá",
+    "outdoor_seating": "yes",
+    "shop": "tea",
+    "smoking": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 6005691723,
+  "lat": -15.7645578,
+  "lon": -47.8852493,
+  "tags": {
+    "addr:street": "CLN 107/108",
+    "amenity": "cafe",
+    "internet_access": "yes",
+    "internet_access:fee": "no",
+    "name": "Ernesto Cafés Especiais",
+    "opening_hours": "Mo-Su 07:00-22:00",
+    "outdoor_seating": "yes",
+    "smoking": "no"
+  }
+},
+{
+  "type": "node",
+  "id": 6207544093,
+  "lat": -15.7712064,
+  "lon": -47.8712547,
+  "tags": {
+    "amenity": "cafe",
+    "cuisine": "sandwiches",
+    "internet_access": "no",
+    "internet_access:fee": "no",
+    "name": "Café da Fiocruz",
+    "outdoor_seating": "no",
+    "smoking": "no",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6456386661,
+  "lat": -15.8151596,
+  "lon": -47.8938988,
+  "tags": {
+    "amenity": "cafe",
+    "brand": "Fran's Café",
+    "brand:wikidata": "Q62075645",
+    "cuisine": "coffee_shop",
+    "name": "Fran's Café",
+    "outdoor_seating": "yes",
+    "takeaway": "yes"
+  }
+},
+{
+  "type": "node",
+  "id": 6591961959,
+  "lat": -15.7808206,
+  "lon": -47.8900077,
+  "tags": {
+    "amenity": "cafe",
+    "name": "Sterna Café"
+  }
+},
+{
+  "type": "node",
+  "id": 6632677485,
+  "lat": -15.7708562,
+  "lon": -47.8845249,
+  "tags": {
+    "addr:postcode": "70742-530",
+    "addr:street": "SQN 106 Bloco A",
+    "amenity": "cafe",
+    "name": "QualyCream",
+    "opening_hours": "Mo-Fr 08:00-18:00; Sa 09:00-13:00",
+    "phone": "+55 61 3033 1010",
+    "website": "http://qualycream.com.br"
+  }
+},
+{
+  "type": "node",
+  "id": 7705116886,
+  "lat": -15.8256478,
+  "lon": -47.9289296,
+  "tags": {
+    "amenity": "cafe"
+  }
+},
+{
+  "type": "node",
+  "id": 7705116908,
+  "lat": -15.8268004,
+  "lon": -47.9294188,
+  "tags": {
+    "amenity": "cafe"
+  }
+},
+{
+  "type": "node",
+  "id": 7949383205,
+  "lat": -15.7518287,
+  "lon": -47.8975325,
+  "tags": {
+    "addr:city": "Brasília",
+    "addr:street": "SCRN 712/713, bloco E",
+    "amenity": "cafe",
+    "name": "Amarelinha"
+  }
+},
+{
+  "type": "node",
+  "id": 8435477631,
+  "lat": -15.8152087,
+  "lon": -47.9029790,
+  "tags": {
+    "addr:housenumber": "Bloco D Loja x",
+    "addr:street": "CLS 108",
+    "amenity": "cafe",
+    "name": "Lugano"
+  }
+}
+
+  ]
+}
