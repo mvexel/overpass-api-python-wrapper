@@ -15,6 +15,11 @@ PARAM_GEOJSON = ((overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635),
                  ('node(area:3602758138)[amenity=cafe]', 'map_query_response.json'))
 
 
+PARAM_ERRORS = ((400, overpass.errors.OverpassSyntaxError, '[out:json];Alpha;out body;'),
+                (429, overpass.errors.MultipleRequestsError, ''),
+                (504, overpass.errors.ServerLoadError, '25'))
+
+
 def test_initialize_api(requests):
     api = overpass.API()
     assert isinstance(api, overpass.API)
@@ -63,3 +68,12 @@ def test_geojson_extended(requests):
     assert osm_geo == ref_geo
     assert not requests.get.called
     assert not requests.post.called
+
+
+@pytest.mark.parametrize('status_code, class_error, error_str', PARAM_ERRORS)
+def test_api_errors(status_code, class_error, error_str, requests):
+    requests.response.status_code = status_code
+
+    with pytest.raises(class_error) as error:
+        overpass.API().get('Alpha')
+    assert str(error.value) == error_str
