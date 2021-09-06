@@ -7,7 +7,6 @@ import overpass
 import geojson
 import pickle
 import pytest
-import os
 
 from tests import load_resource
 
@@ -39,7 +38,7 @@ def test_geojson_extended(requests):
 
     class API(overpass.API):
         def _get_from_overpass(self, query):
-            return pickle.load(open(os.path.join(os.path.dirname(__file__), "example.response"), "rb"))
+            return pickle.loads(load_resource('example.response'))
 
     # The commented code should only be executed once when major changes to the Overpass API and/or to this wrapper are
     # introduced. One than has to manually verify that the date in the  example.response file from the Overpass API
@@ -60,7 +59,7 @@ def test_geojson_extended(requests):
 
     api = API()
     osm_geo = api.get("rel(6518385);out body geom;way(10322303);out body geom;node(4927326183);", verbosity='body geom')
-    ref_geo = geojson.load(open(os.path.join(os.path.dirname(__file__), "example.json"), "r"))
+    ref_geo = geojson.loads(load_resource('example.json'))
     assert osm_geo == ref_geo
     assert not requests.get.called
     assert not requests.post.called
