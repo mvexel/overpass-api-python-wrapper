@@ -204,9 +204,19 @@ class API(object):
         """Search for something."""
         raise NotImplementedError()
 
+    def __deprecation_get(self, *args, **kwargs):
+        import warnings
+        warnings.warn('Call to deprecated function "Get", use "get" function instead', DeprecationWarning)
+        return self.get(*args, **kwargs)
+
+    def __deprecation_search(self, *args, **kwargs):
+        import warnings
+        warnings.warn('Call to deprecated function "Search", use "search" function instead', DeprecationWarning)
+        return self.search(*args, **kwargs)
+
     # deprecation of upper case functions
-    Get = get
-    Search = search
+    Get = __deprecation_get
+    Search = __deprecation_search
 
     def _construct_ql_query(self, userquery, responseformat, verbosity, date):
         raw_query = str(userquery).rstrip()
