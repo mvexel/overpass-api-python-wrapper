@@ -1,3 +1,5 @@
+import datetime
+
 import overpass
 
 
@@ -36,4 +38,4 @@ class TestSlots:
         requests.response._content = RESPONSE_TEXT
         self.requests = requests
 
-        assert isinstance(self.api.slots_waiting, tuple)
+        assert self.api.slots_waiting == (datetime.datetime(2021, 9, 3, 14, 41, 37, tzinfo=datetime.timezone.utc),)
