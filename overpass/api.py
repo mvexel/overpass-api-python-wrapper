@@ -7,6 +7,8 @@ import csv
 import json
 import logging
 import re
+import sys
+
 from datetime import datetime, timezone
 from io import StringIO
 
@@ -143,6 +145,9 @@ class API(object):
         """
 
         def _strptime(date_string):
+            if (sys.version_info.major, sys.version_info.minor) >= (3, 7):
+                return datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S%z')
+
             dt = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
             kwargs = {k: getattr(dt, k) for k in ('year', 'month', 'day', 'hour', 'minute', 'second', 'microsecond')}
             kwargs['tzinfo'] = timezone.utc
