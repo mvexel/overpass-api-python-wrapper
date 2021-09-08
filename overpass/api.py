@@ -139,21 +139,20 @@ class API(object):
         return self._as_geojson(response["elements"])
 
     @staticmethod
-    def _api_status() -> dict:
+    def _strptime(date_string):
+        if dependency.Python.less_3_7():
+            dt = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
+            kwargs = {k: getattr(dt, k) for k in ('year', 'month', 'day', 'hour', 'minute', 'second', 'microsecond')}
+            kwargs['tzinfo'] = timezone.utc
+            return datetime(**kwargs)
+
+        return datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S%z')
+
+    @classmethod
+    def _api_status(cls) -> dict:
         """
         :returns: dict describing the client's status with the API
         """
-
-        def _strptime(date_string):
-            if dependency.Python.less_3_7():
-                dt = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
-                kwargs = {k: getattr(dt, k) for k in ('year', 'month', 'day',
-                                                      'hour', 'minute', 'second', 'microsecond')}
-                kwargs['tzinfo'] = timezone.utc
-                return datetime(**kwargs)
-
-            return datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S%z')
-
         endpoint = "https://overpass-api.de/api/status"
 
         r = requests.get(endpoint)
@@ -167,14 +166,15 @@ class API(object):
         )
 
         waiting_re = re.compile(r'(?<=Slot available after: )[\d\-TZ:]{20}')
-        waiting_slots = tuple(_strptime(waiting_re.search(line).group()) for line in lines if waiting_re.search(line))
+        waiting_slots = tuple(cls._strptime(waiting_re.search(line).group())
+                              for line in lines if waiting_re.search(line))
 
         current_idx = next(
             i for i, word in enumerate(lines)
             if word.startswith('Currently running queries')
         )
         running_slots = tuple(tuple(line.split()) for line in lines[current_idx + 1:])
-        running_slots_datetimes = tuple(_strptime(slot[3]) for slot in running_slots)
+        running_slots_datetimes = tuple(cls._strptime(slot[3]) for slot in running_slots)
 
         return {
             "available_slots": available_slots,
