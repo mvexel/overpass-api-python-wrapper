@@ -95,7 +95,7 @@ class API(object):
                 date = datetime.fromisoformat(date)
             except ValueError:
                 # The 'Z' in a standard overpass date will throw fromisoformat() off
-                date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
+                date = self._strptime(date)
         # Construct full Overpass query
         if build:
             full_query = self._construct_ql_query(
