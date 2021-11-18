@@ -1,0 +1,5 @@
+Connected as: 0123456789
+Current time: 2021-03-08T23:33:48Z
+Rate limit: 2
+2 slots available now.
+Currently running queries (pid, space limit, time limit, start time):

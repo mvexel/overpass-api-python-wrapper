@@ -273,7 +273,7 @@ class API(object):
             except KeyError:
                 raise UnknownOverpassError("Received corrupt data from Overpass (no id).")
             elem_type = elem.get("type")
-            elem_tags = elem.get("tags")
+            elem_tags = elem.get("tags", {})
             elem_nodes = elem.get("nodes", None)
             elem_timestamp = elem.get("timestamp", None)
             elem_user = elem.get("user", None)

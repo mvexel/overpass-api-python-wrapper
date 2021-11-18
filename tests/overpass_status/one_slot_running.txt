@@ -1,0 +1,6 @@
+Connected as: 0123456789
+Current time: 2021-03-08T20:22:55Z
+Rate limit: 2
+1 slots available now.
+Currently running queries (pid, space limit, time limit, start time):
+8030	536870912	180	2021-03-08T20:22:55Z

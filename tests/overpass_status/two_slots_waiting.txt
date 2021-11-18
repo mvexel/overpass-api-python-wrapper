@@ -1,0 +1,6 @@
+Connected as: 0123456789
+Current time: 2021-03-08T20:26:49Z
+Rate limit: 2
+Slot available after: 2021-03-08T20:27:00Z, in 11 seconds.
+Slot available after: 2021-03-08T20:30:28Z, in 219 seconds.
+Currently running queries (pid, space limit, time limit, start time):
