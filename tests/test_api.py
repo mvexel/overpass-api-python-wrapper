@@ -79,12 +79,15 @@ def test_geojson_extended(verbosity, response, output,
     requests_mock.post(
         "//overpass-api.de/api/interpreter", json=mock_response)
 
-    osm_geo = api.get(
-        f"rel(6518385);out {verbosity};way(10322303);out {verbosity};node(4927326183);",
-        verbosity=verbosity)
+    osm_geo = sorted(
+        api.get(
+            f"rel(6518385);out {verbosity};way(10322303);out {verbosity};node(4927326183);",
+            verbosity=verbosity
+        )
+    )
 
     with Path(output).open() as fp:
-        ref_geo = geojson.load(fp)
+        ref_geo = sorted(geojson.load(fp))
     assert osm_geo == ref_geo
 
 
