@@ -95,6 +95,25 @@ You can set the response type of your query using `get()`'s `responseformat` par
 response = api.get('node["name"="Salt Lake City"]', responseformat="xml")
 ```
 
+If you choose `csv`, you will need to specify which fields you want, as described [here](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#CSV_output_mode) in the Overpass QL documentation. An example:
+
+```python
+response = api.get('node["name"="Springfield"]["place"]', responseformat="csv(name,::lon,::lat)")
+```
+
+The response will be a list of lists:
+
+```python
+[
+    ['name', '@lon', '@lat'],
+    ['Springfield', '-3.0645656', '56.2952787'],
+    ['Springfield', '0.4937446', '51.7487585'],
+    ['Springfield', '-2.4194716', '53.5732892'],
+    ['Springfield', '25.5454526', '-33.9814866'],
+    ....
+]
+```
+
 #### `build`
 
 We will construct a valid Overpass QL query from the parameters you set by default. This means you don't have to include 'meta' statements like `[out:json]`, `[timeout:60]`, `[out body]`, etcetera. You just supply the meat of the query, the part that actually tells Overpass what to query for. If for whatever reason you want to override this and supply a full, valid Overpass QL query, you can set `build` to `False` to make the API not do any pre-processing.
