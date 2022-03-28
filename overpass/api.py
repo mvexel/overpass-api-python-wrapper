@@ -4,6 +4,7 @@
 # See LICENSE.txt for the full license text.
 
 import csv
+from typing import Union
 import json
 import logging
 import re
@@ -199,6 +200,15 @@ class API(object):
         :returns: tuple of datetimes representing running slots and when they will be freed
         """
         return self._api_status()["running_slots"]
+
+    @property
+    def next_slot_available(self) -> Union(None, datetime):
+        """
+        :returns: None if a slot is available now, or a datetime for when the next slot is free
+        """
+        if self.slots_available:
+            return None
+        return min(self.slots_running + self.slots_waiting)
 
     def search(self, feature_type, regex=False):
         """Search for something."""
