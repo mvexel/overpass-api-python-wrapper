@@ -4,12 +4,13 @@
 # See LICENSE.txt for the full license text.
 
 import csv
-from typing import Union
 import json
 import logging
 import re
 from datetime import datetime
 from io import StringIO
+from math import ceil
+from typing import Optional
 
 import geojson
 import requests
@@ -202,13 +203,27 @@ class API(object):
         return self._api_status()["running_slots"]
 
     @property
-    def next_slot_available(self) -> Union(None, datetime):
+    def slot_available_datetime(self) -> Optional[datetime]:
         """
-        :returns: None if a slot is available now, or a datetime for when the next slot is free
+        :returns: None if a slot is available now (no wait needed) or a datetime representing when the next slot will become available
         """
         if self.slots_available:
             return None
         return min(self.slots_running + self.slots_waiting)
+
+    @property
+    def slot_available_countdown(self) -> int:
+        """
+        :returns: 0 if a slot is available now, or an int of seconds until the next slot is free
+        """
+        try:
+            return ceil(
+                (self.slot_available_datetime -
+                 datetime.now().astimezone()).total_seconds()
+            )
+        except TypeError:
+            # Can't subtract from None, which means slot is available now
+            return 0
 
     def search(self, feature_type, regex=False):
         """Search for something."""
