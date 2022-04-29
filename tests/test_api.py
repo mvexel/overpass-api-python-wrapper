@@ -8,6 +8,7 @@ import os
 from datetime import datetime, timezone
 from distutils.util import strtobool
 from pathlib import Path
+from typing import Tuple
 
 import geojson
 import overpass
@@ -154,7 +155,7 @@ def test_geojson_live():
         ),
     ]
 )
-def test_api_status(response: Path, slots_available: int, slots_running: tuple[datetime], slots_waiting: tuple[datetime], requests_mock):
+def test_api_status(response: Path, slots_available: int, slots_running: Tuple[datetime], slots_waiting: Tuple[datetime], requests_mock):
     mock_response = response.read_text()
     requests_mock.get("https://overpass-api.de/api/status", text=mock_response)
 
