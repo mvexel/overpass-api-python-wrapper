@@ -20,5 +20,5 @@ setup(
         "Topic :: Utilities",
     ],
     install_requires=["requests>=2.3.0", "geojson>=1.0.9", "shapely>=1.6.4"],
-    extras_require={"test": ["pytest"]},
+    extras_require={"test": ["pytest", "requests-mock[fixture]"]},
 )

@@ -90,13 +90,13 @@ def test_geojson_live():
     "response,slots_available,slots_running,slots_waiting",
     [
         (
-            "tests/overpass_status/no_slots_waiting.txt",
+            Path("tests/overpass_status/no_slots_waiting.txt"),
             2,
             (),
             ()
         ),
         (
-            "tests/overpass_status/one_slot_running.txt",
+            Path("tests/overpass_status/one_slot_running.txt"),
             1,
             (
                 datetime(
@@ -112,7 +112,7 @@ def test_geojson_live():
             ()
         ),
         (
-            "tests/overpass_status/one_slot_waiting.txt",
+            Path("tests/overpass_status/one_slot_waiting.txt"),
             1,
             (),
             (
@@ -128,7 +128,7 @@ def test_geojson_live():
             )
         ),
         (
-            "tests/overpass_status/two_slots_waiting.txt",
+            Path("tests/overpass_status/two_slots_waiting.txt"),
             0,
             (),
             (
@@ -154,9 +154,8 @@ def test_geojson_live():
         ),
     ]
 )
-def test_api_status(response, slots_available, slots_running, slots_waiting, requests_mock):
-    with open(response) as fp:
-        mock_response = fp.read()
+def test_api_status(response: Path, slots_available: int, slots_running: tuple[datetime], slots_waiting: tuple[datetime], requests_mock):
+    mock_response = response.read_text()
     requests_mock.get("https://overpass-api.de/api/status", text=mock_response)
 
     api = overpass.API(debug=True)
@@ -175,3 +174,8 @@ def test_api_status(response, slots_available, slots_running, slots_waiting, req
 
     assert isinstance(api.slots_waiting, tuple)
     assert api.slots_waiting == slots_waiting
+
+    assert isinstance(api.slot_available_countdown, int)
+    assert api.slot_available_countdown >= 0
+
+    assert api.slot_available_datetime is None or isinstance(api.slot_available_datetime, datetime)

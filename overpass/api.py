@@ -7,7 +7,7 @@ import csv
 import json
 import logging
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from io import StringIO
 from math import ceil
 from typing import Optional
@@ -217,9 +217,14 @@ class API(object):
         :returns: 0 if a slot is available now, or an int of seconds until the next slot is free
         """
         try:
-            return ceil(
-                (self.slot_available_datetime -
-                 datetime.now().astimezone()).total_seconds()
+            return max(
+                ceil(
+                    (
+                        self.slot_available_datetime -
+                        datetime.now(timezone.utc)
+                    ).total_seconds()
+                ),
+                0
             )
         except TypeError:
             # Can't subtract from None, which means slot is available now
