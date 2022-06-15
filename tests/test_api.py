@@ -90,7 +90,7 @@ def test_geojson_live():
     "response,slots_available,slots_running,slots_waiting",
     [
         (
-            "tests/overpass_status/no_slots_waiting_extra_lines.txt",
+            "tests/overpass_status/no_slots_waiting_six_lines.txt",
             2,
             (),
             ()
