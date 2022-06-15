@@ -148,9 +148,13 @@ class API(object):
 
         available_re = re.compile(r'\d(?= slots? available)')
         available_slots = int(
-            available_re.search(lines[3]).group()
-            if available_re.search(lines[3])
-            else 0
+            next(
+                (
+                    available_re.search(line).group()
+                    for line in lines 
+                    if available_re.search(line)
+                ), 0
+            )
         )
 
         waiting_re = re.compile(r'(?<=Slot available after: )[\d\-TZ:]{20}')
