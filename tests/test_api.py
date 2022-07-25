@@ -91,6 +91,12 @@ def test_geojson_live():
     "response,slots_available,slots_running,slots_waiting",
     [
         (
+            Path("tests/overpass_status/no_slots_waiting_six_lines.txt"),
+            2,
+            (),
+            ()
+        ),
+        (
             Path("tests/overpass_status/no_slots_waiting.txt"),
             2,
             (),
