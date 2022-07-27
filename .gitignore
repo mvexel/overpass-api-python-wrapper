@@ -1,5 +1,7 @@
 .DS_Store
+.idea/
 .pytest_cache/
+.vscode/
 **/__pycache__/
 *.py[cod]
 dist/
@@ -12,5 +14,3 @@ pip-log.txt
 docs/_build/
 Pipfile.lock
 venv/
-.idea/
-.vscode/

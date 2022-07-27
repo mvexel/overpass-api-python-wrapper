@@ -8,7 +8,7 @@ import os
 from datetime import datetime, timezone
 from distutils.util import strtobool
 from pathlib import Path
-from typing import Tuple
+from typing import Tuple, Union
 
 import geojson
 import overpass
@@ -24,17 +24,33 @@ def test_initialize_api():
 
 
 @pytest.mark.parametrize(
-    "query,length",
+    "query,length,response",
     [
-        (overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635), 1),
-        ("node(area:3602758138)[amenity=cafe]", 1)
+        (
+            overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635),
+            1,
+            Path("tests/example_mapquery.json")
+        ),
+        (
+            "node(area:3602758138)[amenity=cafe]",
+            1,
+            Path("tests/example_singlenode.json")
+        )
     ]
 )
 def test_geojson(
-    query,
-    length
+    query: Union[overpass.MapQuery, str],
+    length: int,
+    response: Path,
+    requests_mock
 ):
     api = overpass.API(debug=True)
+
+    with response.open() as fp:
+        mock_response = json.load(fp)
+    requests_mock.post(
+        "//overpass-api.de/api/interpreter", json=mock_response
+    )
 
     osm_geo = api.get(query)
     assert len(osm_geo["features"]) > length
