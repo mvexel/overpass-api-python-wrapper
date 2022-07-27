@@ -8,6 +8,7 @@ import os
 from datetime import datetime, timezone
 from distutils.util import strtobool
 from pathlib import Path
+from typing import Union
 
 import geojson
 import overpass
@@ -38,9 +39,9 @@ def test_initialize_api():
     ]
 )
 def test_geojson(
-    query,
-    length,
-    response,
+    query: Union[overpass.MapQuery, str],
+    length: int,
+    response: Path,
     requests_mock
 ):
     api = overpass.API(debug=True)
