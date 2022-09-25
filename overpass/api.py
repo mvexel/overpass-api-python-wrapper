@@ -7,8 +7,10 @@ import csv
 import json
 import logging
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from io import StringIO
+from math import ceil
+from typing import Optional
 
 import geojson
 import requests
@@ -203,6 +205,34 @@ class API(object):
         :returns: tuple of datetimes representing running slots and when they will be freed
         """
         return self._api_status()["running_slots"]
+
+    @property
+    def slot_available_datetime(self) -> Optional[datetime]:
+        """
+        :returns: None if a slot is available now (no wait needed) or a datetime representing when the next slot will become available
+        """
+        if self.slots_available:
+            return None
+        return min(self.slots_running + self.slots_waiting)
+
+    @property
+    def slot_available_countdown(self) -> int:
+        """
+        :returns: 0 if a slot is available now, or an int of seconds until the next slot is free
+        """
+        try:
+            return max(
+                ceil(
+                    (
+                        self.slot_available_datetime -
+                        datetime.now(timezone.utc)
+                    ).total_seconds()
+                ),
+                0
+            )
+        except TypeError:
+            # Can't subtract from None, which means slot is available now
+            return 0
 
     def search(self, feature_type, regex=False):
         """Search for something."""

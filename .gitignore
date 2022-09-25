@@ -1,5 +1,7 @@
 .DS_Store
+.idea/
 .pytest_cache/
+.vscode/
 **/__pycache__/
 *.py[cod]
 dist/
