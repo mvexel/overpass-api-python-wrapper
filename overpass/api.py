@@ -369,6 +369,9 @@ class API(object):
                     geometry=geometry,
                     properties=elem_tags
                 )
-                features.append(feature)
+                if elem.get("version"):
+                    feature["version"]=elem["version"]
 
+                features.append(feature)
+                    
         return geojson.FeatureCollection(features)
