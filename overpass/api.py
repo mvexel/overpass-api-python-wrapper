@@ -7,15 +7,13 @@ import csv
 import json
 import logging
 import re
-
-from datetime import datetime, timezone
+from datetime import datetime
 from io import StringIO
 
 import geojson
 import requests
 from shapely.geometry import Point, Polygon
 
-from overpass import dependency
 from .errors import (
     MultipleRequestsError,
     OverpassSyntaxError,
@@ -26,7 +24,7 @@ from .errors import (
 )
 
 
-class API(object):
+class API:
     """A simple Python wrapper for the OpenStreetMap Overpass API.
 
     :param timeout: If a single number, the TCP connection timeout for the request. If a tuple
@@ -61,11 +59,8 @@ class API(object):
 
         if self.debug:
             # https://stackoverflow.com/a/16630836
-            try:
-                import http.client as http_client
-            except ImportError:
-                # Python 2
-                import httplib as http_client
+            import http.client as http_client
+
             http_client.HTTPConnection.debuglevel = 1
 
             # You must initialize logging,
@@ -76,7 +71,9 @@ class API(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
-    def get(self, query, responseformat="geojson", verbosity="body", build=True, date=''):
+    def get(
+        self, query, responseformat="geojson", verbosity="body", build=True, date=""
+    ):
         """Pass in an Overpass query in Overpass QL.
 
         :param query: the Overpass QL query to send to the endpoint
@@ -95,7 +92,7 @@ class API(object):
                 date = datetime.fromisoformat(date)
             except ValueError:
                 # The 'Z' in a standard overpass date will throw fromisoformat() off
-                date = self._strptime(date)
+                date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
         # Construct full Overpass query
         if build:
             full_query = self._construct_ql_query(
@@ -138,16 +135,6 @@ class API(object):
         # construct geojson
         return self._as_geojson(response["elements"])
 
-    @staticmethod
-    def _strptime(date_string):
-        if dependency.Python.less_3_7():
-            dt = datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%SZ')
-            kwargs = {k: getattr(dt, k) for k in ('year', 'month', 'day', 'hour', 'minute', 'second', 'microsecond')}
-            kwargs['tzinfo'] = timezone.utc
-            return datetime(**kwargs)
-
-        return datetime.strptime(date_string, '%Y-%m-%dT%H:%M:%S%z')
-
     @classmethod
     def _api_status(cls) -> dict:
         """
@@ -158,23 +145,29 @@ class API(object):
         r = requests.get(endpoint)
         lines = tuple(r.text.splitlines())
 
-        available_re = re.compile(r'\d(?= slots? available)')
+        available_re = re.compile(r"\d(?= slots? available)")
         available_slots = int(
             available_re.search(lines[3]).group()
             if available_re.search(lines[3])
             else 0
         )
 
-        waiting_re = re.compile(r'(?<=Slot available after: )[\d\-TZ:]{20}')
-        waiting_slots = tuple(cls._strptime(waiting_re.search(line).group())
-                              for line in lines if waiting_re.search(line))
+        waiting_re = re.compile(r"(?<=Slot available after: )[\d\-TZ:]{20}")
+        waiting_slots = tuple(
+            datetime.strptime(waiting_re.search(line).group(), "%Y-%m-%dT%H:%M:%S%z")
+            for line in lines
+            if waiting_re.search(line)
+        )
 
         current_idx = next(
-            i for i, word in enumerate(lines)
-            if word.startswith('Currently running queries')
+            i
+            for i, word in enumerate(lines)
+            if word.startswith("Currently running queries")
         )
-        running_slots = tuple(tuple(line.split()) for line in lines[current_idx + 1:])
-        running_slots_datetimes = tuple(cls._strptime(slot[3]) for slot in running_slots)
+        running_slots = tuple(tuple(line.split()) for line in lines[current_idx + 1 :])
+        running_slots_datetimes = tuple(
+            datetime.strptime(slot[3], "%Y-%m-%dT%H:%M:%S%z") for slot in running_slots
+        )
 
         return {
             "available_slots": available_slots,
@@ -205,16 +198,24 @@ class API(object):
 
     def search(self, feature_type, regex=False):
         """Search for something."""
-        raise NotImplementedError()
+        raise NotImplementedError
 
     def __deprecation_get(self, *args, **kwargs):
         import warnings
-        warnings.warn('Call to deprecated function "Get", use "get" function instead', DeprecationWarning)
+
+        warnings.warn(
+            'Call to deprecated function "Get", use "get" function instead',
+            DeprecationWarning,
+        )
         return self.get(*args, **kwargs)
 
     def __deprecation_search(self, *args, **kwargs):
         import warnings
-        warnings.warn('Call to deprecated function "Search", use "search" function instead', DeprecationWarning)
+
+        warnings.warn(
+            'Call to deprecated function "Search", use "search" function instead',
+            DeprecationWarning,
+        )
         return self.search(*args, **kwargs)
 
     # deprecation of upper case functions
@@ -232,7 +233,8 @@ class API(object):
         if responseformat == "geojson":
             template = self._GEOJSON_QUERY_TEMPLATE
             complete_query = template.format(
-                query=raw_query, verbosity=verbosity, date=date)
+                query=raw_query, verbosity=verbosity, date=date
+            )
         else:
             template = self._QUERY_TEMPLATE
             complete_query = template.format(
@@ -268,7 +270,7 @@ class API(object):
             elif self._status == 504:
                 raise ServerLoadError(self._timeout)
             raise UnknownOverpassError(
-                "The request returned status code {code}".format(code=self._status)
+                f"The request returned status code {self._status}"
             )
         else:
             r.encoding = "utf-8"
@@ -284,7 +286,9 @@ class API(object):
                     continue
                 ids_already_seen.add(elem["id"])
             except KeyError:
-                raise UnknownOverpassError("Received corrupt data from Overpass (no id).")
+                raise UnknownOverpassError(
+                    "Received corrupt data from Overpass (no id)."
+                )
             elem_type = elem.get("type")
             elem_tags = elem.get("tags")
             elem_nodes = elem.get("nodes", None)
@@ -306,26 +310,38 @@ class API(object):
                 geometry = geojson.Point((elem.get("lon"), elem.get("lat")))
             elif elem_type == "way":
                 # Create LineString geometry
-                geometry = geojson.LineString([(coords["lon"], coords["lat"]) for coords in elem_geom])
+                geometry = geojson.LineString(
+                    [(coords["lon"], coords["lat"]) for coords in elem_geom]
+                )
             elif elem_type == "relation":
                 # Initialize polygon list
                 polygons = []
                 # First obtain the outer polygons
                 for member in elem.get("members", []):
                     if member["role"] == "outer":
-                        points = [(coords["lon"], coords["lat"]) for coords in member.get("geometry", [])]
+                        points = [
+                            (coords["lon"], coords["lat"])
+                            for coords in member.get("geometry", [])
+                        ]
                         # Check that the outer polygon is complete
                         if points and points[-1] == points[0]:
                             polygons.append([points])
                         else:
-                            raise UnknownOverpassError("Received corrupt data from Overpass (incomplete polygon).")
+                            raise UnknownOverpassError(
+                                "Received corrupt data from Overpass (incomplete polygon)."
+                            )
                 # Then get the inner polygons
                 for member in elem.get("members", []):
                     if member["role"] == "inner":
-                        points = [(coords["lon"], coords["lat"]) for coords in member.get("geometry", [])]
+                        points = [
+                            (coords["lon"], coords["lat"])
+                            for coords in member.get("geometry", [])
+                        ]
                         # Check that the inner polygon is complete
                         if not points or points[-1] != points[0]:
-                            raise UnknownOverpassError("Received corrupt data from Overpass (incomplete polygon).")
+                            raise UnknownOverpassError(
+                                "Received corrupt data from Overpass (incomplete polygon)."
+                            )
                         # We need to check to which outer polygon the inner polygon belongs
                         point = Point(points[0])
                         for poly in polygons:
@@ -334,19 +350,21 @@ class API(object):
                                 poly.append(points)
                                 break
                         else:
-                            raise UnknownOverpassError("Received corrupt data from Overpass (inner polygon cannot "
-                                                       "be matched to outer polygon).")
+                            raise UnknownOverpassError(
+                                "Received corrupt data from Overpass (inner polygon cannot "
+                                "be matched to outer polygon)."
+                            )
                 # Finally create MultiPolygon geometry
                 if polygons:
                     geometry = geojson.MultiPolygon(polygons)
             else:
-                raise UnknownOverpassError("Received corrupt data from Overpass (invalid element).")
+                raise UnknownOverpassError(
+                    "Received corrupt data from Overpass (invalid element)."
+                )
 
             if geometry:
                 feature = geojson.Feature(
-                    id=elem["id"],
-                    geometry=geometry,
-                    properties=elem_tags
+                    id=elem["id"], geometry=geometry, properties=elem_tags
                 )
                 features.append(feature)
 
