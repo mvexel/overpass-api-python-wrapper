@@ -12,9 +12,8 @@ from io import StringIO
 from math import ceil
 from typing import Optional
 
-import geojson
 import requests
-from shapely.geometry import Point, Polygon
+from osm2geojson import json2geojson
 
 from .errors import (
     MultipleRequestsError,
@@ -131,7 +130,7 @@ class API(object):
             return response
 
         # construct geojson
-        return self._as_geojson(response["elements"])
+        return json2geojson(response)
 
     @staticmethod
     def _api_status() -> dict:
@@ -275,94 +274,16 @@ class API(object):
 
         self._status = r.status_code
 
-        if self._status == 200:
+        if self._status != 200:
+            if self._status == 400:
+                raise OverpassSyntaxError(query)
+            elif self._status == 429:
+                raise MultipleRequestsError()
+            elif self._status == 504:
+                raise ServerLoadError(self._timeout)
+            raise UnknownOverpassError(
+                "The request returned status code {code}".format(code=self._status)
+            )
+        else:
             r.encoding = "utf-8"
             return r
-        elif self._status == 400:
-            raise OverpassSyntaxError(query)
-        elif self._status == 429:
-            raise MultipleRequestsError()
-        elif self._status == 504:
-            raise ServerLoadError(self._timeout)
-        else:
-            raise UnknownOverpassError(
-                f"The request returned status code {self._status}"
-            )
-
-    def _as_geojson(self, elements):
-        ids_already_seen = set()
-        features = []
-        geometry = None
-        for elem in elements:
-            try:
-                if elem["id"] in ids_already_seen:
-                    continue
-                ids_already_seen.add(elem["id"])
-            except KeyError:
-                raise UnknownOverpassError("Received corrupt data from Overpass (no id).")
-            elem_type = elem.get("type")
-            elem_tags = elem.get("tags", {})
-            elem_nodes = elem.get("nodes", None)
-            elem_timestamp = elem.get("timestamp", None)
-            elem_user = elem.get("user", None)
-            elem_uid = elem.get("uid", None)
-            elem_version = elem.get("version", None)
-            if elem_nodes:
-                elem_tags["nodes"] = elem_nodes
-            if elem_user:
-                elem_tags["user"] = elem_user
-            if elem_uid:
-                elem_tags["uid"] = elem_uid  
-            if elem_version:
-                elem_tags["version"] = elem_version                                                
-            elem_geom = elem.get("geometry", [])
-            if elem_type == "node":
-                # Create Point geometry
-                geometry = geojson.Point((elem.get("lon"), elem.get("lat")))
-            elif elem_type == "way":
-                # Create LineString geometry
-                geometry = geojson.LineString([(coords["lon"], coords["lat"]) for coords in elem_geom])
-            elif elem_type == "relation":
-                # Initialize polygon list
-                polygons = []
-                # First obtain the outer polygons
-                for member in elem.get("members", []):
-                    if member["role"] == "outer":
-                        points = [(coords["lon"], coords["lat"]) for coords in member.get("geometry", [])]
-                        # Check that the outer polygon is complete
-                        if points and points[-1] == points[0]:
-                            polygons.append([points])
-                        else:
-                            raise UnknownOverpassError("Received corrupt data from Overpass (incomplete polygon).")
-                # Then get the inner polygons
-                for member in elem.get("members", []):
-                    if member["role"] == "inner":
-                        points = [(coords["lon"], coords["lat"]) for coords in member.get("geometry", [])]
-                        # Check that the inner polygon is complete
-                        if not points or points[-1] != points[0]:
-                            raise UnknownOverpassError("Received corrupt data from Overpass (incomplete polygon).")
-                        # We need to check to which outer polygon the inner polygon belongs
-                        point = Point(points[0])
-                        for poly in polygons:
-                            polygon = Polygon(poly[0])
-                            if polygon.contains(point):
-                                poly.append(points)
-                                break
-                        else:
-                            raise UnknownOverpassError("Received corrupt data from Overpass (inner polygon cannot "
-                                                       "be matched to outer polygon).")
-                # Finally create MultiPolygon geometry
-                if polygons:
-                    geometry = geojson.MultiPolygon(polygons)
-            else:
-                raise UnknownOverpassError("Received corrupt data from Overpass (invalid element).")
-
-            if geometry:
-                feature = geojson.Feature(
-                    id=elem["id"],
-                    geometry=geometry,
-                    properties=elem_tags
-                )
-                features.append(feature)
-
-        return geojson.FeatureCollection(features)

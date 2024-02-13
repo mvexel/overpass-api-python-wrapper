@@ -1,4 +1,2 @@
-geojson>=3.0.1
-pytest
+osm2geojson>=0.1.30
 requests>=2.31.0
-shapely>=2.0.1
