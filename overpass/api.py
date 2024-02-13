@@ -60,12 +60,7 @@ class API(object):
         self._status = None
 
         if self.debug:
-            # https://stackoverflow.com/a/16630836
-            try:
-                import http.client as http_client
-            except ImportError:
-                # Python 2
-                import httplib as http_client
+            import http.client as http_client
             http_client.HTTPConnection.debuglevel = 1
 
             # You must initialize logging,
@@ -152,19 +147,18 @@ class API(object):
         available_slots = int(
             next(
                 (
-                    available_re.search(line).group()
+                    m.group()
                     for line in lines 
-                    if available_re.search(line)
+                    if (m := available_re.search(line))
                 ), 0
             )
         )
 
         waiting_re = re.compile(r'(?<=Slot available after: )[\d\-TZ:]{20}')
         waiting_slots = tuple(
-            datetime.strptime(
-                waiting_re.search(line).group(), "%Y-%m-%dT%H:%M:%S%z"
-            )
-            for line in lines if waiting_re.search(line)
+            datetime.strptime(m.group(), "%Y-%m-%dT%H:%M:%S%z")
+            for line in lines
+            if (m := waiting_re.search(line))
         )
 
         current_idx = next(
@@ -248,7 +242,7 @@ class API(object):
             raw_query += ";"
 
         if date:
-            date = f'[date:"{date.strftime("%Y-%m-%dT%H:%M:%SZ")}"]'
+            date = f'[date:"{date:%Y-%m-%dT%H:%M:%SZ}"]'
 
         if responseformat == "geojson":
             template = self._GEOJSON_QUERY_TEMPLATE
@@ -281,19 +275,19 @@ class API(object):
 
         self._status = r.status_code
 
-        if self._status != 200:
-            if self._status == 400:
-                raise OverpassSyntaxError(query)
-            elif self._status == 429:
-                raise MultipleRequestsError()
-            elif self._status == 504:
-                raise ServerLoadError(self._timeout)
-            raise UnknownOverpassError(
-                "The request returned status code {code}".format(code=self._status)
-            )
-        else:
+        if self._status == 200:
             r.encoding = "utf-8"
             return r
+        elif self._status == 400:
+            raise OverpassSyntaxError(query)
+        elif self._status == 429:
+            raise MultipleRequestsError()
+        elif self._status == 504:
+            raise ServerLoadError(self._timeout)
+        else:
+            raise UnknownOverpassError(
+                f"The request returned status code {self._status}"
+            )
 
     def _as_geojson(self, elements):
         ids_already_seen = set()

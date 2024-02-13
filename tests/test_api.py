@@ -189,7 +189,7 @@ def test_api_status(response: Path, slots_available: int, slots_running: Tuple[d
     map_query = overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635)
     api.get(map_query)
 
-    assert api.slots_available <= 2 and api.slots_available >= 0
+    assert 0 <= api.slots_available <= 2
     assert api.slots_available == slots_available
 
     assert isinstance(api.slots_running, tuple)
