@@ -109,7 +109,7 @@ def test_geojson_live():
         "rel(6518385);out body geom;way(10322303);out body geom;node(4927326183);",
         verbosity='body geom'
     )
-    with Path("tests/example.geojson").open("r") as fp:
+    with Path("tests/example_live.geojson").open("r") as fp:
         ref_geo = geojson.load(fp)
     assert osm_geo == ref_geo
 
