@@ -6,6 +6,7 @@ Overpass API python wrapper
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/overpass)
 ![PyPI - License](https://img.shields.io/pypi/l/overpass)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/overpass)
+[![codecov](https://codecov.io/gh/mvexel/overpass-api-python-wrapper/graph/badge.svg?token=7pAwXEZNCt)](https://codecov.io/gh/mvexel/overpass-api-python-wrapper)
 ![GitHub License](https://img.shields.io/github/license/mvexel/overpass-api-python-wrapper)
 ![Mastodon Follow](https://img.shields.io/mastodon/follow/17500?domain=https%3A%2F%2Fen.osm.town)
 
