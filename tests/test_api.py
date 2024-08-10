@@ -10,8 +10,10 @@ from pathlib import Path
 from typing import Tuple, Union
 
 import geojson
-import overpass
 import pytest
+from deepdiff import DeepDiff
+
+import overpass
 
 USE_LIVE_API = bool(os.getenv("USE_LIVE_API", "false"))
 
@@ -105,9 +107,16 @@ def test_geojson_live():
         "rel(6518385);out body geom;way(10322303);out body geom;node(4927326183);",
         verbosity="body geom",
     )
-    with Path("tests/example.geojson").open("r") as fp:
-        ref_geo = geojson.load(fp)
-    assert osm_geo == ref_geo
+
+    with Path("tests/example_live.json").open("r") as fp:
+        ref_geo = json.load(fp)
+
+    # assert that the dictionaries are the same
+    # diff = DeepDiff(osm_geo, ref_geo, include_paths="[root]['features']")
+    diff = DeepDiff(osm_geo, ref_geo, include_paths="[root]['features']")
+    print(diff if diff else "No differences found")
+
+    assert not diff
 
 
 @pytest.mark.parametrize(

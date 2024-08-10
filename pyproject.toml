@@ -13,13 +13,13 @@ python = ">3.9, <3.12"
 osm2geojson = "^0.2.5"
 requests = "^2.32.3"
 
-[tool.poetry.dev-dependencies]
-pytest = "^7.4.0"
-tox = "^4.6.3"
-
 [tool.poetry.group.dev.dependencies]
+pytest = "^7.4.0"
 geojson = "^3.1.0"
+requests-mock = { extras = ["fixtures"], version = "^1.12.1" }
+deepdiff = "^7.0.1"
+tox = "^4.17.1"
 
 [build-system]
-requires = ["poetry-core"]
+requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
