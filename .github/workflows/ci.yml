@@ -38,10 +38,10 @@ jobs:
       - name: Run tests with tox
         run: poetry run tox
 
+      - name: Codecov
+        uses: codecov/codecov-action@v4.5.0
+
       - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v4.0.1
+        uses: codecov/codecov-action@v4.5.0
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
-          # files: ./coverage.xml # Adjust this path if necessary
-          # flags: unittests # Optional flags for Codecov
-          # fail_ci_if_error: true # Fails the CI if Codecov upload fails
