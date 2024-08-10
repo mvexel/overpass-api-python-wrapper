@@ -5,7 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased](https://github.com/mvexel/overpass-api-python-wrapper/compare/0.7.1...HEAD)
+## [Unreleased](https://github.com/mvexel/overpass-api-python-wrapper/compare/v0.7.2...HEAD)
+
+## [v0.7.2](https://github.com/mvexel/overpass-api-python-wrapper/compare/0.7.1...v0.7.2) - 2024-08-10
+
+### Commits
+
+- Can't just go ahead and change the license :) [`39f7150`](https://github.com/mvexel/overpass-api-python-wrapper/commit/39f71509a7b5640a55af01ac77ab437ac44796d1)
+- chore:add homepage to toml [`c62678e`](https://github.com/mvexel/overpass-api-python-wrapper/commit/c62678e7c89ec55b45cf98223ba0202492e3b91f)
 
 ## [0.7.1](https://github.com/mvexel/overpass-api-python-wrapper/compare/0.7.0...0.7.1) - 2024-08-10
 
