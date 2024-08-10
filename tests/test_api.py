@@ -6,7 +6,6 @@
 import json
 import os
 from datetime import datetime, timezone
-from distutils.util import strtobool
 from pathlib import Path
 from typing import Tuple, Union
 
@@ -14,7 +13,7 @@ import geojson
 import overpass
 import pytest
 
-USE_LIVE_API = bool(strtobool(os.getenv("USE_LIVE_API", 'false')))
+USE_LIVE_API = bool(os.getenv("USE_LIVE_API", "false"))
 
 
 def test_initialize_api():
@@ -29,28 +28,23 @@ def test_initialize_api():
         (
             overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635),
             1,
-            Path("tests/example_mapquery.json")
+            Path("tests/example_mapquery.json"),
         ),
         (
             "node(area:3602758138)[amenity=cafe]",
             1,
-            Path("tests/example_singlenode.json")
-        )
-    ]
+            Path("tests/example_singlenode.json"),
+        ),
+    ],
 )
 def test_geojson(
-    query: Union[overpass.MapQuery, str],
-    length: int,
-    response: Path,
-    requests_mock
+    query: Union[overpass.MapQuery, str], length: int, response: Path, requests_mock
 ):
     api = overpass.API(debug=True)
 
     with response.open() as fp:
         mock_response = json.load(fp)
-    requests_mock.post(
-        "//overpass-api.de/api/interpreter", json=mock_response
-    )
+    requests_mock.post("//overpass-api.de/api/interpreter", json=mock_response)
 
     osm_geo = api.get(query)
     assert len(osm_geo["features"]) > length
@@ -64,25 +58,25 @@ def test_multipolygon():
     api.get("rel(11038555)", verbosity="body geom")
 
 
-@pytest.mark.parametrize("verbosity,response,output", [
-    ("body geom", "tests/example_body.json", "tests/example_body.geojson"),
-    # ("tags geom", "tests/example.json", "tests/example.geojson"),
-    ("meta geom", "tests/example_meta.json", "tests/example_meta.geojson"),
-])
-def test_geojson_extended(verbosity, response, output,
-                          requests_mock
-                          ):
+@pytest.mark.parametrize(
+    "verbosity,response,output",
+    [
+        ("body geom", "tests/example_body.json", "tests/example_body.geojson"),
+        # ("tags geom", "tests/example.json", "tests/example.geojson"),
+        ("meta geom", "tests/example_meta.json", "tests/example_meta.geojson"),
+    ],
+)
+def test_geojson_extended(verbosity, response, output, requests_mock):
     api = overpass.API(debug=True)
 
     with Path(response).open() as fp:
         mock_response = json.load(fp)
-    requests_mock.post(
-        "//overpass-api.de/api/interpreter", json=mock_response)
+    requests_mock.post("//overpass-api.de/api/interpreter", json=mock_response)
 
     osm_geo = sorted(
         api.get(
             f"rel(6518385);out {verbosity};way(10322303);out {verbosity};node(4927326183);",
-            verbosity=verbosity
+            verbosity=verbosity,
         )
     )
 
@@ -92,7 +86,9 @@ def test_geojson_extended(verbosity, response, output,
 
 
 # You can also comment the pytest decorator to run the test against the live API
-@pytest.mark.skipif(not USE_LIVE_API, reason="USE_LIVE_API environment variable not set to True")
+@pytest.mark.skipif(
+    not USE_LIVE_API, reason="USE_LIVE_API environment variable not set to True"
+)
 def test_geojson_live():
     """
     This code should only be executed once when major changes to the Overpass API and/or to this
@@ -107,7 +103,7 @@ def test_geojson_live():
     api = overpass.API(debug=True)
     osm_geo = api.get(
         "rel(6518385);out body geom;way(10322303);out body geom;node(4927326183);",
-        verbosity='body geom'
+        verbosity="body geom",
     )
     with Path("tests/example.geojson").open("r") as fp:
         ref_geo = geojson.load(fp)
@@ -117,18 +113,8 @@ def test_geojson_live():
 @pytest.mark.parametrize(
     "response,slots_available,slots_running,slots_waiting",
     [
-        (
-            Path("tests/overpass_status/no_slots_waiting_six_lines.txt"),
-            2,
-            (),
-            ()
-        ),
-        (
-            Path("tests/overpass_status/no_slots_waiting.txt"),
-            2,
-            (),
-            ()
-        ),
+        (Path("tests/overpass_status/no_slots_waiting_six_lines.txt"), 2, (), ()),
+        (Path("tests/overpass_status/no_slots_waiting.txt"), 2, (), ()),
         (
             Path("tests/overpass_status/one_slot_running.txt"),
             1,
@@ -140,10 +126,10 @@ def test_geojson_live():
                     hour=20,
                     minute=22,
                     second=55,
-                    tzinfo=timezone.utc
+                    tzinfo=timezone.utc,
                 ),
             ),
-            ()
+            (),
         ),
         (
             Path("tests/overpass_status/one_slot_waiting.txt"),
@@ -157,9 +143,9 @@ def test_geojson_live():
                     hour=20,
                     minute=23,
                     second=28,
-                    tzinfo=timezone.utc
+                    tzinfo=timezone.utc,
                 ),
-            )
+            ),
         ),
         (
             Path("tests/overpass_status/two_slots_waiting.txt"),
@@ -173,7 +159,7 @@ def test_geojson_live():
                     hour=20,
                     minute=27,
                     second=00,
-                    tzinfo=timezone.utc
+                    tzinfo=timezone.utc,
                 ),
                 datetime(
                     year=2021,
@@ -182,21 +168,25 @@ def test_geojson_live():
                     hour=20,
                     minute=30,
                     second=28,
-                    tzinfo=timezone.utc
-                )
-            )
+                    tzinfo=timezone.utc,
+                ),
+            ),
         ),
-    ]
+    ],
 )
-def test_api_status(response: Path, slots_available: int, slots_running: Tuple[datetime], slots_waiting: Tuple[datetime], requests_mock):
+def test_api_status(
+    response: Path,
+    slots_available: int,
+    slots_running: Tuple[datetime],
+    slots_waiting: Tuple[datetime],
+    requests_mock,
+):
     mock_response = response.read_text()
     requests_mock.get("https://overpass-api.de/api/status", text=mock_response)
 
     api = overpass.API(debug=True)
 
-    requests_mock.post(
-        "https://overpass-api.de/api/interpreter", json={"elements": []}
-    )
+    requests_mock.post("https://overpass-api.de/api/interpreter", json={"elements": []})
     map_query = overpass.MapQuery(37.86517, -122.31851, 37.86687, -122.31635)
     api.get(map_query)
 
@@ -212,4 +202,6 @@ def test_api_status(response: Path, slots_available: int, slots_running: Tuple[d
     assert isinstance(api.slot_available_countdown, int)
     assert api.slot_available_countdown >= 0
 
-    assert api.slot_available_datetime is None or isinstance(api.slot_available_datetime, datetime)
+    assert api.slot_available_datetime is None or isinstance(
+        api.slot_available_datetime, datetime
+    )

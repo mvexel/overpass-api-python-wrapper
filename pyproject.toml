@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "overpass-api-python-wrapper"
+version = "0.7.0"
+description = "A Python interface to the OpenStreetMap Overpass API"
+authors = ["Martijn van Exel <m@rtijn.org>"]
+license = "MIT"
+readme = "README.md"
+packages = [{ include = "overpass" }]
+
+
+[tool.poetry.dependencies]
+python = ">3.9, <3.12"
+osm2geojson = "^0.2.5"
+requests = "^2.32.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^7.4.0"
+tox = "^4.6.3"
+
+[tool.poetry.group.dev.dependencies]
+geojson = "^3.1.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
