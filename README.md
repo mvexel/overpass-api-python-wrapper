@@ -1,6 +1,15 @@
 Overpass API python wrapper
 ===========================
 
+![GitHub branch check runs](https://img.shields.io/github/check-runs/mvexel/overpass-api-python-wrapper/main)
+![PyPI version](https://badge.fury.io/py/overpass.svg)(https://badge.fury.io/py/overpass)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/overpass) 
+![PyPI - License](https://img.shields.io/pypi/l/overpass)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/overpass)
+![GitHub License](https://img.shields.io/github/license/mvexel/overpass-api-python-wrapper)
+![Mastodon Follow](https://img.shields.io/mastodon/follow/17500?domain=https%3A%2F%2Fen.osm.town)
+
+
 Python bindings for the OpenStreetMap [Overpass
 API](http://wiki.openstreetmap.org/wiki/Overpass_API).
 
