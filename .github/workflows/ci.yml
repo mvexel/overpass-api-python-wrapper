@@ -37,3 +37,10 @@ jobs:
 
       - name: Run tests with tox
         run: poetry run tox
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.5.0
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./coverage.xml
+          fail_ci_if_error: true
