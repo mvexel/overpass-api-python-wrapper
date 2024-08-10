@@ -4,6 +4,8 @@ Overpass API python wrapper
 Python bindings for the OpenStreetMap [Overpass
 API](http://wiki.openstreetmap.org/wiki/Overpass_API).
 
+![shell recording](assets/overpass-demo.gif)
+
 Install it
 ==========
 
