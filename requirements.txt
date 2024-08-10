@@ -1,2 +1,0 @@
-osm2geojson>=0.1.30
-requests>=2.31.0

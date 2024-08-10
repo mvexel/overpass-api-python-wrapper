@@ -14,3 +14,4 @@ pip-log.txt
 docs/_build/
 Pipfile.lock
 venv/
+.tox
