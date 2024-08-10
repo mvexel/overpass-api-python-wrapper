@@ -20,6 +20,7 @@ tox = "^4.6.3"
 [tool.poetry.group.dev.dependencies]
 geojson = "^3.1.0"
 requests-mock = {extras = ["fixtures"], version = "^1.12.1"}
+deepdiff = "^7.0.1"
 
 [build-system]
 requires = ["poetry-core"]
