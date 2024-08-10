@@ -16,10 +16,12 @@ requests = "^2.32.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.0"
+pytest-cov = "^5.0.0"
 geojson = "^3.1.0"
 requests-mock = { extras = ["fixtures"], version = "^1.12.1" }
 deepdiff = "^7.0.1"
 tox = "^4.17.1"
+
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
