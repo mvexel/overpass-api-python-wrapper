@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "overpass-api-python-wrapper"
-version = "0.7.0"
+version = "0.7.1"
 description = "A Python interface to the OpenStreetMap Overpass API"
 authors = ["Martijn van Exel <m@rtijn.org>"]
 license = "MIT"
