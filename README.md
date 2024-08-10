@@ -2,7 +2,7 @@ Overpass API python wrapper
 ===========================
 
 ![GitHub branch check runs](https://img.shields.io/github/check-runs/mvexel/overpass-api-python-wrapper/main)
-![PyPI version](https://badge.fury.io/py/overpass.svg)(https://badge.fury.io/py/overpass)
+![PyPI version](https://badge.fury.io/py/overpass.svg)
 ![PyPI - Downloads](https://img.shields.io/pypi/dm/overpass) 
 ![PyPI - License](https://img.shields.io/pypi/l/overpass)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/overpass)
