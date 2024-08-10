@@ -1,9 +1,9 @@
 [tool.poetry]
 name = "overpass"
-version = "0.7.1"
+version = "0.7.2"
 description = "A Python interface to the OpenStreetMap Overpass API"
 authors = ["Martijn van Exel <m@rtijn.org>"]
-license = "MIT"
+license = "Apache-2.0"
 readme = "README.md"
 homepage = "https://github.com/mvexel/overpass-api-python-wrapper"
 packages = [{ include = "overpass" }]
