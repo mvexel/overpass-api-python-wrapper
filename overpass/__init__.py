@@ -1,14 +1,7 @@
-# -*- coding: utf-8 -*-
-
-# Copyright 2015-2018 Martijn van Exel.
-# This file is part of the overpass-api-python-wrapper project
-# which is licensed under Apache 2.0.
-# See LICENSE.txt for the full license text.
-
-"""Thin wrapper around the OpenStreetMap Overpass API."""
+from importlib.metadata import version
 
 __title__ = "overpass"
-__version__ = "0.7"
+__version__ = version("overpass")
 __license__ = "Apache 2.0"
 
 from .api import API
