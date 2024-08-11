@@ -1,12 +1,7 @@
-# Copyright 2015-2018 Martijn van Exel.
-# This file is part of the overpass-api-python-wrapper project
-# which is licensed under Apache 2.0.
-# See LICENSE.txt for the full license text.
-
-
 class OverpassError(Exception):
     """An error during your request occurred.
     Super class for all Overpass api errors."""
+
     pass
 
 
@@ -26,6 +21,7 @@ class TimeoutError(OverpassError):
 
 class MultipleRequestsError(OverpassError):
     """You are trying to run multiple requests at the same time."""
+
     pass
 
 
