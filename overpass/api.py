@@ -60,6 +60,7 @@ class API(object):
 
         if self.debug:
             import http.client as http_client
+
             http_client.HTTPConnection.debuglevel = 1
 
             # You must initialize logging,
@@ -70,7 +71,9 @@ class API(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
-    def get(self, query, responseformat="geojson", verbosity="body", build=True, date=''):
+    def get(
+        self, query, responseformat="geojson", verbosity="body", build=True, date=""
+    ):
         """Pass in an Overpass query in Overpass QL.
 
         :param query: the Overpass QL query to send to the endpoint
@@ -89,7 +92,7 @@ class API(object):
                 date = datetime.fromisoformat(date)
             except ValueError:
                 # The 'Z' in a standard overpass date will throw fromisoformat() off
-                date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
+                date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
         # Construct full Overpass query
         if build:
             full_query = self._construct_ql_query(
@@ -142,18 +145,12 @@ class API(object):
         r = requests.get(endpoint)
         lines = tuple(r.text.splitlines())
 
-        available_re = re.compile(r'\d(?= slots? available)')
+        available_re = re.compile(r"\d(?= slots? available)")
         available_slots = int(
-            next(
-                (
-                    m.group()
-                    for line in lines 
-                    if (m := available_re.search(line))
-                ), 0
-            )
+            next((m.group() for line in lines if (m := available_re.search(line))), 0)
         )
 
-        waiting_re = re.compile(r'(?<=Slot available after: )[\d\-TZ:]{20}')
+        waiting_re = re.compile(r"(?<=Slot available after: )[\d\-TZ:]{20}")
         waiting_slots = tuple(
             datetime.strptime(m.group(), "%Y-%m-%dT%H:%M:%S%z")
             for line in lines
@@ -161,15 +158,13 @@ class API(object):
         )
 
         current_idx = next(
-            i for i, word in enumerate(lines)
-            if word.startswith('Currently running queries')
+            i
+            for i, word in enumerate(lines)
+            if word.startswith("Currently running queries")
         )
-        running_slots = tuple(tuple(line.split()) for line in lines[current_idx + 1:])
+        running_slots = tuple(tuple(line.split()) for line in lines[current_idx + 1 :])
         running_slots_datetimes = tuple(
-            datetime.strptime(
-                slot[3], "%Y-%m-%dT%H:%M:%S%z"
-            )
-            for slot in running_slots
+            datetime.strptime(slot[3], "%Y-%m-%dT%H:%M:%S%z") for slot in running_slots
         )
 
         return {
@@ -217,11 +212,10 @@ class API(object):
             return max(
                 ceil(
                     (
-                        self.slot_available_datetime -
-                        datetime.now(timezone.utc)
+                        self.slot_available_datetime - datetime.now(timezone.utc)
                     ).total_seconds()
                 ),
-                0
+                0,
             )
         except TypeError:
             # Can't subtract from None, which means slot is available now
@@ -246,7 +240,8 @@ class API(object):
         if responseformat == "geojson":
             template = self._GEOJSON_QUERY_TEMPLATE
             complete_query = template.format(
-                query=raw_query, verbosity=verbosity, date=date)
+                query=raw_query, verbosity=verbosity, date=date
+            )
         else:
             template = self._QUERY_TEMPLATE
             complete_query = template.format(
