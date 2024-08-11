@@ -1,16 +1,12 @@
-# Copyright 2015-2018 Martijn van Exel.
-# This file is part of the overpass-api-python-wrapper project
-# which is licensed under Apache 2.0.
-# See LICENSE.txt for the full license text.
-
 import csv
 import json
 import logging
 import re
+from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from io import StringIO
 from math import ceil
-from typing import Optional
+from typing import Dict, List, Optional, Tuple
 
 import requests
 from osm2geojson import json2geojson
@@ -25,90 +21,84 @@ from .errors import (
 )
 
 
-class API(object):
+@dataclass
+class API:
     """A simple Python wrapper for the OpenStreetMap Overpass API.
 
-    :param timeout: If a single number, the TCP connection timeout for the request. If a tuple
-                    of two numbers, the connection timeout and the read timeout respectively.
-                    Timeouts can be integers or floats.
-    :param endpoint: URL of overpass interpreter
-    :param headers: HTTP headers to include when making requests to the overpass endpoint
-    :param debug: Boolean to turn on debugging output
-    :param proxies: Dictionary of proxies to pass to the request library. See
-                    requests documentation for details.
+    Attributes:
+        timeout: The TCP connection timeout for the request.
+        endpoint: URL of the Overpass interpreter.
+        headers: HTTP headers to include when making requests to the Overpass endpoint.
+        debug: Boolean to turn on debugging output.
+        proxies: Dictionary of proxies to pass to the request library.
     """
 
-    SUPPORTED_FORMATS = ["geojson", "json", "xml", "csv"]
+    timeout: float = 25  # seconds
+    endpoint: str = "https://overpass-api.de/api/interpreter"
+    headers: Dict[str, str] = field(
+        default_factory=lambda: {"Accept-Charset": "utf-8;q=0.7,*;q=0.7"}
+    )
+    debug: bool = False
+    proxies: Optional[Dict[str, str]] = None
+    _status: Optional[int] = field(init=False, default=None)
 
-    # defaults for the API class
-    _timeout = 25  # second
-    _endpoint = "https://overpass-api.de/api/interpreter"
-    _headers = {"Accept-Charset": "utf-8;q=0.7,*;q=0.7"}
-    _debug = False
-    _proxies = None
+    SUPPORTED_FORMATS: List[str] = field(
+        default_factory=lambda: ["geojson", "json", "xml", "csv"]
+    )
+    _QUERY_TEMPLATE: str = "[out:{out}]{date};{query}out {verbosity};"
+    _GEOJSON_QUERY_TEMPLATE: str = "[out:json]{date};{query}out {verbosity};"
 
-    _QUERY_TEMPLATE = "[out:{out}]{date};{query}out {verbosity};"
-    _GEOJSON_QUERY_TEMPLATE = "[out:json]{date};{query}out {verbosity};"
-
-    def __init__(self, *args, **kwargs):
-        self.endpoint = kwargs.get("endpoint", self._endpoint)
-        self.headers = kwargs.get("headers", self._headers)
-        self.timeout = kwargs.get("timeout", self._timeout)
-        self.debug = kwargs.get("debug", self._debug)
-        self.proxies = kwargs.get("proxies", self._proxies)
-        self._status = None
-
+    def __post_init__(self):
+        """Initialize logging if debugging is enabled."""
         if self.debug:
-            import http.client as http_client
-
-            http_client.HTTPConnection.debuglevel = 1
-
-            # You must initialize logging,
-            # otherwise you'll not see debug output.
-            logging.basicConfig()
-            logging.getLogger().setLevel(logging.DEBUG)
+            logging.basicConfig(level=logging.DEBUG)
             requests_log = logging.getLogger("requests.packages.urllib3")
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
     def get(
-        self, query, responseformat="geojson", verbosity="body", build=True, date=""
+        self,
+        query: str,
+        responseformat: str = "geojson",
+        verbosity: str = "body",
+        build: bool = True,
+        date: Optional[str] = "",
     ):
-        """Pass in an Overpass query in Overpass QL.
+        """Send an Overpass query in Overpass QL.
 
-        :param query: the Overpass QL query to send to the endpoint
-        :param responseformat: one of the supported output formats ["geojson", "json", "xml", "csv"]
-        :param verbosity: one of the supported levels out data verbosity ["ids",
-                          "skel", "body", "tags", "meta"] and optionally modifiers ["geom", "bb",
-                          "center"] followed by an optional sorting indicator ["asc", "qt"]. Example:
-                          "body geom qt"
-        :param build: boolean to indicate whether to build the overpass query from a template (True)
-                          or allow the programmer to specify full query manually (False)
-        :param date: a date with an optional time. Example: 2020-04-27 or 2020-04-27T00:00:00Z
+        Args:
+            query: The Overpass QL query to send to the endpoint.
+            responseformat: One of the supported output formats ["geojson", "json", "xml", "csv"].
+            verbosity: One of the supported levels of data verbosity ["ids", "skel", "body", "tags", "meta"].
+            build: Boolean to indicate whether to build the Overpass query from a template (True) or specify full query manually (False).
+            date: A date with an optional time. Example: 2020-04-27 or 2020-04-27T00:00:00Z.
+
+        Returns:
+            The response from the Overpass API in the specified format.
+
+        Raises:
+            UnknownOverpassError: If the response is invalid.
+            ServerRuntimeError: If a runtime error is encountered.
         """
         if date and isinstance(date, str):
-            # If date is given and is not already a datetime, attempt to parse from string
             try:
                 date = datetime.fromisoformat(date)
             except ValueError:
-                # The 'Z' in a standard overpass date will throw fromisoformat() off
                 date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
-        # Construct full Overpass query
+
         if build:
             full_query = self._construct_ql_query(
                 query, responseformat=responseformat, verbosity=verbosity, date=date
             )
         else:
             full_query = query
-        if self.debug:
-            logging.getLogger().info(query)
 
-        # Get the response from Overpass
+        logging.info("Query: %s", query)
+
         r = self._get_from_overpass(full_query)
         content_type = r.headers.get("content-type")
+        logging.debug("Content type: %s", content_type)
 
-        if self.debug:
-            print(content_type)
         if content_type == "text/csv":
             return list(csv.reader(StringIO(r.text), delimiter="\t"))
         elif content_type in ("text/xml", "application/xml", "application/osm3s+xml"):
@@ -119,96 +109,122 @@ class API(object):
         if not build:
             return response
 
-        # Check for valid answer from Overpass.
-        # A valid answer contains an 'elements' key at the root level.
         if "elements" not in response:
             raise UnknownOverpassError("Received an invalid answer from Overpass.")
 
-        # If there is a 'remark' key, it spells trouble.
-        overpass_remark = response.get("remark", None)
+        overpass_remark = response.get("remark")
         if overpass_remark and overpass_remark.startswith("runtime error"):
             raise ServerRuntimeError(overpass_remark)
 
         if responseformat != "geojson":
             return response
 
-        # construct geojson
         return json2geojson(response)
 
     @staticmethod
+    @staticmethod
     def _api_status() -> dict:
-        """
-        :returns: dict describing the client's status with the API
+        """Retrieve the API status.
+
+        Returns:
+            A dictionary describing the client's status with the API.
         """
         endpoint = "https://overpass-api.de/api/status"
-
         r = requests.get(endpoint)
-        lines = tuple(r.text.splitlines())
+        lines = r.text.splitlines()
 
-        available_re = re.compile(r"\d(?= slots? available)")
+        # Regex pattern to match the number of available slots
+        available_re = re.compile(r"(\d+) slots available now.")
         available_slots = int(
-            next((m.group() for line in lines if (m := available_re.search(line))), 0)
+            next((m.group(1) for line in lines if (m := available_re.search(line))), 0)
         )
 
-        waiting_re = re.compile(r"(?<=Slot available after: )[\d\-TZ:]{20}")
+        # Regex pattern to match waiting slots
+        waiting_re = re.compile(r"Slot available after: ([\d\-TZ:]+)")
         waiting_slots = tuple(
-            datetime.strptime(m.group(), "%Y-%m-%dT%H:%M:%S%z")
+            datetime.strptime(m.group(1), "%Y-%m-%dT%H:%M:%SZ").replace(
+                tzinfo=timezone.utc
+            )
             for line in lines
             if (m := waiting_re.search(line))
         )
 
+        # Find index of the running queries section
         current_idx = next(
-            i
-            for i, word in enumerate(lines)
-            if word.startswith("Currently running queries")
-        )
-        running_slots = tuple(tuple(line.split()) for line in lines[current_idx + 1 :])
-        running_slots_datetimes = tuple(
-            datetime.strptime(slot[3], "%Y-%m-%dT%H:%M:%S%z") for slot in running_slots
+            (
+                i
+                for i, line in enumerate(lines)
+                if line.startswith("Currently running queries")
+            ),
+            len(lines),  # Default to end of list if not found
         )
 
+        # Parse running queries to extract start times
+        running_slots = tuple(
+            datetime.strptime(slot[3], "%Y-%m-%dT%H:%M:%SZ").replace(
+                tzinfo=timezone.utc
+            )
+            for line in lines[current_idx + 1 :]
+            if (slot := line.split())
+            and len(slot) == 4  # Ensure there are four elements in the split line
+        )
+
+        # Return the parsed status
         return {
             "available_slots": available_slots,
             "waiting_slots": waiting_slots,
-            "running_slots": running_slots_datetimes,
+            "running_slots": running_slots,
         }
 
     @property
     def slots_available(self) -> int:
-        """
-        :returns: count of open slots the client has on the server
+        """Get the count of open slots the client has on the server.
+
+        Returns:
+            The number of available slots.
         """
         return self._api_status()["available_slots"]
 
     @property
-    def slots_waiting(self) -> tuple:
-        """
-        :returns: tuple of datetimes representing waiting slots and when they will be available
+    def slots_waiting(self) -> Tuple[datetime, ...]:
+        """Get the waiting slots and when they will be available.
+
+        Returns:
+            A tuple of datetimes representing waiting slots and when they will be available.
         """
         return self._api_status()["waiting_slots"]
 
     @property
-    def slots_running(self) -> tuple:
-        """
-        :returns: tuple of datetimes representing running slots and when they will be freed
+    def slots_running(self) -> Tuple[datetime, ...]:
+        """Get the running slots and when they will be freed.
+
+        Returns:
+            A tuple of datetimes representing running slots and when they will be freed.
         """
         return self._api_status()["running_slots"]
 
     @property
     def slot_available_datetime(self) -> Optional[datetime]:
+        """Get the datetime when the next slot will be available.
+
+        Returns:
+            None if a slot is available now (no wait needed), or a datetime representing when the next slot will become available.
         """
-        :returns: None if a slot is available now (no wait needed) or a datetime representing when the next slot will become available
-        """
-        if self.slots_available:
+        if self.slots_available > 0:
             return None
-        return min(self.slots_running + self.slots_waiting)
+        all_slots = self.slots_running + self.slots_waiting
+        return min(all_slots) if all_slots else None
 
     @property
     def slot_available_countdown(self) -> int:
+        """Get the countdown for when the next slot will be available.
+
+        Returns:
+            0 if a slot is available now, or an integer of seconds until the next slot is free.
         """
-        :returns: 0 if a slot is available now, or an int of seconds until the next slot is free
-        """
-        try:
+        if self.slots_available > 0:
+            return 0
+        if self.slot_available_datetime:
             return max(
                 ceil(
                     (
@@ -217,44 +233,71 @@ class API(object):
                 ),
                 0,
             )
-        except TypeError:
-            # Can't subtract from None, which means slot is available now
-            return 0
+        return 0
 
     def search(self, feature_type, regex=False):
-        """Search for something."""
+        """Search for a feature.
+
+        Args:
+            feature_type: The type of feature to search for.
+            regex: Whether to use a regular expression for the search.
+
+        Raises:
+            NotImplementedError: The search method is not implemented.
+        """
         raise NotImplementedError()
 
-    # deprecation of upper case functions
+    # Deprecation of uppercase functions
     Get = get
     Search = search
 
     def _construct_ql_query(self, userquery, responseformat, verbosity, date):
+        """Construct a full Overpass QL query.
+
+        Args:
+            userquery: The user-specified query string.
+            responseformat: The format for the response.
+            verbosity: The verbosity level for the response.
+            date: The date for the query.
+
+        Returns:
+            The constructed query string.
+        """
         raw_query = str(userquery).rstrip()
         if not raw_query.endswith(";"):
             raw_query += ";"
 
-        if date:
-            date = f'[date:"{date:%Y-%m-%dT%H:%M:%SZ}"]'
+        date_str = f'[date:"{date:%Y-%m-%dT%H:%M:%SZ}"]' if date else ""
 
-        if responseformat == "geojson":
-            template = self._GEOJSON_QUERY_TEMPLATE
-            complete_query = template.format(
-                query=raw_query, verbosity=verbosity, date=date
-            )
-        else:
-            template = self._QUERY_TEMPLATE
-            complete_query = template.format(
-                query=raw_query, out=responseformat, verbosity=verbosity, date=date
-            )
+        template = (
+            self._GEOJSON_QUERY_TEMPLATE
+            if responseformat == "geojson"
+            else self._QUERY_TEMPLATE
+        )
+        complete_query = template.format(
+            query=raw_query, out=responseformat, verbosity=verbosity, date=date_str
+        )
 
-        if self.debug:
-            print(complete_query)
+        logging.debug("Complete query: %s", complete_query)
         return complete_query
 
     def _get_from_overpass(self, query):
-        payload = {"data": query}
+        """Send a POST request to the Overpass API.
 
+        Args:
+            query: The query to send.
+
+        Returns:
+            The HTTP response from the Overpass API.
+
+        Raises:
+            TimeoutError: If the request times out.
+            OverpassSyntaxError: If the query is malformed.
+            MultipleRequestsError: If too many requests are made.
+            ServerLoadError: If the server is under heavy load.
+            UnknownOverpassError: If an unknown error occurs.
+        """
+        payload = {"data": query}
         try:
             r = requests.post(
                 self.endpoint,
@@ -263,22 +306,33 @@ class API(object):
                 proxies=self.proxies,
                 headers=self.headers,
             )
-
+            r.raise_for_status()
         except requests.exceptions.Timeout:
-            raise TimeoutError(self._timeout)
+            raise TimeoutError(self.timeout)
+        except requests.exceptions.HTTPError as e:
+            self._handle_http_error(e, query)
 
-        self._status = r.status_code
+        r.encoding = "utf-8"
+        return r
 
-        if self._status != 200:
-            if self._status == 400:
-                raise OverpassSyntaxError(query)
-            elif self._status == 429:
-                raise MultipleRequestsError()
-            elif self._status == 504:
-                raise ServerLoadError(self._timeout)
-            raise UnknownOverpassError(
-                "The request returned status code {code}".format(code=self._status)
-            )
-        else:
-            r.encoding = "utf-8"
-            return r
+    def _handle_http_error(self, error, query):
+        """Handle HTTP errors.
+
+        Args:
+            error: The HTTP error that occurred.
+            query: The query that caused the error.
+
+        Raises:
+            OverpassSyntaxError: If the query is malformed.
+            MultipleRequestsError: If too many requests are made.
+            ServerLoadError: If the server is under heavy load.
+            UnknownOverpassError: If an unknown error occurs.
+        """
+        self._status = error.response.status_code
+        if self._status == 400:
+            raise OverpassSyntaxError(query)
+        elif self._status == 429:
+            raise MultipleRequestsError()
+        elif self._status == 504:
+            raise ServerLoadError(self.timeout)
+        raise UnknownOverpassError(f"The request returned status code {self._status}")
