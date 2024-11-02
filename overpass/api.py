@@ -110,6 +110,8 @@ class API(object):
             return list(csv.reader(StringIO(r.text), delimiter="\t"))
         elif content_type in ("text/xml", "application/xml", "application/osm3s+xml"):
             return r.text
+        elif content_type.startswith("text/html"):
+            raise ServerRuntimeError(r.text)
         else:
             response = json.loads(r.text)
 
