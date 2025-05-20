@@ -6,6 +6,10 @@ If you are reading this notice on Github, please point your bookmarks and git re
 
 ---
 
+## Community
+
+If you encounter any issues with this project, feel free to [open a new ticket](https://todo.sr.ht/~mvexel/overpass).
+
 [Overpass
 API](http://wiki.openstreetmap.org/wiki/Overpass_API) for Python.
 
