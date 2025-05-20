@@ -4,11 +4,9 @@ Overpass API python wrapper
 ## We are on Sourcehut
 If you are reading this notice on Github, please point your bookmarks and git remotes at the `overpass` repo [on Sourcehut](https://git.sr.ht/~mvexel/overpass) instead. This project will not be updated on Github.
 
+
+
 ---
-
-## Community
-
-If you encounter any issues with this project, feel free to [open a new ticket](https://todo.sr.ht/~mvexel/overpass).
 
 [Overpass
 API](http://wiki.openstreetmap.org/wiki/Overpass_API) for Python.
