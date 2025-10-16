@@ -1,11 +1,6 @@
 Overpass API python wrapper
 ===========================
 
-## We are on Codeberg
-If you are reading this notice on Github, please point your bookmarks and git remotes at the `overpass-python` repo [on Codeberg](https://codeberg.org/mvexel/overpass-python) instead. This project will not be updated on Github.
-
----
-
 [Overpass
 API](http://wiki.openstreetmap.org/wiki/Overpass_API) for Python.
 
