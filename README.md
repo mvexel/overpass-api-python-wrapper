@@ -25,6 +25,8 @@ uv run ty check
 uv run pytest tests/ --import-mode importlib
 ```
 
+For running live query examples against the public API, see `docs/live-queries.md`.
+
 ## Usage
 
 ### `API()` constructor
