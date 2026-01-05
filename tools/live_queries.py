@@ -61,6 +61,18 @@ EXAMPLES: list[ExampleQuery] = [
         query='rel[type=multipolygon](37.770,-122.450,37.790,-122.430)',
         verbosity="body geom",
     ),
+    ExampleQuery(
+        key="slc_highways_since_2020",
+        title="Salt Lake County highways changed since 2020-08-01",
+        query=(
+            'area[name="Salt Lake County"]->.a;'
+            'way[highway~"primary|secondary|trunk|motorway|residential|tertiary"]'
+            '(if: version() == 1)'
+            '(newer:"2020-08-01T00:00:00Z")'
+            "(area.a);"
+        ),
+        verbosity="geom",
+    ),
 ]
 
 
