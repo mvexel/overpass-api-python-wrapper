@@ -3,8 +3,8 @@
 ## Plan
 - [x] Add transport abstraction shared by sync/async clients
 - [x] Introduce `AsyncAPI` with httpx
-- [ ] Add Pydantic response models (opt-in)
-- [ ] Add GeoJSON helpers on models (`to_geojson`, `__geo_interface__`)
+- [x] Add Pydantic response models (opt-in)
+- [x] Add GeoJSON helpers on models (`to_geojson`, `__geo_interface__`)
 - [x] Expand test coverage for all response formats and error handling
 - [ ] Update docs for async usage and model opt-in
 

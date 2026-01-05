@@ -73,7 +73,15 @@ class API(object):
             requests_log.setLevel(logging.DEBUG)
             requests_log.propagate = True
 
-    def get(self, query, responseformat="geojson", verbosity="body", build=True, date=''):
+    def get(
+        self,
+        query,
+        responseformat="geojson",
+        verbosity="body",
+        build=True,
+        date="",
+        model: bool = False,
+    ):
         """Pass in an Overpass query in Overpass QL.
 
         :param query: the Overpass QL query to send to the endpoint
@@ -135,10 +143,19 @@ class API(object):
             raise ServerRuntimeError(overpass_remark)
 
         if responseformat != "geojson":
+            if model:
+                from .models import OverpassResponse
+
+                return OverpassResponse.model_validate(response)
             return response
 
-        # construct geojson
-        return json2geojson(response)
+        geojson_response = json2geojson(response)
+        if not model:
+            return geojson_response
+
+        from .models import GeoJSONFeatureCollection
+
+        return GeoJSONFeatureCollection.model_validate(geojson_response)
 
     def _api_status(self) -> dict:
         """

@@ -13,6 +13,7 @@ __license__ = "Apache 2.0"
 
 from .api import API
 from .async_api import AsyncAPI
+from .models import GeoJSONFeatureCollection, OverpassResponse
 from .queries import MapQuery, WayQuery
 from .errors import (
     OverpassError,

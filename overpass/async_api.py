@@ -75,7 +75,15 @@ class AsyncAPI:
         if hasattr(self.transport, "aclose"):
             await self.transport.aclose()
 
-    async def get(self, query, responseformat="geojson", verbosity="body", build=True, date=""):
+    async def get(
+        self,
+        query,
+        responseformat="geojson",
+        verbosity="body",
+        build=True,
+        date="",
+        model: bool = False,
+    ):
         """Pass in an Overpass query in Overpass QL (async)."""
         if date and isinstance(date, str):
             try:
@@ -120,9 +128,19 @@ class AsyncAPI:
             raise ServerRuntimeError(overpass_remark)
 
         if responseformat != "geojson":
+            if model:
+                from .models import OverpassResponse
+
+                return OverpassResponse.model_validate(response)
             return response
 
-        return json2geojson(response)
+        geojson_response = json2geojson(response)
+        if not model:
+            return geojson_response
+
+        from .models import GeoJSONFeatureCollection
+
+        return GeoJSONFeatureCollection.model_validate(geojson_response)
 
     async def _api_status(self) -> dict:
         endpoint = "https://overpass-api.de/api/status"

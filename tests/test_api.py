@@ -59,6 +59,9 @@ def test_geojson(
     osm_geo = api.get(query)
     assert len(osm_geo["features"]) > length
 
+    osm_model = api.get(query, model=True)
+    assert osm_model.features
+
 
 def test_json_response(requests_mock):
     api = overpass.API()
@@ -70,6 +73,10 @@ def test_json_response(requests_mock):
     )
     response = api.get("node(1)", responseformat="json")
     assert response == mock_response
+
+    model_response = api.get("node(1)", responseformat="json", model=True)
+    assert model_response.elements[0].id == 1
+    assert model_response.elements[0].type == "node"
 
 
 def test_csv_response(requests_mock):

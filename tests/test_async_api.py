@@ -37,6 +37,11 @@ async def test_async_json_response():
         response = await api.get("node(1)", responseformat="json")
     assert response["elements"][0]["id"] == 1
 
+    async with AsyncAPI(transport=_transport_for(handler)) as api:
+        model_response = await api.get("node(1)", responseformat="json", model=True)
+    assert model_response.elements[0].id == 1
+    assert model_response.elements[0].type == "node"
+
 
 @pytest.mark.asyncio
 async def test_async_csv_response():
@@ -66,6 +71,20 @@ async def test_async_xml_response():
     async with AsyncAPI(transport=_transport_for(handler)) as api:
         response = await api.get("node(1)", responseformat="xml")
     assert response.startswith("<osm>")
+
+
+@pytest.mark.asyncio
+async def test_async_geojson_model():
+    async def handler(request):
+        return httpx.Response(
+            200,
+            json={"elements": [{"id": 1, "type": "node", "lat": 0.0, "lon": 0.0}]},
+            headers={"content-type": "application/json"},
+        )
+
+    async with AsyncAPI(transport=_transport_for(handler)) as api:
+        response = await api.get("node(1)", model=True)
+    assert response.features
 
 
 @pytest.mark.asyncio
