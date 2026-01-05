@@ -80,14 +80,19 @@ def run_query(
     timeout: Optional[float],
     debug: bool,
 ) -> object:
-    api = overpass.API(endpoint=endpoint, timeout=timeout, debug=debug) if endpoint else overpass.API(timeout=timeout, debug=debug)
-    return api.get(
-        query,
-        responseformat=responseformat,
-        verbosity=verbosity,
-        build=build,
-        model=model,
+    api = (
+        overpass.API(endpoint=endpoint, timeout=timeout, debug=debug)
+        if endpoint
+        else overpass.API(timeout=timeout, debug=debug)
     )
+    kwargs = {
+        "responseformat": responseformat,
+        "verbosity": verbosity,
+        "build": build,
+    }
+    if model and "model" in api.get.__code__.co_varnames:
+        kwargs["model"] = True
+    return api.get(query, **kwargs)
 
 
 def summarize(result: object, responseformat: str, model: bool) -> str:
