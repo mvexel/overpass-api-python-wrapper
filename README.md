@@ -47,6 +47,18 @@ you can pass in another instance:
 api = overpass.API(endpoint="https://overpass.myserver/interpreter")
 ```
 
+You can also provide multiple endpoints and opt into fallback or rotation:
+
+```python
+api = overpass.API(
+    endpoints=[
+        "https://overpass-api.de/api/interpreter",
+        "https://overpass.kumi.systems/api/interpreter",
+    ],
+    fallback=True,  # try next endpoint on transient failures
+)
+```
+
 #### `timeout`
 
 The default timeout is 25 seconds, but you can set it to whatever you
@@ -59,6 +71,23 @@ api = overpass.API(timeout=600)
 #### `debug`
 
 Setting this to `True` will get you debug output.
+
+#### `retries`
+
+You can opt into retries for transient failures (429/504/timeouts). Retries wait at least 10 seconds:
+
+```python
+api = overpass.API(max_retries=1, min_retry_delay=10)
+```
+
+#### `bbox guard`
+
+When building queries, large bounding boxes can overload public instances. By default, bboxes over
+1000 km² are rejected. Override with:
+
+```python
+api = overpass.API(allow_large_bbox=True)
+```
 
 ### Getting data from Overpass: `get()`
 

@@ -17,6 +17,7 @@ from shapely.geometry import shape
 from shapely.geometry import mapping as shapely_mapping
 
 import overpass
+from overpass.queries import MapQuery
 from overpass.models import GeoJSONFeatureCollection
 from overpass.utils import Utils
 from overpass.errors import (
@@ -356,3 +357,68 @@ def test_to_overpass_id():
     assert Utils.to_overpass_id(123, source="relation") == 3600000123
     with pytest.raises(ValueError):
         Utils.to_overpass_id(123, source="node")
+
+
+def test_bbox_guard_blocks_large_bbox():
+    api = overpass.API(max_bbox_area_km2=1.0)
+    with pytest.raises(ValueError):
+        api.get(MapQuery(0, 0, 1, 1))
+
+
+def test_bbox_guard_allows_override(requests_mock):
+    api = overpass.API(max_bbox_area_km2=1.0, allow_large_bbox=True)
+    requests_mock.post(
+        "https://overpass-api.de/api/interpreter",
+        json={"elements": []},
+        headers={"content-type": "application/json"},
+    )
+    response = api.get(MapQuery(0, 0, 1, 1), responseformat="json")
+    assert response == {"elements": []}
+
+
+def test_retry_backoff_min_10_seconds(requests_mock, monkeypatch):
+    sleep_calls = []
+
+    def fake_sleep(seconds):
+        sleep_calls.append(seconds)
+
+    api = overpass.API(max_retries=1, min_retry_delay=1)
+    monkeypatch.setattr("overpass.api.time.sleep", fake_sleep)
+    requests_mock.post(
+        "https://overpass-api.de/api/interpreter",
+        [
+            {"status_code": 504, "text": "timeout"},
+            {"json": {"elements": []}, "headers": {"content-type": "application/json"}},
+        ],
+    )
+    response = api.get("node(1)", responseformat="json")
+    assert response == {"elements": []}
+    assert sleep_calls and sleep_calls[0] >= 10
+
+
+def test_fallback_endpoints_used(requests_mock, monkeypatch):
+    sleep_calls = []
+
+    def fake_sleep(seconds):
+        sleep_calls.append(seconds)
+
+    api = overpass.API(
+        endpoints=["https://overpass1.example/api/interpreter", "https://overpass2.example/api/interpreter"],
+        fallback=True,
+        max_retries=1,
+    )
+    monkeypatch.setattr("overpass.api.time.sleep", fake_sleep)
+    requests_mock.post(
+        "https://overpass1.example/api/interpreter",
+        status_code=504,
+        text="timeout",
+    )
+    requests_mock.post(
+        "https://overpass2.example/api/interpreter",
+        json={"elements": []},
+        headers={"content-type": "application/json"},
+    )
+    response = api.get("node(1)", responseformat="json")
+    assert response == {"elements": []}
+    assert requests_mock.request_history[0].url == "https://overpass1.example/api/interpreter"
+    assert requests_mock.request_history[1].url == "https://overpass2.example/api/interpreter"

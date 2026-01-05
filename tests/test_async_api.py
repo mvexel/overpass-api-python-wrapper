@@ -10,6 +10,7 @@ import httpx
 import pytest
 
 from overpass.async_api import AsyncAPI
+from overpass.queries import MapQuery
 from overpass.errors import (
     MultipleRequestsError,
     OverpassSyntaxError,
@@ -166,3 +167,37 @@ async def test_async_api_status():
     assert slots_waiting == ()
     assert isinstance(countdown, int)
     assert slot_dt is None or isinstance(slot_dt, datetime)
+
+
+@pytest.mark.asyncio
+async def test_async_bbox_guard_blocks_large_bbox():
+    async with AsyncAPI(max_bbox_area_km2=1.0) as api:
+        with pytest.raises(ValueError):
+            await api.get(MapQuery(0, 0, 1, 1))
+
+
+@pytest.mark.asyncio
+async def test_async_retry_backoff_min_10_seconds(monkeypatch):
+    sleep_calls = []
+
+    async def fake_sleep(seconds):
+        sleep_calls.append(seconds)
+
+    monkeypatch.setattr("overpass.async_api.asyncio.sleep", fake_sleep)
+
+    calls = {"count": 0}
+
+    async def handler(request):
+        calls["count"] += 1
+        if calls["count"] == 1:
+            return httpx.Response(504, text="timeout")
+        return httpx.Response(
+            200,
+            json={"elements": []},
+            headers={"content-type": "application/json"},
+        )
+
+    async with AsyncAPI(transport=_transport_for(handler), max_retries=1, min_retry_delay=1) as api:
+        response = await api.get("node(1)", responseformat="json")
+    assert response == {"elements": []}
+    assert sleep_calls and sleep_calls[0] >= 10

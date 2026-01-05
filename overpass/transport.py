@@ -43,7 +43,7 @@ class HttpxAsyncTransport:
         headers: Optional[dict] = None,
     ) -> None:
         if client is None:
-            self._client = httpx.AsyncClient(proxies=proxies, headers=headers)
+            self._client = httpx.AsyncClient(headers=headers)
         else:
             self._client = client
 

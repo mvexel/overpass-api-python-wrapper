@@ -6,7 +6,9 @@
 import csv
 import json
 import logging
+import math
 import re
+import time
 from datetime import datetime, timezone
 from io import StringIO
 from math import ceil
@@ -59,6 +61,14 @@ class API(object):
         self.debug = kwargs.get("debug", self._debug)
         self.proxies = kwargs.get("proxies", self._proxies)
         self.transport = kwargs.get("transport") or RequestsTransport()
+        self.endpoints = kwargs.get("endpoints") or [self.endpoint]
+        self.rotate = kwargs.get("rotate", False)
+        self.fallback = kwargs.get("fallback", False)
+        self.max_retries = kwargs.get("max_retries", 0)
+        self.min_retry_delay = kwargs.get("min_retry_delay", 10)
+        self.allow_large_bbox = kwargs.get("allow_large_bbox", False)
+        self.max_bbox_area_km2 = kwargs.get("max_bbox_area_km2", 1000.0)
+        self._endpoint_index = 0
         self._status = None
 
         if self.debug:
@@ -103,6 +113,7 @@ class API(object):
                 date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
         # Construct full Overpass query
         if build:
+            self._guard_bbox(userquery=query)
             full_query = self._construct_ql_query(
                 query, responseformat=responseformat, verbosity=verbosity, date=date
             )
@@ -297,33 +308,84 @@ class API(object):
             print(complete_query)
         return complete_query
 
+    def _select_endpoint(self) -> str:
+        if not self.rotate or len(self.endpoints) == 1:
+            return self.endpoints[0]
+        endpoint = self.endpoints[self._endpoint_index % len(self.endpoints)]
+        self._endpoint_index += 1
+        return endpoint
+
+    def _guard_bbox(self, userquery) -> None:
+        if self.allow_large_bbox or self.max_bbox_area_km2 is None:
+            return
+
+        bboxes = []
+        if hasattr(userquery, "south") and hasattr(userquery, "west"):
+            bboxes.append((userquery.south, userquery.west, userquery.north, userquery.east))
+        else:
+            bbox_re = re.compile(r"\(([-\d\.]+),([-\d\.]+),([-\d\.]+),([-\d\.]+)\)")
+            for match in bbox_re.finditer(str(userquery)):
+                south, west, north, east = map(float, match.groups())
+                bboxes.append((south, west, north, east))
+
+        for south, west, north, east in bboxes:
+            area_km2 = self._bbox_area_km2(south, west, north, east)
+            if area_km2 > self.max_bbox_area_km2:
+                raise ValueError(
+                    f"bbox area {area_km2:.1f} km^2 exceeds limit "
+                    f"{self.max_bbox_area_km2} km^2 (set allow_large_bbox=True to override)"
+                )
+
+    @staticmethod
+    def _bbox_area_km2(south, west, north, east) -> float:
+        mid_lat = (south + north) / 2.0
+        lat_km = 111.32 * (north - south)
+        lon_km = 111.32 * abs(east - west) * abs(math.cos(math.radians(mid_lat)))
+        return abs(lat_km * lon_km)
+
     def _get_from_overpass(self, query):
         payload = {"data": query}
 
-        try:
-            r = self.transport.post(
-                self.endpoint,
-                data=payload,
-                timeout=self.timeout,
-                proxies=self.proxies,
-                headers=self.headers,
-            )
+        attempts = 0
+        endpoints = self.endpoints if self.fallback else [self._select_endpoint()]
 
-        except requests.exceptions.Timeout:
-            raise TimeoutError(self._timeout)
+        while True:
+            endpoint = endpoints[min(attempts, len(endpoints) - 1)]
+            try:
+                r = self.transport.post(
+                    endpoint,
+                    data=payload,
+                    timeout=self.timeout,
+                    proxies=self.proxies,
+                    headers=self.headers,
+                )
+            except requests.exceptions.Timeout:
+                if attempts >= self.max_retries:
+                    raise TimeoutError(self._timeout)
+                time.sleep(max(self.min_retry_delay, 10))
+                attempts += 1
+                continue
 
-        self._status = r.status_code
+            self._status = r.status_code
 
-        if self._status != 200:
-            if self._status == 400:
-                raise OverpassSyntaxError(query)
-            elif self._status == 429:
-                raise MultipleRequestsError()
-            elif self._status == 504:
-                raise ServerLoadError(self._timeout)
-            raise UnknownOverpassError(
-                "The request returned status code {code}".format(code=self._status)
-            )
-        else:
-            r.encoding = "utf-8"
-            return r
+            if self._status != 200:
+                if self._status == 400:
+                    raise OverpassSyntaxError(query)
+                elif self._status == 429:
+                    if attempts >= self.max_retries:
+                        raise MultipleRequestsError()
+                    time.sleep(max(self.min_retry_delay, 10))
+                    attempts += 1
+                    continue
+                elif self._status == 504:
+                    if attempts >= self.max_retries:
+                        raise ServerLoadError(self._timeout)
+                    time.sleep(max(self.min_retry_delay, 10))
+                    attempts += 1
+                    continue
+                raise UnknownOverpassError(
+                    "The request returned status code {code}".format(code=self._status)
+                )
+            else:
+                r.encoding = "utf-8"
+                return r
