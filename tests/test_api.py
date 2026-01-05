@@ -92,6 +92,12 @@ def test_csv_response(requests_mock):
     )
     assert response == [["name", "@lon", "@lat"], ["Springfield", "-3.0", "56.2"]]
 
+    model_response = api.get(
+        'node["name"="Springfield"]["place"]', responseformat="csv(name,::lon,::lat)", model=True
+    )
+    assert model_response.header == ["name", "@lon", "@lat"]
+    assert model_response.rows == [["Springfield", "-3.0", "56.2"]]
+
 
 def test_xml_response(requests_mock):
     api = overpass.API()
@@ -103,6 +109,9 @@ def test_xml_response(requests_mock):
     )
     response = api.get("node(1)", responseformat="xml")
     assert response == xml_body
+
+    model_response = api.get("node(1)", responseformat="xml", model=True)
+    assert model_response.text == xml_body
 
 
 @pytest.mark.integration

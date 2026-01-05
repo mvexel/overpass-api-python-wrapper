@@ -13,11 +13,13 @@ from pydantic import BaseModel, Field
 class GeoJSONGeometry(BaseModel):
     type: str
     coordinates: Any
+    bbox: Optional[list[float]] = None
 
 
 class GeoJSONFeature(BaseModel):
     type: Literal["Feature"] = "Feature"
     id: Optional[Any] = None
+    bbox: Optional[list[float]] = None
     properties: dict[str, Any] = Field(default_factory=dict)
     geometry: Optional[GeoJSONGeometry] = None
 
@@ -31,6 +33,7 @@ class GeoJSONFeature(BaseModel):
 
 class GeoJSONFeatureCollection(BaseModel):
     type: Literal["FeatureCollection"] = "FeatureCollection"
+    bbox: Optional[list[float]] = None
     features: list[GeoJSONFeature] = Field(default_factory=list)
 
     def to_geojson(self) -> str:
@@ -57,3 +60,12 @@ class OverpassResponse(BaseModel):
     generator: Optional[str] = None
     osm3s: Optional[dict[str, Any]] = None
     remark: Optional[str] = None
+
+
+class CsvResponse(BaseModel):
+    header: list[str]
+    rows: list[list[str]]
+
+
+class XmlResponse(BaseModel):
+    text: str

@@ -68,6 +68,14 @@ Most users will only ever need to use the `get()` method. There are some conveni
 response = api.get('node["name"="Salt Lake City"]')
 ```
 
+You can opt into Pydantic models using `model=True`:
+
+```python
+model = api.get('node["name"="Salt Lake City"]', model=True)
+print(model.to_geojson())
+geo_interface = model.__geo_interface__
+```
+
 `response` will be a dictionary representing the
 JSON output you would get [from the Overpass API
 directly](https://overpass-api.de/output_formats.html#json).
@@ -135,6 +143,22 @@ We will construct a valid Overpass QL query from the parameters you set by defau
 
 You can query the data as it was on a given date. You can give either a standard ISO date alone (YYYY-MM-DD) or a full overpass date and time (YYYY-MM-DDTHH:MM:SSZ, i.e. 2020-04-28T00:00:00Z).
 You can also directly pass a `date` or `datetime` object from the `datetime` library.
+
+### Async usage
+
+```python
+import asyncio
+import overpass
+
+
+async def main():
+    async with overpass.AsyncAPI() as api:
+        data = await api.get('node["name"="Salt Lake City"]', model=True)
+        print(data.to_geojson())
+
+
+asyncio.run(main())
+```
 
 ### Pre-cooked Queries: `MapQuery`, `WayQuery`
 

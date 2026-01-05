@@ -58,6 +58,13 @@ async def test_async_csv_response():
         )
     assert response == [["name", "@lon", "@lat"], ["Springfield", "-3.0", "56.2"]]
 
+    async with AsyncAPI(transport=_transport_for(handler)) as api:
+        model_response = await api.get(
+            'node["name"="Springfield"]["place"]', responseformat="csv(name,::lon,::lat)", model=True
+        )
+    assert model_response.header == ["name", "@lon", "@lat"]
+    assert model_response.rows == [["Springfield", "-3.0", "56.2"]]
+
 
 @pytest.mark.asyncio
 async def test_async_xml_response():
@@ -71,6 +78,10 @@ async def test_async_xml_response():
     async with AsyncAPI(transport=_transport_for(handler)) as api:
         response = await api.get("node(1)", responseformat="xml")
     assert response.startswith("<osm>")
+
+    async with AsyncAPI(transport=_transport_for(handler)) as api:
+        model_response = await api.get("node(1)", responseformat="xml", model=True)
+    assert model_response.text.startswith("<osm>")
 
 
 @pytest.mark.asyncio

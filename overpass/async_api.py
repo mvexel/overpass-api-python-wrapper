@@ -106,8 +106,19 @@ class AsyncAPI:
         if self.debug:
             print(content_type)
         if content_type == "text/csv":
-            return list(csv.reader(StringIO(r.text), delimiter="\t"))
+            csv_rows = list(csv.reader(StringIO(r.text), delimiter="\t"))
+            if model:
+                from .models import CsvResponse
+
+                header = csv_rows[0] if csv_rows else []
+                rows = csv_rows[1:] if len(csv_rows) > 1 else []
+                return CsvResponse(header=header, rows=rows)
+            return csv_rows
         elif content_type in ("text/xml", "application/xml", "application/osm3s+xml"):
+            if model:
+                from .models import XmlResponse
+
+                return XmlResponse(text=r.text)
             return r.text
         else:
             try:
