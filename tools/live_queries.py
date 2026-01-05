@@ -26,11 +26,6 @@ EXAMPLES: list[ExampleQuery] = [
         query='node["amenity"="cafe"](37.770,-122.450,37.790,-122.430)',
     ),
     ExampleQuery(
-        key="admin_boundaries_uluru",
-        title="Administrative boundaries (Uluru bbox)",
-        query='rel["boundary"="administrative"](-25.38653,130.99883,-25.31478,131.08938)',
-    ),
-    ExampleQuery(
         key="route_bus_sf",
         title="Bus route relations in SF bbox (with recursion)",
         query=(
