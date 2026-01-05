@@ -6,7 +6,7 @@
 - [x] Add Pydantic response models (opt-in)
 - [x] Add GeoJSON helpers on models (`to_geojson`, `__geo_interface__`)
 - [x] Expand test coverage for all response formats and error handling
-- [ ] Update docs for async usage and model opt-in
+- [x] Update docs for async usage and model opt-in
 
 ## Tracking
 - [ ] Close #181 GeoJSON hardening (relations/multipolygons/routes/boundaries)

@@ -17,6 +17,15 @@
 - Provide helpers on models (`to_geojson()`, `__geo_interface__`) while keeping
   existing dict return behavior by default.
 
+## Implemented (current branch)
+- Shared transport abstraction for sync/async HTTP.
+- `AsyncAPI` alongside `API` (httpx-based).
+- Opt-in Pydantic models for Overpass JSON + GeoJSON, plus CSV/XML wrappers.
+- `to_geojson()` and `__geo_interface__` on GeoJSON models (Shapely round-trip test).
+- Extended tests for response formats, error mapping, and async parity.
+- Hardened JSON parsing with clearer errors when content is invalid.
+- `Utils.to_overpass_id` now requires a source type (`way` or `relation`).
+
 ## Testing strategy
 - Unit tests for:
   - Query construction (`MapQuery`, `WayQuery`, `build`, `verbosity`, `date`).
@@ -27,5 +36,4 @@
 - Integration tests remain opt-in (`RUN_NETWORK_TESTS=1`).
 
 ## Open questions
-- Final API for opting into models (flag vs responseformat).
-- Whether to expose `AsyncAPI` in `overpass.__init__`.
+- GeoJSON hardening for relations/multipolygons/routes/boundaries (#181).
