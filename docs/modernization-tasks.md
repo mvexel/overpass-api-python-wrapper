@@ -1,11 +1,11 @@
 # 0.8 Modernization Tasks
 
 ## Plan
-- [ ] Add transport abstraction shared by sync/async clients
+- [x] Add transport abstraction shared by sync/async clients
 - [ ] Introduce `AsyncAPI` with httpx
 - [ ] Add Pydantic response models (opt-in)
 - [ ] Add GeoJSON helpers on models (`to_geojson`, `__geo_interface__`)
-- [ ] Expand test coverage for all response formats and error handling
+- [x] Expand test coverage for all response formats and error handling
 - [ ] Update docs for async usage and model opt-in
 
 ## Tracking
