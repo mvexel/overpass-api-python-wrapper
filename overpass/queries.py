@@ -11,7 +11,7 @@ class MapQuery(object):
 
     _QUERY_TEMPLATE = "(node({south},{west},{north},{east});<;>;);"
 
-    def __init__(self, south, west, north, east):
+    def __init__(self, south: float, west: float, north: float, east: float) -> None:
         """
         Initialize query with given bounding box.
 
@@ -23,7 +23,7 @@ class MapQuery(object):
         self.east = east
         self.north = north
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._QUERY_TEMPLATE.format(
             west=self.west, south=self.south, east=self.east, north=self.north
         )
@@ -34,12 +34,12 @@ class WayQuery(object):
 
     _QUERY_TEMPLATE = "(way{query_parameters});(._;>;);"
 
-    def __init__(self, query_parameters):
+    def __init__(self, query_parameters: str) -> None:
         """Initialize a query for a set of ways satisfying the given parameters.
 
         :param query_parameters Overpass QL query parameters
         """
         self.query_parameters = query_parameters
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self._QUERY_TEMPLATE.format(query_parameters=self.query_parameters)

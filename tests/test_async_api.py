@@ -83,6 +83,20 @@ async def test_async_invalid_response_raises():
 
 
 @pytest.mark.asyncio
+async def test_async_invalid_json_response_raises():
+    async def handler(request):
+        return httpx.Response(
+            200,
+            text="<html>not json</html>",
+            headers={"content-type": "application/json"},
+        )
+
+    async with AsyncAPI(transport=_transport_for(handler)) as api:
+        with pytest.raises(UnknownOverpassError):
+            await api.get("node(1)", responseformat="json")
+
+
+@pytest.mark.asyncio
 @pytest.mark.parametrize(
     "status_code,exception",
     [

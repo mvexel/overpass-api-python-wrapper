@@ -102,7 +102,12 @@ class AsyncAPI:
         elif content_type in ("text/xml", "application/xml", "application/osm3s+xml"):
             return r.text
         else:
-            response = json.loads(r.text)
+            try:
+                response = json.loads(r.text)
+            except json.JSONDecodeError as exc:
+                raise UnknownOverpassError(
+                    "Received a non-JSON response when JSON was expected."
+                ) from exc
 
         if not build:
             return response

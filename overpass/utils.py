@@ -7,7 +7,7 @@
 class Utils(object):
 
     @staticmethod
-    def to_overpass_id(osmid, area=False):
+    def to_overpass_id(osmid: int, area: bool = False) -> int:
         area_base = 2400000000
         relation_base = 3600000000
         if area:

@@ -146,6 +146,17 @@ def test_invalid_overpass_response_raises(requests_mock):
         api.get("node(1)")
 
 
+def test_invalid_json_response_raises(requests_mock):
+    api = overpass.API()
+    requests_mock.post(
+        "https://overpass-api.de/api/interpreter",
+        text="<html>not json</html>",
+        headers={"content-type": "application/json"},
+    )
+    with pytest.raises(UnknownOverpassError):
+        api.get("node(1)", responseformat="json")
+
+
 def test_invalid_overpass_response_build_false(requests_mock):
     api = overpass.API()
     response = {"foo": "bar"}
