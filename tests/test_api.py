@@ -10,6 +10,8 @@ from pathlib import Path
 from typing import Tuple, Union
 
 import geojson
+import os
+
 import pytest
 from deepdiff import DeepDiff
 
@@ -52,10 +54,13 @@ def test_geojson(
     assert len(osm_geo["features"]) > length
 
 
+@pytest.mark.integration
 def test_multipolygon():
     """
     Test that multipolygons are processed without error
     """
+    if not os.getenv("RUN_NETWORK_TESTS"):
+        pytest.skip("requires live Overpass API; set RUN_NETWORK_TESTS=1")
     api = overpass.API()
     api.get("rel(11038555)", verbosity="body geom")
 

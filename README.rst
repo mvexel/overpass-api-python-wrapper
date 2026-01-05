@@ -1,82 +1,9 @@
-Overpass API python wrapper
-===========================
+Deprecated README.rst
+=====================
 
-.. image:: https://github.com/mvexel/overpass-api-python-wrapper/workflows/CI/badge.svg
-   :target: https://github.com/mvexel/overpass-api-python-wrapper/actions?query=workflow%3ACI
+This file is deprecated. Please use ``README.md`` instead.
 
-
-This is a thin wrapper around the OpenStreetMap `Overpass
-API <http://wiki.openstreetmap.org/wiki/Overpass_API>`__.
-
-
-|Build Status|
-
-Install it
-==========
-
-``pip install overpass``
-
-Usage
------
-
-Simplest example:
-
-.. code:: python
-
-    import overpass
-    api = overpass.API()
-    response = api.get('node["name"="Salt Lake City"]')
-
-``response`` will be a dictionary representing the JSON output you would
-get `from the Overpass API
-directly <https://overpass-api.de/output_formats.html#json>`__.
-
-Note that the Overpass query passed to ``get()`` should not contain any
-``out`` or other meta statements.
-
-Another example:
-
-.. code:: python
-
-    >>> print [(
-    ...     feature['properties']['name'],
-    ...     feature['id']) for feature in response["features"]]
-    [(u'Salt Lake City', 150935219), (u'Salt Lake City', 585370637)]
-
-You can find more examples in the ``examples/`` directory of this
-repository.
-
-Response formats
-~~~~~~~~~~~~~~~~
-
-You can set the response type of your query using ``get()``\ ’s
-``responseformat`` parameter to GeoJSON (``geojson``, the default),
-plain JSON (``json``), CSV (``csv``), and OSM XML (``xml``).
-
-.. code:: python
-
-    response = api.get('node["name"="Salt Lake City"]', responseformat="xml")
-
-Parameters
-~~~~~~~~~~
-
-The API object takes a few parameters:
-
-``endpoint``
-^^^^^^^^^^^^
-
-The default endpoint is ``https://overpass-api.de/api/interpreter`` but
-you can pass in another instance:
-
-.. code:: python
-
-    api = overpass.API(endpoint=https://overpass.myserver/interpreter)
-
-``timeout``
-^^^^^^^^^^^
-
-The default timeout is 25 seconds, but you can set it to whatever you
-want.
+The Markdown version is the canonical documentation and is kept up to date.
 
 .. code:: python
 
@@ -139,6 +66,3 @@ Where did the CLI tool go?
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The command line tool was deprecated in version 0.4.0.
-
-.. |Build Status| image:: https://travis-ci.org/mvexel/overpass-api-python-wrapper.svg?branch=master
-   :target: https://travis-ci.org/mvexel/overpass-api-python-wrapper

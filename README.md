@@ -5,11 +5,25 @@ Overpass API python wrapper
 API](http://wiki.openstreetmap.org/wiki/Overpass_API) for Python.
 
 ![shell recording](assets/overpass-demo.gif)
+![CI](https://github.com/mvexel/overpass-api-python-wrapper/actions/workflows/ci.yml/badge.svg)
 
 Install it
 ==========
 
 `pip install overpass`
+
+## Development
+
+This project targets Python 3.11-3.13 and uses `mise` + `uv` for the toolchain.
+
+```bash
+mise install
+uv sync --group dev
+uv run ruff check
+uv run ruff format
+uv run ty check
+uv run pytest tests/ --import-mode importlib
+```
 
 ## Usage
 
