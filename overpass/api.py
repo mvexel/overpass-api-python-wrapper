@@ -23,6 +23,7 @@ from .errors import (
     TimeoutError,
     UnknownOverpassError,
 )
+from .transport import RequestsTransport
 
 
 class API(object):
@@ -36,6 +37,7 @@ class API(object):
     :param debug: Boolean to turn on debugging output
     :param proxies: Dictionary of proxies to pass to the request library. See
                     requests documentation for details.
+    :param transport: Optional transport instance for HTTP requests.
     """
 
     SUPPORTED_FORMATS = ["geojson", "json", "xml", "csv"]
@@ -56,6 +58,7 @@ class API(object):
         self.timeout = kwargs.get("timeout", self._timeout)
         self.debug = kwargs.get("debug", self._debug)
         self.proxies = kwargs.get("proxies", self._proxies)
+        self.transport = kwargs.get("transport") or RequestsTransport()
         self._status = None
 
         if self.debug:
@@ -132,14 +135,18 @@ class API(object):
         # construct geojson
         return json2geojson(response)
 
-    @staticmethod
-    def _api_status() -> dict:
+    def _api_status(self) -> dict:
         """
         :returns: dict describing the client's status with the API
         """
         endpoint = "https://overpass-api.de/api/status"
 
-        r = requests.get(endpoint)
+        r = self.transport.get(
+            endpoint,
+            timeout=None,
+            proxies=self.proxies,
+            headers=self.headers,
+        )
         lines = tuple(r.text.splitlines())
 
         available_re = re.compile(r'\d(?= slots? available)')
@@ -261,7 +268,7 @@ class API(object):
         payload = {"data": query}
 
         try:
-            r = requests.post(
+            r = self.transport.post(
                 self.endpoint,
                 data=payload,
                 timeout=self.timeout,

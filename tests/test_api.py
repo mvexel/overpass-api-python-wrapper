@@ -10,14 +10,19 @@ from pathlib import Path
 from typing import Tuple, Union
 
 import geojson
-import os
 
 import pytest
 from deepdiff import DeepDiff
 
 import overpass
+from overpass.errors import (
+    MultipleRequestsError,
+    OverpassSyntaxError,
+    ServerLoadError,
+    UnknownOverpassError,
+)
 
-USE_LIVE_API = bool(os.getenv("USE_LIVE_API", "false"))
+USE_LIVE_API = os.getenv("USE_LIVE_API", "").lower() == "true"
 
 
 def test_initialize_api():
@@ -52,6 +57,44 @@ def test_geojson(
 
     osm_geo = api.get(query)
     assert len(osm_geo["features"]) > length
+
+
+def test_json_response(requests_mock):
+    api = overpass.API()
+    mock_response = {"elements": [{"id": 1, "type": "node"}]}
+    requests_mock.post(
+        "https://overpass-api.de/api/interpreter",
+        json=mock_response,
+        headers={"content-type": "application/json"},
+    )
+    response = api.get("node(1)", responseformat="json")
+    assert response == mock_response
+
+
+def test_csv_response(requests_mock):
+    api = overpass.API()
+    csv_body = "name\t@lon\t@lat\nSpringfield\t-3.0\t56.2\n"
+    requests_mock.post(
+        "https://overpass-api.de/api/interpreter",
+        text=csv_body,
+        headers={"content-type": "text/csv"},
+    )
+    response = api.get(
+        'node["name"="Springfield"]["place"]', responseformat="csv(name,::lon,::lat)"
+    )
+    assert response == [["name", "@lon", "@lat"], ["Springfield", "-3.0", "56.2"]]
+
+
+def test_xml_response(requests_mock):
+    api = overpass.API()
+    xml_body = "<osm><node id=\"1\" lat=\"0\" lon=\"0\" /></osm>"
+    requests_mock.post(
+        "https://overpass-api.de/api/interpreter",
+        text=xml_body,
+        headers={"content-type": "application/osm3s+xml"},
+    )
+    response = api.get("node(1)", responseformat="xml")
+    assert response == xml_body
 
 
 @pytest.mark.integration
@@ -90,6 +133,28 @@ def test_geojson_extended(verbosity, response, output, requests_mock):
     with Path(output).open() as fp:
         ref_geo = sorted(geojson.load(fp))
     assert osm_geo == ref_geo
+
+
+def test_invalid_overpass_response_raises(requests_mock):
+    api = overpass.API()
+    requests_mock.post(
+        "https://overpass-api.de/api/interpreter",
+        json={"foo": "bar"},
+        headers={"content-type": "application/json"},
+    )
+    with pytest.raises(UnknownOverpassError):
+        api.get("node(1)")
+
+
+def test_invalid_overpass_response_build_false(requests_mock):
+    api = overpass.API()
+    response = {"foo": "bar"}
+    requests_mock.post(
+        "https://overpass-api.de/api/interpreter",
+        json=response,
+        headers={"content-type": "application/json"},
+    )
+    assert api.get("node(1)", build=False) == response
 
 
 # You can also comment the pytest decorator to run the test against the live API
@@ -219,3 +284,24 @@ def test_api_status(
     assert api.slot_available_datetime is None or isinstance(
         api.slot_available_datetime, datetime
     )
+
+
+@pytest.mark.parametrize(
+    "status_code,exception",
+    [
+        (400, OverpassSyntaxError),
+        (429, MultipleRequestsError),
+        (504, ServerLoadError),
+        (500, UnknownOverpassError),
+    ],
+)
+def test_http_errors(status_code, exception, requests_mock):
+    api = overpass.API()
+    requests_mock.post(
+        "https://overpass-api.de/api/interpreter",
+        status_code=status_code,
+        text="error",
+        headers={"content-type": "text/plain"},
+    )
+    with pytest.raises(exception):
+        api.get("node(1)")
