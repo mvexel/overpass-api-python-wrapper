@@ -15,6 +15,10 @@ class GeoJSONGeometry(BaseModel):
     coordinates: Any
     bbox: Optional[list[float]] = None
 
+    @property
+    def __geo_interface__(self) -> dict[str, Any]:
+        return self.model_dump()
+
 
 class GeoJSONFeature(BaseModel):
     type: Literal["Feature"] = "Feature"

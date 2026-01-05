@@ -275,6 +275,7 @@ dev = [
     { name = "pytest-asyncio" },
     { name = "requests-mock" },
     { name = "ruff" },
+    { name = "shapely" },
     { name = "ty" },
 ]
 
@@ -295,6 +296,7 @@ dev = [
     { name = "pytest-asyncio", specifier = ">=0.23.0" },
     { name = "requests-mock", specifier = ">=1.12.1" },
     { name = "ruff", specifier = ">=0.6.0" },
+    { name = "shapely", specifier = ">=2.0.0" },
     { name = "ty", specifier = ">=0.0.9" },
 ]
 

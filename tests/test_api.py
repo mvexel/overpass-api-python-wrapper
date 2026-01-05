@@ -13,8 +13,11 @@ import geojson
 
 import pytest
 from deepdiff import DeepDiff
+from shapely.geometry import shape
+from shapely.geometry import mapping as shapely_mapping
 
 import overpass
+from overpass.models import GeoJSONFeatureCollection
 from overpass.utils import Utils
 from overpass.errors import (
     MultipleRequestsError,
@@ -150,6 +153,19 @@ def test_geojson_extended(verbosity, response, output, requests_mock):
     with Path(output).open() as fp:
         ref_geo = sorted(geojson.load(fp))
     assert osm_geo == ref_geo
+
+
+def test_geo_interface_roundtrip():
+    with Path("tests/example_body.geojson").open() as fp:
+        raw_geojson = json.load(fp)
+
+    model = GeoJSONFeatureCollection.model_validate(raw_geojson)
+    first_geom = model.features[0].geometry
+    assert first_geom is not None
+
+    model_shape = shape(first_geom.__geo_interface__)
+    raw_shape = shape(raw_geojson["features"][0]["geometry"])
+    assert shapely_mapping(model_shape) == shapely_mapping(raw_shape)
 
 
 def test_invalid_overpass_response_raises(requests_mock):
