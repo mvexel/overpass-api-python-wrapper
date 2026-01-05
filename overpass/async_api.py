@@ -45,6 +45,12 @@ class AsyncAPI:
 
     _timeout = 25  # second
     _endpoint = "https://overpass-api.de/api/interpreter"
+    _default_endpoints = [
+        "https://overpass-api.de/api/interpreter",
+        "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+        "https://overpass.private.coffee/api/interpreter",
+        "https://overpass.osm.jp/api/interpreter",
+    ]
     _headers = {"Accept-Charset": "utf-8;q=0.7,*;q=0.7"}
     _debug = False
     _proxies = None
@@ -59,7 +65,12 @@ class AsyncAPI:
         self.debug = kwargs.get("debug", self._debug)
         self.proxies = kwargs.get("proxies", self._proxies)
         self.transport = kwargs.get("transport") or HttpxAsyncTransport(headers=self.headers)
-        self.endpoints = kwargs.get("endpoints") or [self.endpoint]
+        if kwargs.get("endpoints") is not None:
+            self.endpoints = kwargs.get("endpoints")
+        elif kwargs.get("fallback"):
+            self.endpoints = self._default_endpoints
+        else:
+            self.endpoints = [self.endpoint]
         self.rotate = kwargs.get("rotate", False)
         self.fallback = kwargs.get("fallback", False)
         self.max_retries = kwargs.get("max_retries", 0)

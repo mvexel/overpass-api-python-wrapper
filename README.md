@@ -53,11 +53,15 @@ You can also provide multiple endpoints and opt into fallback or rotation:
 api = overpass.API(
     endpoints=[
         "https://overpass-api.de/api/interpreter",
-        "https://overpass.kumi.systems/api/interpreter",
+        "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+        "https://overpass.private.coffee/api/interpreter",
+        "https://overpass.osm.jp/api/interpreter",
     ],
     fallback=True,  # try next endpoint on transient failures
 )
 ```
+
+If `fallback=True` is set without explicit `endpoints`, the library will use the public instances above.
 
 #### `timeout`
 
