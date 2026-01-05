@@ -15,6 +15,7 @@ import pytest
 from deepdiff import DeepDiff
 
 import overpass
+from overpass.utils import Utils
 from overpass.errors import (
     MultipleRequestsError,
     OverpassSyntaxError,
@@ -316,3 +317,10 @@ def test_http_errors(status_code, exception, requests_mock):
     )
     with pytest.raises(exception):
         api.get("node(1)")
+
+
+def test_to_overpass_id():
+    assert Utils.to_overpass_id(123, source="way") == 2400000123
+    assert Utils.to_overpass_id(123, source="relation") == 3600000123
+    with pytest.raises(ValueError):
+        Utils.to_overpass_id(123, source="node")
