@@ -6,7 +6,20 @@ Usage: node tools/osmtogeojson_fixture.js input.json output.geojson
 */
 
 const fs = require("fs");
-const osmtogeojson = require("osmtogeojson");
+let osmtogeojson;
+try {
+  osmtogeojson = require("osmtogeojson");
+} catch (err) {
+  const { execSync } = require("child_process");
+  const path = require("path");
+  try {
+    const globalRoot = execSync("npm root -g", { encoding: "utf-8" }).trim();
+    osmtogeojson = require(path.join(globalRoot, "osmtogeojson"));
+  } catch (err2) {
+    console.error("osmtogeojson not found. Install with: npm install --global osmtogeojson");
+    process.exit(2);
+  }
+}
 
 if (process.argv.length < 4) {
   console.error("Usage: node tools/osmtogeojson_fixture.js input.json output.geojson");
