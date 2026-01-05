@@ -47,6 +47,22 @@ you can pass in another instance:
 api = overpass.API(endpoint="https://overpass.myserver/interpreter")
 ```
 
+You can also provide multiple endpoints and opt into fallback or rotation:
+
+```python
+api = overpass.API(
+    endpoints=[
+        "https://overpass-api.de/api/interpreter",
+        "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
+        "https://overpass.private.coffee/api/interpreter",
+        "https://overpass.osm.jp/api/interpreter",
+    ],
+    fallback=True,  # try next endpoint on transient failures
+)
+```
+
+If `fallback=True` is set without explicit `endpoints`, the library will use the public instances above.
+
 #### `timeout`
 
 The default timeout is 25 seconds, but you can set it to whatever you
@@ -60,12 +76,37 @@ api = overpass.API(timeout=600)
 
 Setting this to `True` will get you debug output.
 
+#### `retries`
+
+You can opt into retries for transient failures (429/504/timeouts). Retries wait at least 10 seconds:
+
+```python
+api = overpass.API(max_retries=1, min_retry_delay=10)
+```
+
+#### `bbox guard`
+
+When building queries, large bounding boxes can overload public instances. By default, bboxes over
+1000 km² are rejected. Override with:
+
+```python
+api = overpass.API(allow_large_bbox=True)
+```
+
 ### Getting data from Overpass: `get()`
 
 Most users will only ever need to use the `get()` method. There are some convenience query methods for common queries as well, see below.
 
 ```python
 response = api.get('node["name"="Salt Lake City"]')
+```
+
+You can opt into Pydantic models using `model=True`:
+
+```python
+model = api.get('node["name"="Salt Lake City"]', model=True)
+print(model.to_geojson())
+geo_interface = model.__geo_interface__
 ```
 
 `response` will be a dictionary representing the
@@ -135,6 +176,22 @@ We will construct a valid Overpass QL query from the parameters you set by defau
 
 You can query the data as it was on a given date. You can give either a standard ISO date alone (YYYY-MM-DD) or a full overpass date and time (YYYY-MM-DDTHH:MM:SSZ, i.e. 2020-04-28T00:00:00Z).
 You can also directly pass a `date` or `datetime` object from the `datetime` library.
+
+### Async usage
+
+```python
+import asyncio
+import overpass
+
+
+async def main():
+    async with overpass.AsyncAPI() as api:
+        data = await api.get('node["name"="Salt Lake City"]', model=True)
+        print(data.to_geojson())
+
+
+asyncio.run(main())
+```
 
 ### Pre-cooked Queries: `MapQuery`, `WayQuery`
 

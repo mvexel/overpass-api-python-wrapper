@@ -13,14 +13,14 @@ class OverpassError(Exception):
 class OverpassSyntaxError(OverpassError, ValueError):
     """The request contains a syntax error."""
 
-    def __init__(self, request):
+    def __init__(self, request: str) -> None:
         self.request = request
 
 
 class TimeoutError(OverpassError):
     """A request timeout occurred."""
 
-    def __init__(self, timeout):
+    def __init__(self, timeout: int | float) -> None:
         self.timeout = timeout
 
 
@@ -33,19 +33,19 @@ class ServerLoadError(OverpassError):
     """The Overpass server is currently under load and declined the request.
     Try again later or retry with reduced timeout value."""
 
-    def __init__(self, timeout):
+    def __init__(self, timeout: int | float) -> None:
         self.timeout = timeout
 
 
 class UnknownOverpassError(OverpassError):
     """An unknown kind of error happened during the request."""
 
-    def __init__(self, message):
+    def __init__(self, message: str) -> None:
         self.message = message
 
 
 class ServerRuntimeError(OverpassError):
     """The Overpass server returned a runtime error"""
 
-    def __init__(self, message):
+    def __init__(self, message: str) -> None:
         self.message = message

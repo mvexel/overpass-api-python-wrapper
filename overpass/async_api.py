@@ -8,13 +8,13 @@ import json
 import logging
 import math
 import re
-import time
+import asyncio
 from datetime import datetime, timezone
 from io import StringIO
 from math import ceil
-from typing import Any, Optional
+from typing import Optional
 
-import requests
+import httpx
 from osm2geojson import json2geojson
 
 from .errors import (
@@ -25,11 +25,11 @@ from .errors import (
     TimeoutError,
     UnknownOverpassError,
 )
-from .transport import RequestsTransport
+from .transport import HttpxAsyncTransport
 
 
-class API(object):
-    """A simple Python wrapper for the OpenStreetMap Overpass API.
+class AsyncAPI:
+    """Async wrapper for the OpenStreetMap Overpass API.
 
     :param timeout: If a single number, the TCP connection timeout for the request. If a tuple
                     of two numbers, the connection timeout and the read timeout respectively.
@@ -37,14 +37,12 @@ class API(object):
     :param endpoint: URL of overpass interpreter
     :param headers: HTTP headers to include when making requests to the overpass endpoint
     :param debug: Boolean to turn on debugging output
-    :param proxies: Dictionary of proxies to pass to the request library. See
-                    requests documentation for details.
-    :param transport: Optional transport instance for HTTP requests.
+    :param proxies: Dictionary of proxies to pass to the request library.
+    :param transport: Optional async transport instance for HTTP requests.
     """
 
     SUPPORTED_FORMATS = ["geojson", "json", "xml", "csv"]
 
-    # defaults for the API class
     _timeout = 25  # second
     _endpoint = "https://overpass-api.de/api/interpreter"
     _default_endpoints = [
@@ -66,7 +64,7 @@ class API(object):
         self.timeout = kwargs.get("timeout", self._timeout)
         self.debug = kwargs.get("debug", self._debug)
         self.proxies = kwargs.get("proxies", self._proxies)
-        self.transport = kwargs.get("transport") or RequestsTransport()
+        self.transport = kwargs.get("transport") or HttpxAsyncTransport(headers=self.headers)
         if kwargs.get("endpoints") is not None:
             self.endpoints = kwargs.get("endpoints")
         elif kwargs.get("fallback"):
@@ -83,18 +81,20 @@ class API(object):
         self._status = None
 
         if self.debug:
-            import http.client as http_client
-            http_client.HTTPConnection.debuglevel = 1
-
-            # You must initialize logging,
-            # otherwise you'll not see debug output.
             logging.basicConfig()
             logging.getLogger().setLevel(logging.DEBUG)
-            requests_log = logging.getLogger("requests.packages.urllib3")
-            requests_log.setLevel(logging.DEBUG)
-            requests_log.propagate = True
 
-    def get(
+    async def __aenter__(self) -> "AsyncAPI":
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb) -> None:
+        await self.aclose()
+
+    async def aclose(self) -> None:
+        if hasattr(self.transport, "aclose"):
+            await self.transport.aclose()
+
+    async def get(
         self,
         query,
         responseformat="geojson",
@@ -103,26 +103,13 @@ class API(object):
         date="",
         model: bool = False,
     ):
-        """Pass in an Overpass query in Overpass QL.
-
-        :param query: the Overpass QL query to send to the endpoint
-        :param responseformat: one of the supported output formats ["geojson", "json", "xml", "csv"]
-        :param verbosity: one of the supported levels out data verbosity ["ids",
-                          "skel", "body", "tags", "meta"] and optionally modifiers ["geom", "bb",
-                          "center"] followed by an optional sorting indicator ["asc", "qt"]. Example:
-                          "body geom qt"
-        :param build: boolean to indicate whether to build the overpass query from a template (True)
-                          or allow the programmer to specify full query manually (False)
-        :param date: a date with an optional time. Example: 2020-04-27 or 2020-04-27T00:00:00Z
-        """
+        """Pass in an Overpass query in Overpass QL (async)."""
         if date and isinstance(date, str):
-            # If date is given and is not already a datetime, attempt to parse from string
             try:
                 date = datetime.fromisoformat(date)
             except ValueError:
-                # The 'Z' in a standard overpass date will throw fromisoformat() off
-                date = datetime.strptime(date, '%Y-%m-%dT%H:%M:%SZ')
-        # Construct full Overpass query
+                date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
+
         if build:
             self._guard_bbox(userquery=query)
             full_query = self._construct_ql_query(
@@ -133,8 +120,7 @@ class API(object):
         if self.debug:
             logging.getLogger().info(query)
 
-        # Get the response from Overpass
-        r = self._get_from_overpass(full_query)
+        r = await self._get_from_overpass(full_query)
         content_type = r.headers.get("content-type")
 
         if self.debug:
@@ -165,12 +151,9 @@ class API(object):
         if not build:
             return response
 
-        # Check for valid answer from Overpass.
-        # A valid answer contains an 'elements' key at the root level.
         if "elements" not in response:
             raise UnknownOverpassError("Received an invalid answer from Overpass.")
 
-        # If there is a 'remark' key, it spells trouble.
         overpass_remark = response.get("remark", None)
         if overpass_remark and overpass_remark.startswith("runtime error"):
             raise ServerRuntimeError(overpass_remark)
@@ -190,13 +173,10 @@ class API(object):
 
         return GeoJSONFeatureCollection.model_validate(geojson_response)
 
-    def _api_status(self) -> dict:
-        """
-        :returns: dict describing the client's status with the API
-        """
+    async def _api_status(self) -> dict:
         endpoint = "https://overpass-api.de/api/status"
 
-        r = self.transport.get(
+        r = await self.transport.get(
             endpoint,
             timeout=None,
             proxies=self.proxies,
@@ -204,18 +184,12 @@ class API(object):
         )
         lines = tuple(r.text.splitlines())
 
-        available_re = re.compile(r'\d(?= slots? available)')
+        available_re = re.compile(r"\d(?= slots? available)")
         available_slots = int(
-            next(
-                (
-                    m.group()
-                    for line in lines 
-                    if (m := available_re.search(line))
-                ), 0
-            )
+            next((m.group() for line in lines if (m := available_re.search(line))), 0)
         )
 
-        waiting_re = re.compile(r'(?<=Slot available after: )[\d\-TZ:]{20}')
+        waiting_re = re.compile(r"(?<=Slot available after: )[\d\-TZ:]{20}")
         waiting_slots = tuple(
             datetime.strptime(m.group(), "%Y-%m-%dT%H:%M:%S%z")
             for line in lines
@@ -223,15 +197,11 @@ class API(object):
         )
 
         current_idx = next(
-            i for i, word in enumerate(lines)
-            if word.startswith('Currently running queries')
+            i for i, word in enumerate(lines) if word.startswith("Currently running queries")
         )
-        running_slots = tuple(tuple(line.split()) for line in lines[current_idx + 1:])
+        running_slots = tuple(tuple(line.split()) for line in lines[current_idx + 1 :])
         running_slots_datetimes = tuple(
-            datetime.strptime(
-                slot[3], "%Y-%m-%dT%H:%M:%S%z"
-            )
-            for slot in running_slots
+            datetime.strptime(slot[3], "%Y-%m-%dT%H:%M:%S%z") for slot in running_slots
         )
 
         return {
@@ -240,62 +210,28 @@ class API(object):
             "running_slots": running_slots_datetimes,
         }
 
-    @property
-    def slots_available(self) -> int:
-        """
-        :returns: count of open slots the client has on the server
-        """
-        return self._api_status()["available_slots"]
+    async def slots_available(self) -> int:
+        return (await self._api_status())["available_slots"]
 
-    @property
-    def slots_waiting(self) -> tuple:
-        """
-        :returns: tuple of datetimes representing waiting slots and when they will be available
-        """
-        return self._api_status()["waiting_slots"]
+    async def slots_waiting(self) -> tuple:
+        return (await self._api_status())["waiting_slots"]
 
-    @property
-    def slots_running(self) -> tuple:
-        """
-        :returns: tuple of datetimes representing running slots and when they will be freed
-        """
-        return self._api_status()["running_slots"]
+    async def slots_running(self) -> tuple:
+        return (await self._api_status())["running_slots"]
 
-    @property
-    def slot_available_datetime(self) -> Optional[datetime]:
-        """
-        :returns: None if a slot is available now (no wait needed) or a datetime representing when the next slot will become available
-        """
-        if self.slots_available:
+    async def slot_available_datetime(self) -> Optional[datetime]:
+        if await self.slots_available():
             return None
-        return min(self.slots_running + self.slots_waiting)
+        return min((await self.slots_running()) + (await self.slots_waiting()))
 
-    @property
-    def slot_available_countdown(self) -> int:
-        """
-        :returns: 0 if a slot is available now, or an int of seconds until the next slot is free
-        """
+    async def slot_available_countdown(self) -> int:
         try:
             return max(
-                ceil(
-                    (
-                        self.slot_available_datetime -
-                        datetime.now(timezone.utc)
-                    ).total_seconds()
-                ),
-                0
+                ceil((await self.slot_available_datetime() - datetime.now(timezone.utc)).total_seconds()),
+                0,
             )
         except TypeError:
-            # Can't subtract from None, which means slot is available now
             return 0
-
-    def search(self, feature_type, regex=False):
-        """Search for something."""
-        raise NotImplementedError()
-
-    # deprecation of upper case functions
-    Get = get
-    Search = search
 
     def _construct_ql_query(self, userquery, responseformat, verbosity, date):
         raw_query = str(userquery).rstrip()
@@ -307,8 +243,7 @@ class API(object):
 
         if responseformat == "geojson":
             template = self._GEOJSON_QUERY_TEMPLATE
-            complete_query = template.format(
-                query=raw_query, verbosity=verbosity, date=date)
+            complete_query = template.format(query=raw_query, verbosity=verbosity, date=date)
         else:
             template = self._QUERY_TEMPLATE
             complete_query = template.format(
@@ -354,7 +289,7 @@ class API(object):
         lon_km = 111.32 * abs(east - west) * abs(math.cos(math.radians(mid_lat)))
         return abs(lat_km * lon_km)
 
-    def _get_from_overpass(self, query):
+    async def _get_from_overpass(self, query):
         payload = {"data": query}
 
         attempts = 0
@@ -363,17 +298,17 @@ class API(object):
         while True:
             endpoint = endpoints[min(attempts, len(endpoints) - 1)]
             try:
-                r = self.transport.post(
+                r = await self.transport.post(
                     endpoint,
                     data=payload,
                     timeout=self.timeout,
                     proxies=self.proxies,
                     headers=self.headers,
                 )
-            except requests.exceptions.Timeout:
+            except httpx.TimeoutException:
                 if attempts >= self.max_retries:
                     raise TimeoutError(self._timeout)
-                time.sleep(max(self.min_retry_delay, 10))
+                await asyncio.sleep(max(self.min_retry_delay, 10))
                 attempts += 1
                 continue
 
@@ -385,13 +320,13 @@ class API(object):
                 elif self._status == 429:
                     if attempts >= self.max_retries:
                         raise MultipleRequestsError()
-                    time.sleep(max(self.min_retry_delay, 10))
+                    await asyncio.sleep(max(self.min_retry_delay, 10))
                     attempts += 1
                     continue
                 elif self._status == 504:
                     if attempts >= self.max_retries:
                         raise ServerLoadError(self._timeout)
-                    time.sleep(max(self.min_retry_delay, 10))
+                    await asyncio.sleep(max(self.min_retry_delay, 10))
                     attempts += 1
                     continue
                 raise UnknownOverpassError(
