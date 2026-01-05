@@ -18,7 +18,7 @@ classifiers = [
 ]
 dependencies = [
     "osm2geojson>=0.2.5",
-    "requests>=2.32.3",
+    "requests>=2.32.4",
     "httpx>=0.27.0",
     "pydantic>=2.8.0",
 ]
@@ -32,7 +32,7 @@ dev = [
     "pytest>=7.4.0",
     "geojson>=3.1.0",
     "requests-mock>=1.12.1",
-    "deepdiff>=7.0.1",
+    "deepdiff>=8.6.1",
     "pydantic>=2.8.0",
     "shapely>=2.0.0",
     "pytest-asyncio>=0.23.0",
