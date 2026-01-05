@@ -54,6 +54,9 @@ python-version = "3.11"
 [tool.ty.src]
 include = ["overpass", "tests"]
 
+[tool.pytest.ini_options]
+markers = ["integration: network-dependent tests"]
+
 [build-system]
 requires = ["hatchling>=1.25.0"]
 build-backend = "hatchling.build"
