@@ -3,20 +3,31 @@
 # which is licensed under Apache 2.0.
 # See LICENSE.txt for the full license text.
 
-import csv
-import json
 import logging
-import math
 import re
 import time
 from datetime import datetime, timezone
-from io import StringIO
 from math import ceil
 from typing import Any, Optional
 
 import requests
-from osm2geojson import json2geojson
 
+from ._base import (
+    DEFAULT_DEBUG,
+    DEFAULT_ENDPOINT,
+    DEFAULT_ENDPOINTS,
+    DEFAULT_HEADERS,
+    DEFAULT_PROXIES,
+    DEFAULT_TIMEOUT,
+    SUPPORTED_FORMATS,
+    bbox_area_km2,
+    construct_ql_query,
+    guard_bbox,
+    parse_csv_response,
+    parse_json_response,
+    parse_xml_response,
+    select_endpoint,
+)
 from .errors import (
     MultipleRequestsError,
     OverpassSyntaxError,
@@ -42,23 +53,15 @@ class API(object):
     :param transport: Optional transport instance for HTTP requests.
     """
 
-    SUPPORTED_FORMATS = ["geojson", "json", "xml", "csv"]
+    SUPPORTED_FORMATS = SUPPORTED_FORMATS
 
     # defaults for the API class
-    _timeout = 25  # second
-    _endpoint = "https://overpass-api.de/api/interpreter"
-    _default_endpoints = [
-        "https://overpass-api.de/api/interpreter",
-        "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-        "https://overpass.private.coffee/api/interpreter",
-        "https://overpass.osm.jp/api/interpreter",
-    ]
-    _headers = {"Accept-Charset": "utf-8;q=0.7,*;q=0.7"}
-    _debug = False
-    _proxies = None
-
-    _QUERY_TEMPLATE = "[out:{out}]{date};{query}out {verbosity};"
-    _GEOJSON_QUERY_TEMPLATE = "[out:json]{date};{query}out {verbosity};"
+    _timeout = DEFAULT_TIMEOUT
+    _endpoint = DEFAULT_ENDPOINT
+    _default_endpoints = DEFAULT_ENDPOINTS
+    _headers = DEFAULT_HEADERS
+    _debug = DEFAULT_DEBUG
+    _proxies = DEFAULT_PROXIES
 
     def __init__(self, *args, **kwargs):
         self.endpoint = kwargs.get("endpoint", self._endpoint)
@@ -125,9 +128,13 @@ class API(object):
                 date = datetime.strptime(date, "%Y-%m-%dT%H:%M:%SZ")
         # Construct full Overpass query
         if build:
-            self._guard_bbox(userquery=query)
-            full_query = self._construct_ql_query(
-                query, responseformat=responseformat, verbosity=verbosity, date=date
+            guard_bbox(query, self.allow_large_bbox, self.max_bbox_area_km2)
+            full_query = construct_ql_query(
+                query,
+                responseformat=responseformat,
+                verbosity=verbosity,
+                date=date,
+                debug=self.debug,
             )
         else:
             full_query = query
@@ -141,55 +148,13 @@ class API(object):
         if self.debug:
             print(content_type)
         if content_type == "text/csv":
-            csv_rows = list(csv.reader(StringIO(r.text), delimiter="\t"))
-            if model:
-                from .models import CsvResponse
-
-                header = csv_rows[0] if csv_rows else []
-                rows = csv_rows[1:] if len(csv_rows) > 1 else []
-                return CsvResponse(header=header, rows=rows)
-            return csv_rows
+            return parse_csv_response(r.text, model=model)
         elif content_type in ("text/xml", "application/xml", "application/osm3s+xml"):
-            if model:
-                from .models import XmlResponse
-
-                return XmlResponse(text=r.text)
-            return r.text
+            return parse_xml_response(r.text, model=model)
         else:
-            try:
-                response = json.loads(r.text)
-            except json.JSONDecodeError as exc:
-                raise UnknownOverpassError(
-                    "Received a non-JSON response when JSON was expected."
-                ) from exc
-
-        if not build:
-            return response
-
-        # Check for valid answer from Overpass.
-        # A valid answer contains an 'elements' key at the root level.
-        if "elements" not in response:
-            raise UnknownOverpassError("Received an invalid answer from Overpass.")
-
-        # If there is a 'remark' key, it spells trouble.
-        overpass_remark = response.get("remark", None)
-        if overpass_remark and overpass_remark.startswith("runtime error"):
-            raise ServerRuntimeError(overpass_remark)
-
-        if responseformat != "geojson":
-            if model:
-                from .models import OverpassResponse
-
-                return OverpassResponse.model_validate(response)
-            return response
-
-        geojson_response = json2geojson(response)
-        if not model:
-            return geojson_response
-
-        from .models import GeoJSONFeatureCollection
-
-        return GeoJSONFeatureCollection.model_validate(geojson_response)
+            return parse_json_response(
+                r.text, responseformat=responseformat, build=build, model=model
+            )
 
     def _api_status(self) -> dict:
         """
@@ -291,67 +256,17 @@ class API(object):
     Get = get
     Search = search
 
-    def _construct_ql_query(self, userquery, responseformat, verbosity, date):
-        raw_query = str(userquery).rstrip()
-        if not raw_query.endswith(";"):
-            raw_query += ";"
-
-        if date:
-            date = f'[date:"{date:%Y-%m-%dT%H:%M:%SZ}"]'
-
-        if responseformat == "geojson":
-            template = self._GEOJSON_QUERY_TEMPLATE
-            complete_query = template.format(query=raw_query, verbosity=verbosity, date=date)
-        else:
-            template = self._QUERY_TEMPLATE
-            complete_query = template.format(
-                query=raw_query, out=responseformat, verbosity=verbosity, date=date
-            )
-
-        if self.debug:
-            print(complete_query)
-        return complete_query
-
-    def _select_endpoint(self) -> str:
-        if not self.rotate or len(self.endpoints) == 1:
-            return self.endpoints[0]
-        endpoint = self.endpoints[self._endpoint_index % len(self.endpoints)]
-        self._endpoint_index += 1
-        return endpoint
-
-    def _guard_bbox(self, userquery) -> None:
-        if self.allow_large_bbox or self.max_bbox_area_km2 is None:
-            return
-
-        bboxes = []
-        if hasattr(userquery, "south") and hasattr(userquery, "west"):
-            bboxes.append((userquery.south, userquery.west, userquery.north, userquery.east))
-        else:
-            bbox_re = re.compile(r"\(([-\d\.]+),([-\d\.]+),([-\d\.]+),([-\d\.]+)\)")
-            for match in bbox_re.finditer(str(userquery)):
-                south, west, north, east = map(float, match.groups())
-                bboxes.append((south, west, north, east))
-
-        for south, west, north, east in bboxes:
-            area_km2 = self._bbox_area_km2(south, west, north, east)
-            if area_km2 > self.max_bbox_area_km2:
-                raise ValueError(
-                    f"bbox area {area_km2:.1f} km^2 exceeds limit "
-                    f"{self.max_bbox_area_km2} km^2 (set allow_large_bbox=True to override)"
-                )
-
-    @staticmethod
-    def _bbox_area_km2(south, west, north, east) -> float:
-        mid_lat = (south + north) / 2.0
-        lat_km = 111.32 * (north - south)
-        lon_km = 111.32 * abs(east - west) * abs(math.cos(math.radians(mid_lat)))
-        return abs(lat_km * lon_km)
-
     def _get_from_overpass(self, query):
         payload = {"data": query}
 
         attempts = 0
-        endpoints = self.endpoints if self.fallback else [self._select_endpoint()]
+        endpoints = (
+            self.endpoints
+            if self.fallback
+            else [select_endpoint(self.endpoints, self._endpoint_index, self.rotate)]
+        )
+        if not self.fallback and self.rotate:
+            self._endpoint_index += 1
 
         while True:
             endpoint = endpoints[min(attempts, len(endpoints) - 1)]
