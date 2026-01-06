@@ -1,0 +1,24 @@
+version: 2
+updates:
+  - package-ecosystem: "uv"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "maintenance/base-0.8"
+    reviewers:
+      - "mvexel"
+    groups:
+      python-minor-patch:
+        update-types:
+          - "minor"
+          - "patch"
+      python-major:
+        update-types:
+          - "major"
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "maintenance/base-0.8"
+    reviewers:
+      - "mvexel"
