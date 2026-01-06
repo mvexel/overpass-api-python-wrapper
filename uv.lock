@@ -284,12 +284,12 @@ requires-dist = [
     { name = "httpx", specifier = ">=0.27.0" },
     { name = "osm2geojson", specifier = ">=0.2.5" },
     { name = "pydantic", specifier = ">=2.8.0" },
-    { name = "requests", specifier = ">=2.32.3" },
+    { name = "requests", specifier = ">=2.32.4" },
 ]
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "deepdiff", specifier = ">=7.0.1" },
+    { name = "deepdiff", specifier = ">=8.6.1" },
     { name = "geojson", specifier = ">=3.1.0" },
     { name = "pydantic", specifier = ">=2.8.0" },
     { name = "pytest", specifier = ">=7.4.0" },
