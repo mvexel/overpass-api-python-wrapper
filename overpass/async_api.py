@@ -3,12 +3,12 @@
 # which is licensed under Apache 2.0.
 # See LICENSE.txt for the full license text.
 
+import asyncio
 import csv
 import json
 import logging
 import math
 import re
-import asyncio
 from datetime import datetime, timezone
 from io import StringIO
 from math import ceil
@@ -174,7 +174,16 @@ class AsyncAPI:
         return GeoJSONFeatureCollection.model_validate(geojson_response)
 
     async def _api_status(self) -> dict:
-        endpoint = "https://overpass-api.de/api/status"
+        # Derive status endpoint from configured endpoint
+        from urllib.parse import urlparse
+
+        parsed = urlparse(self.endpoints[0])
+        path_parts = parsed.path.rstrip("/").rsplit("/", 1)
+        if len(path_parts) > 1:
+            status_path = f"{path_parts[0]}/status"
+        else:
+            status_path = "/api/status"
+        endpoint = f"{parsed.scheme}://{parsed.netloc}{status_path}"
 
         r = await self.transport.get(
             endpoint,
@@ -227,7 +236,11 @@ class AsyncAPI:
     async def slot_available_countdown(self) -> int:
         try:
             return max(
-                ceil((await self.slot_available_datetime() - datetime.now(timezone.utc)).total_seconds()),
+                ceil(
+                    (
+                        await self.slot_available_datetime() - datetime.now(timezone.utc)
+                    ).total_seconds()
+                ),
                 0,
             )
         except TypeError:
