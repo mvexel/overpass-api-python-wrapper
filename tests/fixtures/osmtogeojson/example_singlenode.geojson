@@ -1,0 +1,1909 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "node/830609255",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Café Sincera",
+        "smoking": "no",
+        "id": "node/830609255"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8900512,
+          -15.7526149
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/1532856975",
+      "properties": {
+        "addr:street": "CLN 408",
+        "amenity": "cafe",
+        "name": "Senhoritas",
+        "id": "node/1532856975"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8791123,
+          -15.7600089
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/2691239509",
+      "properties": {
+        "addr:place": "Asa Sul",
+        "addr:street": "Cls 410",
+        "amenity": "cafe",
+        "cuisine": "pizza",
+        "name": "Gentil",
+        "id": "node/2691239509"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.90628,
+          -15.8268
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3051977281",
+      "properties": {
+        "amenity": "cafe",
+        "internet_access": "no",
+        "name": "Amor à Torta",
+        "opening_hours": "Mo-Fr 07:30-19:30; Sa 08:00-18:00",
+        "wheelchair": "yes",
+        "id": "node/3051977281"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8913837,
+          -15.7567262
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3089963930",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Cafezinho Express",
+        "id": "node/3089963930"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.886423,
+          -15.786985
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3093838425",
+      "properties": {
+        "addr:street": "CLN 204",
+        "amenity": "cafe",
+        "name": "Candy House",
+        "wheelchair": "yes",
+        "id": "node/3093838425"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.878313,
+          -15.7770943
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3093842234",
+      "properties": {
+        "amenity": "cafe",
+        "brand": "Fran's Café",
+        "brand:wikidata": "Q62075645",
+        "cuisine": "coffee_shop",
+        "internet_access": "wlan",
+        "internet_access:fee": "no",
+        "name": "Fran's Café",
+        "opening_hours": "24/7",
+        "takeaway": "yes",
+        "id": "node/3093842234"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8825355,
+          -15.7575012
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3095008557",
+      "properties": {
+        "addr:street": "CLN 406",
+        "amenity": "cafe",
+        "name": "Sebinho",
+        "id": "node/3095008557"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8779077,
+          -15.7665684
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3139274344",
+      "properties": {
+        "amenity": "cafe",
+        "id": "node/3139274344"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8388265,
+          -15.8145074
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3161293041",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Café Cobogó",
+        "id": "node/3161293041"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8908733,
+          -15.7749509
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3190786485",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Moebius Café",
+        "id": "node/3190786485"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.892084,
+          -15.7461875
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3192140335",
+      "properties": {
+        "addr:street": "CLN 407",
+        "amenity": "cafe",
+        "name": "Cafezinho",
+        "id": "node/3192140335"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.877285,
+          -15.7661003
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3200216679",
+      "properties": {
+        "addr:street": "CLN 413",
+        "amenity": "cafe",
+        "internet_access": "wlan",
+        "level": "0",
+        "name": "Clandestino",
+        "opening_hours": "Mo 09:00-21:00; We-Sa 09:00-21:00; Su 09:00-15:00",
+        "outdoor_seating": "yes",
+        "smoking": "no",
+        "website": "http://www.cafeclandestino.com.br",
+        "id": "node/3200216679"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8836644,
+          -15.7470931
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3211680213",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Genaro - jazz burger café",
+        "id": "node/3211680213"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8913941,
+          -15.74597
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3222516874",
+      "properties": {
+        "addr:place": "CLN 303",
+        "amenity": "cafe",
+        "internet_access": "wlan",
+        "internet_access:fee": "no",
+        "name": "Caramella",
+        "opening_hours": "Mo-Su 07:30-21:00",
+        "smoking": "no",
+        "website": "http://www.caramellaconfeitaria.com.br/",
+        "wheelchair": "yes",
+        "id": "node/3222516874"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8860998,
+          -15.7806286
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3222516875",
+      "properties": {
+        "addr:place": "CLN 303",
+        "amenity": "cafe",
+        "internet_access": "wlan",
+        "name": "Martinica Café",
+        "opening_hours": "Mo-Fr 11:00-01:00; Sa 17:00-01:00; Su 18:00-01:00",
+        "phone": "+55 61 33262357",
+        "id": "node/3222516875"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8847823,
+          -15.7805371
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3223614838",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Torteria di Lorenza",
+        "id": "node/3223614838"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8870925,
+          -15.7451711
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3230418026",
+      "properties": {
+        "addr:city": "Brasília",
+        "addr:housenumber": "Loja 56",
+        "addr:postcode": "70722-520",
+        "addr:street": "CLN 102 Bloco B",
+        "addr:suburb": "Asa Norte",
+        "amenity": "cafe",
+        "internet_access": "wlan",
+        "name": "Objeto Encontrado",
+        "opening_hours": "Mo-Sa 12:00-23:00",
+        "phone": "+55 61 3081-8383",
+        "smoking": "no",
+        "website": "https://www.objetoencontrado.com.br/",
+        "id": "node/3230418026"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8829046,
+          -15.7832184
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3231952883",
+      "properties": {
+        "amenity": "cafe",
+        "cuisine": "french",
+        "name": "Daniel Briand",
+        "opening_hours": "Tu-Fr 09:00-22:00; Sa 09:30-22:00; Su 08:00-22:00",
+        "phone": "+55 61 33261135",
+        "website": "https://www.cafedanielbriand.com/",
+        "id": "node/3231952883"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8827129,
+          -15.7770016
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3324092861",
+      "properties": {
+        "amenity": "cafe",
+        "internet_access": "wlan",
+        "name": "D'Vilella",
+        "wheelchair": "yes",
+        "id": "node/3324092861"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8903219,
+          -15.756386
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3334254945",
+      "properties": {
+        "amenity": "cafe",
+        "diet:vegan": "only",
+        "name": "Canelle Confeitaria",
+        "opening_hours": "Tu-Sa 10:00-22:00;Su 12:00-20:00",
+        "phone": "+55 61 30372422",
+        "id": "node/3334254945"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8874166,
+          -15.7454249
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3334254946",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Florisa Café",
+        "opening_hours": "Mo-Sa 08:00-21:00",
+        "phone": "+55 61 32028882",
+        "id": "node/3334254946"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8929929,
+          -15.7403494
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3358345330",
+      "properties": {
+        "addr:city": "Brasilia",
+        "addr:street": "CLN 202 Bloco A",
+        "addr:suburb": "Asa Norte",
+        "amenity": "cafe",
+        "internet_access": "wlan",
+        "name": "Café Cristina Colina da Pedra",
+        "opening_hours": "Su 12:00-19:00; Mo-Sa 08:00-19:00",
+        "id": "node/3358345330"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8785943,
+          -15.7833159
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3362305606",
+      "properties": {
+        "amenity": "cafe",
+        "diet:gluten_free": "yes",
+        "diet:vegan": "yes",
+        "name": "Bioon Café",
+        "id": "node/3362305606"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8851897,
+          -15.7804074
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3362308337",
+      "properties": {
+        "amenity": "cafe",
+        "cuisine": "arab",
+        "name": "Café com Café",
+        "id": "node/3362308337"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8862323,
+          -15.7809705
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3364780124",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Dylan Cafe Bakery",
+        "id": "node/3364780124"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.9225416,
+          -15.8278397
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3451223465",
+      "properties": {
+        "addr:street": "CLN 111",
+        "amenity": "cafe",
+        "cuisine": "coffee_shop",
+        "internet_access": "yes",
+        "internet_access:fee": "no",
+        "name": "Concreto Coffee Crew",
+        "opening_hours": "Mo-Sa 13:00-20:00",
+        "outdoor_seating": "yes",
+        "website": "https://www.instagram.com/concretocoffee/",
+        "id": "node/3451223465"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.889783,
+          -15.7530174
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3451247095",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Vincent Chás e Cafés",
+        "id": "node/3451247095"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8805597,
+          -15.75974
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3525964203",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Café das Letras",
+        "wheelchair": "yes",
+        "id": "node/3525964203"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8701905,
+          -15.7649188
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3634570440",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Rappot",
+        "id": "node/3634570440"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8852709,
+          -15.8044722
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3634570442",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Café do Ponto",
+        "id": "node/3634570442"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8851878,
+          -15.80452
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3634570451",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Cristina Cafés",
+        "website": "http://cafecristina.com.br",
+        "id": "node/3634570451"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8846875,
+          -15.8048503
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3645307602",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Café Bem Casado",
+        "opening_hours": "Mo-Sa 09:00-19:30",
+        "website": "http://cafebemcasado.com.br",
+        "id": "node/3645307602"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8896497,
+          -15.7626851
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3768730374",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Rosa's Café",
+        "id": "node/3768730374"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8834145,
+          -15.7831717
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3900700774",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Grão Sabor",
+        "id": "node/3900700774"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8916129,
+          -15.7608557
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3958863453",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Art Café",
+        "id": "node/3958863453"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8826614,
+          -15.7877449
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3958863455",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Tomilla Café",
+        "wheelchair": "yes",
+        "id": "node/3958863455"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8828056,
+          -15.7871193
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3971324159",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Especiarias de Minas",
+        "id": "node/3971324159"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8828911,
+          -15.7873255
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3971325069",
+      "properties": {
+        "amenity": "cafe",
+        "brand": "Fran's Café",
+        "brand:wikidata": "Q62075645",
+        "cuisine": "coffee_shop",
+        "name": "Fran's Café",
+        "takeaway": "yes",
+        "id": "node/3971325069"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8848583,
+          -15.783933
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/3973507957",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Cópia com Café",
+        "id": "node/3973507957"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8881001,
+          -15.7812333
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4081269529",
+      "properties": {
+        "addr:city": "Brasília",
+        "addr:street": "CLN 404",
+        "addr:suburb": "Asa Norte",
+        "amenity": "cafe",
+        "internet_access": "yes",
+        "internet_access:fee": "no",
+        "name": "Los Baristas",
+        "opening_hours": "Mo-Fr 12:00-20:00; Sa 10:00-19:00",
+        "outdoor_seating": "yes",
+        "smoking": "no",
+        "website": "https://www.losbaristas.com/",
+        "id": "node/4081269529"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.876547,
+          -15.773612
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4081269533",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Chateau Brasil",
+        "id": "node/4081269533"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8849886,
+          -15.790137
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4119072799",
+      "properties": {
+        "amenity": "cafe",
+        "level": "1",
+        "name": "Quintal f/508",
+        "opening_hours": "Mo-Fr 15:30-20:30; Sa 09:00-12:00",
+        "outdoor_seating": "no",
+        "phone": "+55 61 33473985;+55 61 91400303",
+        "website": "https://f508.com.br/quintal/",
+        "id": "node/4119072799"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8835617,
+          -15.7470135
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4156321058",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Chico Mineiro Confeitaria e Café",
+        "id": "node/4156321058"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8840073,
+          -15.7770087
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4187993132",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Café Sarah Kubitscheck",
+        "opening_hours": "Mo-Fr 09:00-20:00; Sa 08:00-17:00",
+        "phone": "+55 61 39637373",
+        "id": "node/4187993132"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8856309,
+          -15.7746238
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4207805094",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Café da Vó Maria",
+        "id": "node/4207805094"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.881545,
+          -15.763683
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4330783337",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Magrelas Café",
+        "id": "node/4330783337"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8998423,
+          -15.8192743
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4433154149",
+      "properties": {
+        "amenity": "cafe",
+        "cuisine": "french",
+        "name": "Le Jardin",
+        "id": "node/4433154149"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.9078076,
+          -15.8097643
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4471601993",
+      "properties": {
+        "amenity": "cafe",
+        "internet_access": "yes",
+        "internet_access:fee": "no",
+        "name": "Ernesto Cafés Especiais",
+        "name:pt": "Ernesto Cafés Especiais",
+        "opening_hours": "Mo-Su 07:00-22:00",
+        "outdoor_seating": "yes",
+        "smoking": "no",
+        "id": "node/4471601993"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.9242343,
+          -15.8307026
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4558361197",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Rei do Mate",
+        "name:pt": "Rei do Mate",
+        "id": "node/4558361197"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8972574,
+          -15.7355928
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4558399090",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Croissanterie café | bistrô",
+        "id": "node/4558399090"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8892686,
+          -15.7390367
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4585501235",
+      "properties": {
+        "amenity": "cafe",
+        "brand": "Fran's Café",
+        "brand:wikidata": "Q62075645",
+        "cuisine": "coffee_shop",
+        "name": "Fran's Café",
+        "takeaway": "yes",
+        "id": "node/4585501235"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8888328,
+          -15.786565
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4585501236",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Martinica",
+        "id": "node/4585501236"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8890018,
+          -15.7866114
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4585529781",
+      "properties": {
+        "amenity": "cafe",
+        "level": "1",
+        "name": "Grande Café",
+        "id": "node/4585529781"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8840682,
+          -15.7871869
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4591337312",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Rei do Pão de Queijo",
+        "id": "node/4591337312"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8933428,
+          -15.7501975
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4591337315",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Iaga Arte Café",
+        "id": "node/4591337315"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8931995,
+          -15.7499358
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4608731433",
+      "properties": {
+        "amenity": "cafe",
+        "level": "0",
+        "name": "Crépe de Paris",
+        "id": "node/4608731433"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.88463,
+          -15.7868298
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4693815344",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Kopenhagen",
+        "id": "node/4693815344"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8996803,
+          -15.7334022
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4825889842",
+      "properties": {
+        "amenity": "cafe",
+        "level": "0",
+        "name": "Casa do Pão de Queijo",
+        "id": "node/4825889842"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8987679,
+          -15.7337708
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4897810422",
+      "properties": {
+        "amenity": "cafe",
+        "cuisine": "arab",
+        "name": "Snob",
+        "name:pt": "Snob",
+        "id": "node/4897810422"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8785977,
+          -15.759575
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4908113823",
+      "properties": {
+        "amenity": "cafe",
+        "cuisine": "chocolate",
+        "name": "Lugano",
+        "id": "node/4908113823"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8891559,
+          -15.7526495
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4908141129",
+      "properties": {
+        "amenity": "cafe",
+        "level": "2",
+        "name": "Gaudi Café",
+        "id": "node/4908141129"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8831845,
+          -15.7906235
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/4957238257",
+      "properties": {
+        "amenity": "cafe",
+        "cuisine": "nordestina",
+        "name": "Café e um Chêro",
+        "opening_hours": "Mo-Sa 07:00-22:00",
+        "website": "http://www.cafeeumchero.com.br",
+        "id": "node/4957238257"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8877238,
+          -15.7591758
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5029115521",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Oficina Café",
+        "name:pt": "Oficina Café",
+        "id": "node/5029115521"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.889139,
+          -15.780834
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5087302622",
+      "properties": {
+        "amenity": "cafe",
+        "level": "-1",
+        "name": "Labbora Cafés Especiais",
+        "opening_hours": "Mo-Fr 10:00-19:00",
+        "id": "node/5087302622"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8866603,
+          -15.7452496
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5087302722",
+      "properties": {
+        "amenity": "cafe",
+        "cuisine": "hungarian",
+        "name": "Duna Casa Húngara",
+        "name:pt": "Duna Casa Húngara",
+        "id": "node/5087302722"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8870871,
+          -15.7446725
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5124575930",
+      "properties": {
+        "amenity": "cafe",
+        "internet_access": "wlan",
+        "name": "Café Civitá",
+        "name:pt": "Café Civitá",
+        "id": "node/5124575930"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8927946,
+          -15.7962238
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5125114322",
+      "properties": {
+        "amenity": "cafe",
+        "brand": "Fran's Café",
+        "brand:wikidata": "Q62075645",
+        "cuisine": "coffee_shop",
+        "name": "Fran's Café",
+        "takeaway": "yes",
+        "id": "node/5125114322"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8924834,
+          -15.7953783
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5135659820",
+      "properties": {
+        "amenity": "cafe",
+        "id": "node/5135659820"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8743398,
+          -15.7686257
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5225539396",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Nosso Quadrado",
+        "id": "node/5225539396"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8931241,
+          -15.8028809
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5230076441",
+      "properties": {
+        "amenity": "cafe",
+        "brand": "Fran's Café",
+        "brand:wikidata": "Q62075645",
+        "cuisine": "coffee_shop",
+        "name": "Fran's Café",
+        "takeaway": "yes",
+        "id": "node/5230076441"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.9100841,
+          -15.8103402
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5299457845",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Uai Bezinha!",
+        "id": "node/5299457845"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.9121922,
+          -15.8195535
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5353491828",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Grão Espresso",
+        "id": "node/5353491828"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8749357,
+          -15.8184198
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5366399095",
+      "properties": {
+        "amenity": "cafe",
+        "internet_access": "wlan",
+        "name": "Garden Café",
+        "opening_hours": "Mo-Fr 08:30-20:00; Sa 10:00-18:00",
+        "id": "node/5366399095"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8846808,
+          -15.7514698
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5381047922",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Da Vici Cafeteria",
+        "id": "node/5381047922"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.9130762,
+          -15.8136655
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5416977721",
+      "properties": {
+        "addr:street": "SHN Quadra 1",
+        "amenity": "cafe",
+        "name": "Melbourne Café & Co.",
+        "opening_hours": "Mo-Fr 08:15-17:30",
+        "outdoor_seating": "yes",
+        "website": "http://www.olamelbourne.com.br/",
+        "id": "node/5416977721"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8846678,
+          -15.7902403
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5436122015",
+      "properties": {
+        "addr:city": "Brasília",
+        "addr:housenumber": "Loja 07",
+        "addr:street": "CLS 114 Bloco B",
+        "amenity": "cafe",
+        "internet_access": "wlan",
+        "internet_access:fee": "no",
+        "name": "Belini Café",
+        "opening_hours": "Mo-Sa 08:00-23:00; Su 08:00-22:00",
+        "outdoor_seating": "yes",
+        "payment:cash": "yes",
+        "payment:credit_cards": "yes",
+        "smoking": "no",
+        "website": "https://pt-br.facebook.com/pg/belinicafe/about/?ref=page_internal",
+        "id": "node/5436122015"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.9187069,
+          -15.8273745
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5470850733",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Sincera",
+        "id": "node/5470850733"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8900604,
+          -15.7526191
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5650571821",
+      "properties": {
+        "addr:housenumber": "Bloco A Loja 13",
+        "addr:street": "SQS 410",
+        "amenity": "cafe",
+        "cuisine": "cake;coffee_shop",
+        "email": "contato@cioccolateria.com.br",
+        "internet_access": "wlan",
+        "name": "Cioccolateria Doceria e Café",
+        "opening_hours": "Mo-Fr 10:00-19:00; Sa 09:00-17:00",
+        "phone": "+55 61 3242 6399",
+        "website": "http://www.cioccolateria.com.br",
+        "id": "node/5650571821"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.906648,
+          -15.8263217
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5766574433",
+      "properties": {
+        "addr:city": "Brasília",
+        "addr:street": "CLN 103/104",
+        "amenity": "cafe",
+        "internet_access": "yes",
+        "internet_access:fee": "no",
+        "name": "Quanto",
+        "opening_hours": "Mo-Fr 11:00-21:00, Sa 09:00-21:00",
+        "outdoor_seating": "yes",
+        "smoking": "no",
+        "id": "node/5766574433"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8826493,
+          -15.7775553
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5856741812",
+      "properties": {
+        "addr:street": "CLRN 716",
+        "amenity": "cafe",
+        "internet_access": "yes",
+        "internet_access:fee": "no",
+        "name": "Antonieta",
+        "outdoor_seating": "yes",
+        "shop": "tea",
+        "smoking": "no",
+        "website": "https://www.instagram.com/antonietacafe",
+        "id": "node/5856741812"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8994946,
+          -15.7398592
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/5856750259",
+      "properties": {
+        "addr:city": "Brasília",
+        "addr:housenumber": "Loja 46",
+        "addr:street": "SCLN 116  Bloco B",
+        "addr:suburb": "Plano Piloto",
+        "amenity": "cafe",
+        "name": "Salve Café Maravilha",
+        "opening_hours": "Mo-Fr 14:00-20:30; Sa 14:300-20:30; Su 09:30-12:30",
+        "payment:cash": "yes",
+        "payment:credit_cards": "yes",
+        "payment:debit_cards": "yes",
+        "website": "https://www.facebook.com/salvecafemaravilha/",
+        "id": "node/5856750259"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.89356,
+          -15.7398134
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/6005691723",
+      "properties": {
+        "addr:street": "CLN 107/108",
+        "amenity": "cafe",
+        "internet_access": "yes",
+        "internet_access:fee": "no",
+        "name": "Ernesto Cafés Especiais",
+        "opening_hours": "Mo-Su 07:00-22:00",
+        "outdoor_seating": "yes",
+        "smoking": "no",
+        "id": "node/6005691723"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8852493,
+          -15.7645578
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/6207544093",
+      "properties": {
+        "amenity": "cafe",
+        "cuisine": "sandwiches",
+        "internet_access": "no",
+        "internet_access:fee": "no",
+        "name": "Café da Fiocruz",
+        "outdoor_seating": "no",
+        "smoking": "no",
+        "takeaway": "yes",
+        "id": "node/6207544093"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8712547,
+          -15.7712064
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/6456239248",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Maria Aurélia",
+        "id": "node/6456239248"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.9071188,
+          -15.8148373
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/6456386661",
+      "properties": {
+        "amenity": "cafe",
+        "brand": "Fran's Café",
+        "brand:wikidata": "Q62075645",
+        "cuisine": "coffee_shop",
+        "name": "Fran's Café",
+        "outdoor_seating": "yes",
+        "takeaway": "yes",
+        "id": "node/6456386661"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8938988,
+          -15.8151596
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/6591961959",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Sterna Café",
+        "id": "node/6591961959"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8900077,
+          -15.7808206
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/6632677485",
+      "properties": {
+        "addr:postcode": "70742-530",
+        "addr:street": "SQN 106 Bloco A",
+        "amenity": "cafe",
+        "name": "QualyCream",
+        "opening_hours": "Mo-Fr 08:00-18:00; Sa 09:00-13:00",
+        "phone": "+55 61 3033 1010",
+        "website": "http://qualycream.com.br",
+        "id": "node/6632677485"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8845249,
+          -15.7708562
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/7705116886",
+      "properties": {
+        "amenity": "cafe",
+        "id": "node/7705116886"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.9289296,
+          -15.8256478
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/7705116908",
+      "properties": {
+        "amenity": "cafe",
+        "id": "node/7705116908"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.9294188,
+          -15.8268004
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/7949383205",
+      "properties": {
+        "addr:city": "Brasília",
+        "addr:street": "SCRN 712/713, bloco E",
+        "amenity": "cafe",
+        "name": "Amarelinha",
+        "id": "node/7949383205"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8975325,
+          -15.7518287
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/8223909098",
+      "properties": {
+        "addr:street": "CLRN 716",
+        "amenity": "cafe",
+        "cuisine": "coffee_shop;regional",
+        "internet_access": "yes",
+        "internet_access:fee": "no",
+        "name": "Marilda Café",
+        "opening_hours": "Tu-Fr 12:00-20:00; Sa-Su 09:00-20:00",
+        "outdoor_seating": "yes",
+        "payment:cash": "yes",
+        "payment:credit_cards": "yes",
+        "phone": "+55 61 2194 7902",
+        "website": "https://www.instagram.com/marilda_cafe",
+        "id": "node/8223909098"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8992532,
+          -15.7406194
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/8435477631",
+      "properties": {
+        "addr:housenumber": "Bloco D Loja x",
+        "addr:street": "CLS 108",
+        "amenity": "cafe",
+        "name": "Lugano",
+        "id": "node/8435477631"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.902979,
+          -15.8152087
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9106354157",
+      "properties": {
+        "addr:city": "distrito federal",
+        "addr:housenumber": "36",
+        "addr:postcode": "70331710",
+        "addr:street": "SHIGS Quadra 703, bloco J;SHIGS Quadra 703, Bloco J",
+        "addr:suburb": "asa sul",
+        "amenity": "cafe",
+        "cuisine": "cake;cafetaria",
+        "name": "Rafaela Brandão Doceria;Senhorita Brigadeiro",
+        "id": "node/9106354157"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.896786,
+          -15.8015199
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9223636892",
+      "properties": {
+        "addr:street": "CLN 405",
+        "amenity": "cafe",
+        "cuisine": "coffee_shop;regional",
+        "name": "Maytrea Café do Cerrado",
+        "opening_hours": "Tu-Fr 14:00-19:00; Sa 11:00-15:00",
+        "outdoor_seating": "yes",
+        "website": "https://www.instagram.com/maytreacerrado/",
+        "id": "node/9223636892"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8760889,
+          -15.7728741
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9223668163",
+      "properties": {
+        "addr:street": "CLN 409",
+        "amenity": "cafe",
+        "cuisine": "coffee_shop",
+        "name": "The Coffee",
+        "opening_hours": "Mo-Fr 07:30-20:00; sa-su 08:00-20:00",
+        "outdoor_seating": "yes",
+        "website": "https://www.thecoffee.jp/",
+        "id": "node/9223668163"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8802586,
+          -15.7598622
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9321058495",
+      "properties": {
+        "addr:street": "CRN 708/709 G",
+        "amenity": "cafe",
+        "cuisine": "coffee_shop",
+        "internet_access": "yes",
+        "internet_access:fee": "no",
+        "name": "Aha",
+        "opening_hours": "We-Su 11:00-18:00",
+        "website": "https://www.ahacafes.com.br/",
+        "id": "node/9321058495"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8926958,
+          -15.7634914
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9364462024",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Civita",
+        "id": "node/9364462024"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8926411,
+          -15.7611957
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9559046117",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Duckbill Cookies & Coffee",
+        "survey:date": "2022-03-06",
+        "id": "node/9559046117"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.893681,
+          -15.8066905
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9559046118",
+      "properties": {
+        "amenity": "cafe",
+        "name": "Café da Mata",
+        "survey:date": "2022-03-06",
+        "id": "node/9559046118"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8933825,
+          -15.8069382
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9563487746",
+      "properties": {
+        "amenity": "cafe",
+        "brand": "Starbucks",
+        "brand:wikidata": "Q37158",
+        "brand:wikipedia": "en:Starbucks",
+        "cuisine": "coffee_shop",
+        "name": "Starbucks",
+        "official_name": "Starbucks Coffee",
+        "takeaway": "yes",
+        "id": "node/9563487746"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8924062,
+          -15.7950461
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9577464680",
+      "properties": {
+        "amenity": "cafe",
+        "brand": "Starbucks",
+        "brand:wikidata": "Q37158",
+        "brand:wikipedia": "en:Starbucks",
+        "cuisine": "coffee_shop",
+        "name": "Starbucks",
+        "official_name": "Starbucks Coffee",
+        "takeaway": "yes",
+        "id": "node/9577464680"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8829693,
+          -15.79097
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "node/9858565892",
+      "properties": {
+        "addr:street": "SCLN 116 Bloco I",
+        "air_conditioning": "no",
+        "amenity": "cafe",
+        "cuisine": "regional",
+        "level": "0",
+        "name": "Ponto Do Café 116",
+        "outdoor_seating": "yes",
+        "id": "node/9858565892"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -47.8951192,
+          -15.7373599
+        ]
+      }
+    }
+  ]
+}

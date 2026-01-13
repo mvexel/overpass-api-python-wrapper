@@ -25,6 +25,8 @@ uv run ty check
 uv run pytest tests/ --import-mode importlib
 ```
 
+For GeoJSON hardening fixtures, see `docs/geojson-fixtures.md`.
+
 ## Usage
 
 ### `API()` constructor
